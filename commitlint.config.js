@@ -30,4 +30,3 @@ export default {
 		"subject-case": [0], // 不检查大小写，允许中文
 	},
 };
-

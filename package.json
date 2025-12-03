@@ -1,42 +1,62 @@
 {
-	"name": "portfolio_2020",
-	"version": "1.0.0",
-	"description": "Interactive 3D portfolio website built with Three.js and Ammo.js physics engine",
+	"name": "portfolio-3d",
+	"version": "1.1.0",
+	"description": "个人 3D 交互式作品集网站 - 展示 GitHub 开源项目、工作经历和 Three.js 3D 效果",
 	"type": "module",
-	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview",
-		"heroku-postbuild": "vite build",
-		"prepare": "husky install"
+	"author": {
+		"name": "liuyuanquan",
+		"email": "522703297@qq.com"
 	},
-	"author": "0xFloyd",
 	"license": "MIT",
-	"homepage": "https://www.0xfloyd.com/",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/liuyuanquan/portfolio-3d.git"
+	},
+	"bugs": {
+		"url": "https://github.com/liuyuanquan/portfolio-3d/issues"
+	},
+	"homepage": "https://github.com/liuyuanquan/portfolio-3d#readme",
 	"keywords": [
 		"portfolio",
+		"resume",
 		"3d",
 		"threejs",
 		"webgl",
 		"interactive",
+		"personal-website",
+		"showcase",
 		"physics",
 		"ammo.js",
 		"vite"
 	],
+	"private": true,
 	"engines": {
 		"node": ">=18.0.0",
 		"npm": ">=9.0.0"
 	},
-	"devDependencies": {
-		"@commitlint/cli": "^18.4.4",
-		"@commitlint/config-conventional": "^18.4.4",
-		"husky": "^8.0.3",
-		"vite": "^5.0.0"
+	"browserslist": [
+		"> 1%",
+		"last 2 versions",
+		"not dead",
+		"not ie 11"
+	],
+	"sideEffects": false,
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "husky install"
 	},
 	"dependencies": {
 		"@tweenjs/tween.js": "^18.6.0",
 		"dat.gui": "^0.7.7",
 		"stats.js": "^0.17.0",
 		"three": "^0.117.1"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^18.4.4",
+		"@commitlint/config-conventional": "^18.4.4",
+		"husky": "^8.0.3",
+		"vite": "^5.0.0"
 	}
 }

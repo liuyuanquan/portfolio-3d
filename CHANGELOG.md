@@ -15,7 +15,10 @@
 - 添加了 Vite 配置（`vite.config.js`）
 - 添加了 `CHANGELOG.md` 用于跟踪项目变更
 - 在 `package.json` 中添加了 `engines` 字段，指定 Node.js 和 npm 版本要求
-- 在 `package.json` 中添加了 `homepage` 和 `keywords` 字段，优化 npm 元数据
+- 在 `package.json` 中添加了 `homepage`、`keywords`、`repository`、`bugs` 字段，优化项目元数据
+- 添加了 `private` 字段，防止意外发布到 npm
+- 添加了 `browserslist` 配置，指定浏览器支持范围
+- 添加了 `sideEffects: false` 配置，优化 tree-shaking
 - 改进了项目结构，组织资源文件到相应目录
 
 ### 变更
@@ -25,6 +28,11 @@
 - 更改着色器文件导入方式，使用 Vite 原生的 `?raw` 查询参数替代自定义插件
 - 将 Ammo.js 从 npm 包改为全局 script 标签导入，简化设置
 - 提交信息规范改为使用中文描述
+- 项目名称从 `portfolio_2020` 更新为 `portfolio-3d`
+- 更新项目描述，明确为个人 3D 交互式作品集网站
+- 更新仓库地址为 `git@github.com:liuyuanquan/portfolio-3d.git`
+- 更新作者信息为 liuyuanquan
+- 更新 README.md，优化项目文档结构
 
 ### 移除
 
@@ -36,6 +44,7 @@
 - 移除了 `webpack.config.js` 配置文件
 - 移除了根目录的重复 `style.css` 文件
 - 移除了未使用的 `src/builds/` 目录
+- 移除了 `heroku-postbuild` 构建脚本
 
 ### 修复
 
