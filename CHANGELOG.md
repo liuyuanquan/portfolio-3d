@@ -7,6 +7,22 @@
 
 ## [未发布]
 
+## [1.1.2] - 2024-12-03
+
+### 修复
+
+- 修复了生产环境资源路径问题，使用 `import.meta.env.BASE_URL` 动态获取 base 路径
+- 修复了 README 中的图片路径，使用 GitHub raw URL 确保正确显示
+- 修复了 index.html 中 Open Graph 和 Twitter 图片 URL（blob → raw）
+- 更新 favicon 为项目 logo（logo.png）
+
+### 变更
+
+- 更新所有图片和 JSON 文件路径，支持 GitHub Pages 子路径部署
+- 优化资源路径处理，确保开发和生产环境都能正常工作
+
+## [1.1.1] - 2024-12-03
+
 ### 新增
 
 - 添加了遵循 Conventional Commits 规范的提交信息约定
