@@ -64,42 +64,26 @@ import {
 	launchHover,
 } from "./resources/utils";
 
+import { PhysicsEngine } from "./core/PhysicsEngine";
+
 export let cursorHoverObjects = [];
 
 // start Ammo Engine
 Ammo().then((Ammo) => {
-	//Ammo.js variable declaration
-	let rigidBodies = [],
-		physicsWorld;
+	// 创建物理引擎实例
+	const physicsEngine = new PhysicsEngine(Ammo);
 
 	//Ammo Dynamic bodies for ball
 	let ballObject = null;
-	const STATE = { DISABLE_DEACTIVATION: 4 };
-
-	//default transform object
-	let tmpTrans = new Ammo.btTransform();
 
 	// list of hyperlink objects
 	var objectsWithLinks = [];
 
 	//function to create physics world with Ammo.js
 	function createPhysicsWorld() {
-		//algortihms for full (not broadphase) collision detection
-		let collisionConfiguration = new Ammo.btDefaultCollisionConfiguration(),
-			dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration), // dispatch calculations for overlapping pairs/ collisions.
-			overlappingPairCache = new Ammo.btDbvtBroadphase(), //broadphase collision detection list of all possible colliding pairs
-			constraintSolver = new Ammo.btSequentialImpulseConstraintSolver(); //causes the objects to interact properly, like gravity, game logic forces, collisions
-
-		// see bullet physics docs for info
-		physicsWorld = new Ammo.btDiscreteDynamicsWorld(
-			dispatcher,
-			overlappingPairCache,
-			constraintSolver,
-			collisionConfiguration
-		);
-
-		// add gravity
-		physicsWorld.setGravity(new Ammo.btVector3(0, -50, 0));
+		physicsEngine.createWorld({
+			gravity: { x: 0, y: -50, z: 0 },
+		});
 	}
 
 	//create flat plane
@@ -161,7 +145,7 @@ Ammo().then((Ammo) => {
 		body.setRollingFriction(10);
 
 		// add to world
-		physicsWorld.addRigidBody(body);
+		physicsEngine.addRigidBody(blockPlane, body);
 	}
 
 	// create ball
@@ -223,17 +207,11 @@ Ammo().then((Ammo) => {
 		//set ball friction
 
 		//once state is set to disable, dynamic interaction no longer calculated
-		body.setActivationState(STATE.DISABLE_DEACTIVATION);
+		body.setActivationState(physicsEngine.STATE.DISABLE_DEACTIVATION);
 
-		physicsWorld.addRigidBody(
-			body //collisionGroupRedBall, collisionGroupGreenBall | collisionGroupPlane
-		);
-
-		ball.userData.physicsBody = body;
+		physicsEngine.addRigidBody(ball, body);
 		ballObject.userData.physicsBody = body;
-
-		rigidBodies.push(ball);
-		rigidBodies.push(ballObject);
+		// 注意：ball 和 ballObject 是同一个对象，所以只需要添加一次
 	}
 
 	//create beach ball Mesh
@@ -287,10 +265,7 @@ Ammo().then((Ammo) => {
 		let body = new Ammo.btRigidBody(rbInfo);
 
 		body.setRollingFriction(1);
-		physicsWorld.addRigidBody(body);
-
-		ball.userData.physicsBody = body;
-		rigidBodies.push(ball);
+		physicsEngine.addRigidBody(ball, body);
 	}
 
 	//create link boxes
@@ -778,13 +753,11 @@ Ammo().then((Ammo) => {
 		scene.add(threeObject);
 
 		if (mass > 0) {
-			rigidBodies.push(threeObject);
-
 			// Disable deactivation
-			body.setActivationState(4);
+			body.setActivationState(physicsEngine.STATE.DISABLE_DEACTIVATION);
 		}
 
-		physicsWorld.addRigidBody(body);
+		physicsEngine.addRigidBody(threeObject, body);
 	}
 
 	function createTriangle(x, z) {
@@ -839,9 +812,9 @@ Ammo().then((Ammo) => {
 			localInertia
 		);
 		let body = new Ammo.btRigidBody(rbInfo);
-		body.setActivationState(STATE.DISABLE_DEACTIVATION);
+		body.setActivationState(physicsEngine.STATE.DISABLE_DEACTIVATION);
 		body.setCollisionFlags(2);
-		physicsWorld.addRigidBody(body);
+		physicsEngine.addRigidBody(item, body);
 	}
 
 	function moveBall() {
@@ -922,31 +895,20 @@ Ammo().then((Ammo) => {
 	}
 
 	function updatePhysics(deltaTime) {
-		// Step world
-		physicsWorld.stepSimulation(deltaTime, 10);
-
-		// Update rigid bodies
-		for (let i = 0; i < rigidBodies.length; i++) {
-			let objThree = rigidBodies[i];
-			let objAmmo = objThree.userData.physicsBody;
-			let ms = objAmmo.getMotionState();
-			if (ms) {
-				ms.getWorldTransform(tmpTrans);
-				let p = tmpTrans.getOrigin();
-				let q = tmpTrans.getRotation();
-				objThree.position.set(p.x(), p.y(), p.z());
-				objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
-			}
-		}
+		// 更新物理引擎（会自动同步所有刚体的位置和旋转）
+		physicsEngine.update(deltaTime);
 
 		//check to see if ball escaped the plane
-		if (ballObject.position.y < -50) {
+		if (ballObject && ballObject.position.y < -50) {
 			scene.remove(ballObject);
+			physicsEngine.removeRigidBody(ballObject);
 			createBall();
 		}
 
 		//check to see if ball is on text to rotate camera
-		rotateCamera(ballObject);
+		if (ballObject) {
+			rotateCamera(ballObject);
+		}
 	}
 
 	//document loading

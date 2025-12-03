@@ -72,6 +72,8 @@ portfolio-3d/
 │   ├── img/         # 图片资源
 │   └── json/        # JSON 文件（字体等）
 ├── src/             # 源代码
+│   ├── core/        # 核心模块
+│   │   └── PhysicsEngine.js  # 物理引擎管理类
 │   ├── resources/   # 资源管理模块
 │   ├── shaders/     # GLSL 着色器文件
 │   ├── app.js       # 主应用入口
