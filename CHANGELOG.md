@@ -7,6 +7,22 @@
 
 ## [未发布]
 
+## [1.2.4] - 2025-12-04
+
+### 重构
+
+- **工具函数模块化**
+  - 创建 `src/utils/webgl.js`，将 WebGL 检测功能从 `src/WebGL.js` 迁移
+  - 创建 `src/utils/index.js`，统一导出所有工具函数
+  - 删除 `src/WebGL.js`，统一工具函数管理
+  - 更新 `src/app.js` 导入路径，使用统一的工具函数导出接口
+  - 改进代码组织结构，工具函数集中管理
+
+### 变更
+
+- `isWebGLAvailable` 函数从 `WEBGL.isWebGLAvailable()` 改为直接导入 `isWebGLAvailable`
+- 工具函数统一从 `src/utils` 导入，提高代码一致性
+
 ## [1.2.3] - 2025-12-04
 
 ### 重构

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { WEBGL } from "./WebGL";
+import { isWebGLAvailable } from "./utils";
 import {
 	billboardTextures,
 	boxTexture,
@@ -23,7 +23,6 @@ import {
 	postloadDivs,
 	startScreenDivs,
 	startButton,
-	noWebGL,
 	fadeOutDivs,
 } from "./resources/preload";
 
@@ -425,10 +424,13 @@ Ammo().then((Ammo) => {
 	}
 
 	//check if user's browser has WebGL capabilities
-	if (WEBGL.isWebGLAvailable()) {
+	if (isWebGLAvailable()) {
 		start();
 	} else {
-		noWebGL();
+		alert(
+			"Your browser does not support WebGL. Please update your browser to the latest version."
+		);
+		location.href = "https://github.com/liuyuanquan/portfolio-3d";
 	}
 });
 
