@@ -74,6 +74,16 @@ portfolio-3d/
 ├── src/             # 源代码
 │   ├── core/        # 核心模块
 │   │   └── PhysicsEngine.js  # 物理引擎管理类
+│   ├── objects/     # 对象创建模块
+│   │   ├── Balls.js          # 球体对象
+│   │   ├── Boxes.js          # 盒子对象
+│   │   ├── Billboards.js     # 广告牌对象
+│   │   ├── Walls.js          # 墙壁对象
+│   │   ├── Planes.js         # 平面对象
+│   │   ├── Shapes.js         # 形状对象
+│   │   ├── Text.js           # 3D 文字对象
+│   │   ├── PhysicsHelpers.js # 物理辅助函数
+│   │   └── index.js          # 统一导出
 │   ├── resources/   # 资源管理模块
 │   ├── shaders/     # GLSL 着色器文件
 │   ├── app.js       # 主应用入口

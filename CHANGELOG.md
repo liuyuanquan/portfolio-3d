@@ -7,6 +7,37 @@
 
 ## [未发布]
 
+## [1.2.1] - 2025-12-04
+
+### 重构
+
+- **第二阶段：分离对象创建逻辑**
+  - 创建 `src/objects/` 目录，按类型组织对象创建函数
+  - 创建 `Balls.js` - 球体对象（主球、沙滩球）
+  - 创建 `Boxes.js` - 盒子对象（链接盒子、文字盒子）
+  - 创建 `Billboards.js` - 广告牌对象（水平、垂直）
+  - 创建 `Walls.js` - 墙壁对象（X轴、Z轴、砖墙）
+  - 创建 `Planes.js` - 平面对象（网格平面）
+  - 创建 `Shapes.js` - 形状对象（三角形等）
+  - 创建 `Text.js` - 3D 文字对象（Floyd 文字、工程师文字）
+  - 创建 `PhysicsHelpers.js` - 物理辅助函数
+  - 创建 `index.js` - 统一导出接口
+  - 改进代码组织结构，职责分离更清晰，提高代码可维护性和可扩展性
+
+### 修复
+
+- 修复了 `addRigidPhysics` 函数调用错误（缺少 Ammo 和 physicsEngine 参数）
+- 修复了 Three.js 警告：将 `renderer.gammaInput` 和 `renderer.gammaOutput` 替换为 `renderer.outputEncoding`
+- 修复了循环依赖问题（`Billboards.js` 和 `Boxes.js` 不再直接导入 `cursorHoverObjects`）
+- 修复了所有对象创建函数的调用，确保正确传递参数
+
+### 变更
+
+- 将所有对象创建函数从 `app.js` 提取到 `src/objects/` 目录
+- 统一函数签名，所有创建函数接受 `Ammo`、`physicsEngine` 和 `options` 参数
+- 更新所有函数调用以使用新的模块化接口
+- 添加了完整的 JSDoc 注释，提高代码可读性
+
 ## [1.2.0] - 2025-12-03
 
 ### 重构

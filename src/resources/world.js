@@ -77,8 +77,8 @@ export function createWorld() {
   stats = new Stats();
   document.body.appendChild(stats.dom);
 
-  renderer.gammaInput = true;
-  renderer.gammaOutput = true;
+  // gammaInput 和 gammaOutput 已被移除，使用 outputEncoding 替代
+  renderer.outputEncoding = THREE.sRGBEncoding;
 
   renderer.shadowMap.enabled = true;
 }
