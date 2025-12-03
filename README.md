@@ -69,13 +69,15 @@ portfolio-3d/
 ├── public/          # 静态资源
 │   ├── ammo/        # Ammo.js 物理引擎文件
 │   ├── css/         # 样式文件
-│   └── img/         # 图片资源
+│   ├── img/         # 图片资源
+│   └── json/        # JSON 文件（字体等）
 ├── src/             # 源代码
-│   ├── jsm/         # Three.js 相关资源（纹理、着色器等）
 │   ├── resources/   # 资源管理模块
-│   └── app.js       # 主应用入口
+│   ├── shaders/     # GLSL 着色器文件
+│   ├── app.js       # 主应用入口
+│   └── WebGL.js     # WebGL 检测模块
 ├── index.html       # HTML 入口文件
-└── vite.config.js  # Vite 配置文件
+└── vite.config.js   # Vite 配置文件
 ```
 
 ## 提交规范

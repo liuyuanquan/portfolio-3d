@@ -1,6 +1,6 @@
 {
 	"name": "portfolio-3d",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "个人 3D 交互式作品集网站 - 展示 GitHub 开源项目、工作经历和 Three.js 3D 效果",
 	"type": "module",
 	"author": {

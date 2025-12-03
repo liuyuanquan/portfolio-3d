@@ -172,7 +172,7 @@ Ammo().then((Ammo) => {
 		let mass = 3;
 
 		var marble_loader = new THREE.TextureLoader(manager);
-		var marbleTexture = marble_loader.load("./src/jsm/earth.jpg");
+		var marbleTexture = marble_loader.load("/img/earth.jpg");
 		marbleTexture.wrapS = marbleTexture.wrapT = THREE.RepeatWrapping;
 		marbleTexture.repeat.set(1, 1);
 		marbleTexture.anisotropy = 1;
@@ -244,7 +244,7 @@ Ammo().then((Ammo) => {
 
 		//import beach ball texture
 		var texture_loader = new THREE.TextureLoader(manager);
-		var beachTexture = texture_loader.load("./src/jsm/BeachBallColor.jpg");
+		var beachTexture = texture_loader.load("/img/BeachBallColor.jpg");
 		beachTexture.wrapS = beachTexture.wrapT = THREE.RepeatWrapping;
 		beachTexture.repeat.set(1, 1);
 		beachTexture.anisotropy = 1;
@@ -376,7 +376,7 @@ Ammo().then((Ammo) => {
 	function loadFloydText() {
 		var text_loader = new THREE.FontLoader();
 
-		text_loader.load("./src/jsm/Roboto_Regular.json", function (font) {
+		text_loader.load("/json/Roboto_Regular.json", function (font) {
 			var xMid, text;
 
 			var color = 0xfffc00;
@@ -420,7 +420,7 @@ Ammo().then((Ammo) => {
 	function loadEngineerText() {
 		var text_loader = new THREE.FontLoader();
 
-		text_loader.load("./src/jsm/Roboto_Regular.json", function (font) {
+		text_loader.load("/json/Roboto_Regular.json", function (font) {
 			var xMid, text;
 
 			var color = 0x00ff08;

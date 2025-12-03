@@ -24,15 +24,19 @@
 ### 变更
 
 - 从 Webpack 迁移到 Vite，提升开发和构建速度
-- 更新项目结构：将静态资源组织到 `public/img/`、`public/css/` 和 `public/ammo/` 目录
+- 更新项目结构：将静态资源组织到 `public/img/`、`public/css/`、`public/json/` 和 `public/ammo/` 目录
+- 将 GLSL 着色器文件移动到 `src/shaders/` 目录
 - 更改着色器文件导入方式，使用 Vite 原生的 `?raw` 查询参数替代自定义插件
 - 将 Ammo.js 从 npm 包改为全局 script 标签导入，简化设置
+- 更新所有资源文件路径，从 `/src/jsm/` 改为对应的新目录路径
 - 提交信息规范改为使用中文描述
 - 项目名称从 `portfolio_2020` 更新为 `portfolio-3d`
 - 更新项目描述，明确为个人 3D 交互式作品集网站
 - 更新仓库地址为 `git@github.com:liuyuanquan/portfolio-3d.git`
 - 更新作者信息为 liuyuanquan
-- 更新 README.md，优化项目文档结构
+- 更新 README.md 和 index.html，优化项目文档结构和页面内容
+- 配置 GitHub Pages 自动部署
+- 优化 Vite 配置，区分开发和生产环境的 base 路径
 
 ### 移除
 
@@ -45,6 +49,9 @@
 - 移除了根目录的重复 `style.css` 文件
 - 移除了未使用的 `src/builds/` 目录
 - 移除了 `heroku-postbuild` 构建脚本
+- 移除了空的 `public/jsm/` 和 `src/jsm/` 目录（文件已重新组织）
+- 移除了空的 `src/components/` 和 `src/utils/` 目录
+- 移除了未使用的 `SVG.reactLogo` 引用
 
 ### 修复
 
