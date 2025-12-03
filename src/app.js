@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { isWebGLAvailable } from "./utils";
+import { WEBGL } from "three/examples/jsm/WebGL.js";
 import {
 	billboardTextures,
 	boxTexture,
@@ -423,8 +423,7 @@ Ammo().then((Ammo) => {
 		gameLoop.start();
 	}
 
-	//check if user's browser has WebGL capabilities
-	if (isWebGLAvailable()) {
+	if (WEBGL.isWebGLAvailable()) {
 		start();
 	} else {
 		alert(
@@ -433,6 +432,3 @@ Ammo().then((Ammo) => {
 		location.href = "https://github.com/liuyuanquan/portfolio-3d";
 	}
 });
-
-// 确保文件被识别为 ES 模块
-export {};

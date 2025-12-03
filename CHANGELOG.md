@@ -7,6 +7,34 @@
 
 ## [未发布]
 
+## [1.2.5] - 2025-12-04
+
+### 重构
+
+- **工具函数模块 TypeScript 迁移**
+  - 将 `src/utils/` 目录下的文件从 JavaScript 迁移到 TypeScript
+  - `textureLoader.js` → `textureLoader.ts`，添加完整的类型定义
+  - `index.js` → `index.ts`，统一导出接口
+  - 添加 `tsconfig.json` 配置文件，支持渐进式 TypeScript 迁移
+
+### 优化
+
+- **使用 Three.js 官方 WebGL 检测工具**
+  - 移除自定义的 `isWebGLAvailable` 函数
+  - 使用 `three/examples/jsm/WebGL.js` 中的 `WEBGL.isWebGLAvailable()`
+  - 删除 `src/utils/webgl.ts`，统一使用 Three.js 官方工具
+
+- **纹理加载函数优化**
+  - 提取 `applyTextureOptions` 辅助函数，消除代码重复
+  - 改进代码结构，提高可维护性
+  - 保持向后兼容，功能不变
+
+### 变更
+
+- `src/app.js` 使用 `WEBGL.isWebGLAvailable()` 替代自定义实现
+- `src/utils/index.ts` 移除 `isWebGLAvailable` 导出
+- 工具函数现在使用 TypeScript，提供更好的类型安全
+
 ## [1.2.4] - 2025-12-04
 
 ### 重构

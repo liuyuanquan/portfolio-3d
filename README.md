@@ -93,10 +93,9 @@ portfolio-3d/
 │   │   ├── PhysicsHelpers.js # 物理辅助函数
 │   │   └── index.js          # 统一导出
 │   ├── resources/   # 资源管理模块
-│   ├── utils/        # 工具函数模块
-│   │   ├── webgl.js         # WebGL 检测工具
-│   │   ├── textureLoader.js  # 纹理加载辅助函数
-│   │   └── index.js         # 统一导出
+│   ├── utils/        # 工具函数模块（TypeScript）
+│   │   ├── textureLoader.ts  # 纹理加载辅助函数
+│   │   └── index.ts         # 统一导出
 │   ├── shaders/     # GLSL 着色器文件
 │   └── app.js       # 主应用入口
 ├── index.html       # HTML 入口文件
