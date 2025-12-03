@@ -2,7 +2,7 @@
 
 个人 3D 交互式作品集网站，使用 [Three.js](https://github.com/mrdoob/three.js) 和 [Ammo.js](https://github.com/kripken/ammo.js)（Bullet 物理引擎的 JavaScript 移植版）构建，用于展示 GitHub 开源项目、工作经历和 Three.js 3D 效果。
 
-![alt text](/img/portfolio_2020.gif)
+![alt text](https://github.com/liuyuanquan/portfolio-3d/raw/main/public/img/portfolio_2020.gif)
 
 ## 项目简介
 
