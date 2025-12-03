@@ -79,9 +79,9 @@ portfolio-3d/
 │   │   ├── gameplay.ts   # 游戏玩法配置
 │   │   ├── positions.ts  # 场景对象位置配置
 │   │   └── index.ts      # 统一导出
-│   ├── core/        # 核心模块
-│   │   ├── PhysicsEngine.js  # 物理引擎管理类
-│   │   └── GameLoop.js       # 游戏主循环管理类
+│   ├── core/        # 核心模块（TypeScript）
+│   │   ├── PhysicsEngine.ts  # 物理引擎管理类
+│   │   └── GameLoop.ts       # 游戏主循环管理类
 │   ├── objects/     # 对象创建模块
 │   │   ├── Balls.js          # 球体对象
 │   │   ├── Boxes.js          # 盒子对象

@@ -1,6 +1,6 @@
 {
 	"name": "portfolio-3d",
-	"version": "1.2.7",
+	"version": "1.2.8",
 	"description": "个人 3D 交互式作品集网站 - 展示 GitHub 开源项目、工作经历和 Three.js 3D 效果",
 	"type": "module",
 	"author": {
@@ -56,6 +56,7 @@
 	"devDependencies": {
 		"@commitlint/cli": "^18.4.4",
 		"@commitlint/config-conventional": "^18.4.4",
+		"@types/stats.js": "^0.17.4",
 		"husky": "^8.0.3",
 		"typescript": "^5.9.3",
 		"vite": "^5.0.0"
