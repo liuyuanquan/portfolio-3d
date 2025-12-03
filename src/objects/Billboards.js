@@ -4,7 +4,7 @@
 import * as THREE from "three";
 import { scene, manager } from "../resources/world";
 import { addRigidPhysics } from "./PhysicsHelpers";
-import { woodTexture } from "../resources/textures";
+import { woodTexture } from "../config/resources";
 import { OBJECTS_CONFIG } from "../config";
 import { loadTexture } from "../utils/textureLoader";
 
@@ -172,4 +172,3 @@ export function createBillboardRotated(Ammo, physicsEngine, options = {}) {
 
 	return { pole: billboardPole, sign: billboardSign };
 }
-

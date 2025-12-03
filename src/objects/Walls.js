@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { scene, manager } from "../resources/world";
 import { PhysicsEngine } from "../core/PhysicsEngine";
 import { addRigidPhysics } from "./PhysicsHelpers";
-import { stoneTexture } from "../resources/textures";
+import { stoneTexture } from "../config/resources";
 import { OBJECTS_CONFIG, PHYSICS_CONFIG } from "../config";
 import { loadTexture } from "../utils/textureLoader";
 
@@ -18,12 +18,7 @@ import { loadTexture } from "../utils/textureLoader";
  */
 export function createWallX(Ammo, physicsEngine, options = {}) {
 	const wallConfig = OBJECTS_CONFIG.wall.x;
-	const {
-		x,
-		y,
-		z,
-		wallScale = wallConfig.scale,
-	} = options;
+	const { x, y, z, wallScale = wallConfig.scale } = options;
 
 	const wall = new THREE.Mesh(
 		new THREE.BoxBufferGeometry(wallScale.x, wallScale.y, wallScale.z),
@@ -56,12 +51,7 @@ export function createWallX(Ammo, physicsEngine, options = {}) {
  */
 export function createWallZ(Ammo, physicsEngine, options = {}) {
 	const wallConfig = OBJECTS_CONFIG.wall.z;
-	const {
-		x,
-		y,
-		z,
-		wallScale = wallConfig.scale,
-	} = options;
+	const { x, y, z, wallScale = wallConfig.scale } = options;
 
 	const wall = new THREE.Mesh(
 		new THREE.BoxBufferGeometry(wallScale.x, wallScale.y, wallScale.z),
@@ -93,15 +83,7 @@ export function createWallZ(Ammo, physicsEngine, options = {}) {
  * @returns {THREE.Mesh} 砖块对象
  */
 export function createBrick(Ammo, physicsEngine, options = {}) {
-	const {
-		sx,
-		sy,
-		sz,
-		mass,
-		pos,
-		quat,
-		material,
-	} = options;
+	const { sx, sy, sz, mass, pos, quat, material } = options;
 
 	var threeObject = new THREE.Mesh(
 		new THREE.BoxBufferGeometry(sx, sy, sz, 1, 1, 1),
@@ -142,9 +124,7 @@ function createBrickBody(
 	var transform = new Ammo.btTransform();
 	transform.setIdentity();
 	transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
-	transform.setRotation(
-		new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w)
-	);
+	transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
 	var motionState = new Ammo.btDefaultMotionState(transform);
 
 	var localInertia = new Ammo.btVector3(0, 0, 0);
@@ -206,9 +186,7 @@ export function wallOfBricks(Ammo, physicsEngine, options = {}) {
 			pos.x += 0.25 * brickLength;
 		}
 
-		var currentRow = oddRow
-			? numberOfBricksAcross + 1
-			: numberOfBricksAcross;
+		var currentRow = oddRow ? numberOfBricksAcross + 1 : numberOfBricksAcross;
 		for (let i = 0; i < currentRow; i++) {
 			var brickLengthCurrent = brickLength;
 			var brickMassCurrent = brickMass;
@@ -245,4 +223,3 @@ export function wallOfBricks(Ammo, physicsEngine, options = {}) {
 
 	return bricks;
 }
-

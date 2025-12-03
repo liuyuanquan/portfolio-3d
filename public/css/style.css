@@ -83,8 +83,9 @@ select {
 	width: 125px;
 	height: 125px;
 	position: fixed;
-	bottom: 15px;
-	left: 15px;
+	bottom: 30px;
+	left: 50%;
+	transform: translateX(-50%);
 	text-align: center;
 	border-radius: 100%;
 	display: flex; /* [1] */

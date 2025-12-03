@@ -7,13 +7,12 @@ import {
 	URL,
 	stoneTexture,
 	woodTexture,
-} from "./resources/textures";
+} from "./config/resources";
 
 import {
 	setupEventHandlers,
 	moveDirection,
 	isTouchscreenDevice,
-	touchEvent,
 	createJoystick,
 } from "./resources/eventHandlers";
 
@@ -21,7 +20,6 @@ import {
 	preloadDivs,
 	preloadOpacity,
 	postloadDivs,
-	startScreenDivs,
 	startButton,
 	fadeOutDivs,
 } from "./resources/preload";
@@ -61,7 +59,7 @@ import {
 	getCanvasRelativePosition,
 	rotateCamera,
 	launchHover,
-} from "./resources/utils";
+} from "./resources/cameraUtils";
 
 import { PhysicsEngine } from "./core/PhysicsEngine";
 import { GameLoop } from "./core/GameLoop";
@@ -253,10 +251,9 @@ Ammo().then((Ammo) => {
 
 	if (isTouchscreenDevice()) {
 		document.getElementById("appDirections").innerHTML =
-			"Use the joystick in the bottom left to move the ball. Please use your device in portrait orientation!";
+			"Use the joystick at the bottom to move the ball. Please use your device in portrait orientation!";
 		createJoystick(document.getElementById("joystick-wrapper"));
 		document.getElementById("joystick-wrapper").style.visibility = "visible";
-		document.getElementById("joystick").style.visibility = "visible";
 	}
 
 	//initialize world and begin
@@ -386,13 +383,13 @@ Ammo().then((Ammo) => {
 
 		let touchText, instructionsText;
 		if (isTouchscreenDevice()) {
-			touchText = "Touch boxes with your \nfinger to open links";
+			touchText = "Touch boxes with your finger\nto open links";
 			instructionsText =
-				"   Use the joystick in the bottom \nleft of the screen to move the ball.";
+				"Use the joystick at the bottom\nof the screen to move the ball.";
 		} else {
-			touchText = "Click on boxes with \nthe mouse to open links";
+			touchText = "Click on boxes with\nthe mouse to open links";
 			instructionsText =
-				"Use the arrow keys on your \n keyboard to move the ball.";
+				"Use the arrow keys on your\nkeyboard to move the ball.";
 		}
 
 		simpleText(9, 0.01, 5, instructionsText, 1.25);

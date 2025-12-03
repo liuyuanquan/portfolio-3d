@@ -78,6 +78,8 @@ portfolio-3d/
 │   │   ├── objects.ts    # 对象默认配置
 │   │   ├── gameplay.ts   # 游戏玩法配置
 │   │   ├── positions.ts  # 场景对象位置配置
+│   │   ├── camera.ts     # 相机配置
+│   │   ├── resources.ts  # 资源路径配置
 │   │   └── index.ts      # 统一导出
 │   ├── core/        # 核心模块（TypeScript）
 │   │   ├── PhysicsEngine.ts  # 物理引擎管理类
@@ -92,9 +94,16 @@ portfolio-3d/
 │   │   ├── Text.js           # 3D 文字对象
 │   │   ├── PhysicsHelpers.js # 物理辅助函数
 │   │   └── index.js          # 统一导出
-│   ├── resources/   # 资源管理模块
+│   ├── resources/   # 资源管理模块（TypeScript）
+│   │   ├── world.ts         # 场景、相机、渲染器初始化
+│   │   ├── surfaces.ts      # 表面和文本创建
+│   │   ├── cameraUtils.ts   # 相机控制和交互工具
+│   │   ├── eventHandlers.ts # 事件处理
+│   │   ├── preload.ts       # 预加载管理
+│   │   └── textures.ts      # 纹理资源管理（已移至 config/resources.ts）
 │   ├── utils/        # 工具函数模块（TypeScript）
 │   │   ├── textureLoader.ts  # 纹理加载辅助函数
+│   │   ├── math.ts          # 数学工具函数
 │   │   └── index.ts         # 统一导出
 │   ├── shaders/     # GLSL 着色器文件
 │   └── app.js       # 主应用入口

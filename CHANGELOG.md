@@ -7,6 +7,37 @@
 
 ## [未发布]
 
+## [1.2.9] - 2025-01-04
+
+### 重构
+
+- **资源模块 TypeScript 迁移和代码重组**
+  - 将 `src/resources/` 目录下的所有文件从 JavaScript 迁移到 TypeScript
+  - `surfaces.js` → `surfaces.ts`，添加完整的类型定义和详细注释
+  - `world.js` → `world.ts`，添加完整的类型定义和详细注释
+  - `utils.js` → `utils.ts`，添加完整的类型定义和详细注释
+  - 提取数学工具函数到 `src/utils/math.ts`，提供 `getRandomArbitrary`、`getRandomInt`、`clamp` 等通用函数
+
+- **项目结构优化**
+  - 将 `resources/textures.ts` 移动到 `config/resources.ts`（资源路径配置）
+  - 将 `resources/utils.ts` 中的相机配置提取到 `config/camera.ts`
+  - 将 `resources/utils.ts` 重命名为 `resources/cameraUtils.ts`（避免与 `utils` 目录名称冲突）
+  - 所有配置现在统一在 `config/` 目录管理
+
+### 优化
+
+- 提取魔法数字为配置常量，提高代码可维护性
+- 统一代码风格和命名规范
+- 改进代码结构和组织方式
+- 添加详细的 JSDoc 注释
+
+### 变更
+
+- `src/resources/` 目录现在完全使用 TypeScript
+- `src/config/` 目录新增 `resources.ts` 和 `camera.ts` 配置文件
+- `src/utils/` 目录新增 `math.ts` 数学工具函数模块
+- 所有资源管理模块现在都提供完整的类型支持和详细的文档注释
+
 ## [1.2.8] - 2025-12-04
 
 ### 重构
