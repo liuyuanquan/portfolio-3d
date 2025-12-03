@@ -1,0 +1,38 @@
+{
+	"name": "portfolio_2020",
+	"version": "1.0.0",
+	"description": "Interactive 3D portfolio website built with Three.js and Ammo.js physics engine",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"heroku-postbuild": "vite build"
+	},
+	"author": "0xFloyd",
+	"license": "MIT",
+	"homepage": "https://www.0xfloyd.com/",
+	"keywords": [
+		"portfolio",
+		"3d",
+		"threejs",
+		"webgl",
+		"interactive",
+		"physics",
+		"ammo.js",
+		"vite"
+	],
+	"engines": {
+		"node": ">=18.0.0",
+		"npm": ">=9.0.0"
+	},
+	"devDependencies": {
+		"vite": "^5.0.0"
+	},
+	"dependencies": {
+		"@tweenjs/tween.js": "^18.6.0",
+		"dat.gui": "^0.7.7",
+		"stats.js": "^0.17.0",
+		"three": "^0.117.1"
+	}
+}

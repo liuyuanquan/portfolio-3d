@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<!-- Primary Meta Tags -->
+		<title>Portfolio 2020 - Interactive 3D Portfolio Built with Three.js</title>
+		<meta
+			name="title"
+			content="Portfolio 2020 - Interactive 3D Portfolio Built with Three.js"
+		/>
+		<meta
+			name="description"
+			content="An interactive 3D portfolio website built with Three.js and Ammo.js physics engine. Explore my projects and skills in an immersive 3D environment."
+		/>
+		<meta
+			name="keywords"
+			content="portfolio, 3D, Three.js, WebGL, interactive, developer, web developer"
+		/>
+		<meta name="author" content="0xFloyd" />
+		<meta name="robots" content="index, follow" />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://www.0xfloyd.com/" />
+		<meta
+			property="og:title"
+			content="Portfolio 2020 - Interactive 3D Portfolio"
+		/>
+		<meta
+			property="og:description"
+			content="An interactive 3D portfolio website built with Three.js and Ammo.js physics engine."
+		/>
+		<meta
+			property="og:image"
+			content="https://www.0xfloyd.com/website-screenshot.png"
+		/>
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content="https://www.0xfloyd.com/" />
+		<meta
+			property="twitter:title"
+			content="Portfolio 2020 - Interactive 3D Portfolio"
+		/>
+		<meta
+			property="twitter:description"
+			content="An interactive 3D portfolio website built with Three.js and Ammo.js physics engine."
+		/>
+		<meta
+			property="twitter:image"
+			content="https://www.0xfloyd.com/website-screenshot.png"
+		/>
+
+		<!-- Favicon -->
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+		<!-- Theme Color (Mobile) -->
+		<meta name="theme-color" content="#000000" />
+
+		<!-- Performance: Preconnect to external domains -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+		<!-- Fonts -->
+		<link
+			href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+			rel="stylesheet"
+		/>
+
+		<!-- Styles -->
+		<link rel="stylesheet" type="text/css" href="/css/style.css" />
+
+		<!-- Security -->
+		<meta name="referrer" content="strict-origin-when-cross-origin" />
+	</head>
+	<body id="document-body">
+		<!-- Skip to main content for accessibility -->
+		<a
+			href="#WEBGLcontainer"
+			class="skip-link"
+			style="position: absolute; left: -9999px; z-index: 999"
+			>Skip to main content</a
+		>
+
+		<div id="WEBGLcontainer" role="main" aria-label="3D Portfolio Scene"></div>
+		<div id="joystick-wrapper" aria-label="Joystick controls"></div>
+		<div class="fadeOutDiv preload-overlay" id="preload-overlay">
+			<div class="start-page-content-div fadeOutDiv">
+				<h1 class="postload start-page-text interactive-site-text fadeOutDiv">
+					This is an interactive 3D site built with Three.js!
+				</h1>
+				<h1
+					id="appDirections"
+					class="start-page-text joystick-directions-text postload fadeOutDiv"
+				>
+					Move the ball around with the arrow keys on the keyboard.
+				</h1>
+				<button id="start-button" class="postload fadeOutDiv">EXPLORE</button>
+			</div>
+			<div class="trinity-rings-spinner preload">
+				<div class="circle preload"></div>
+				<div class="circle preload"></div>
+				<div class="circle preload"></div>
+			</div>
+		</div>
+		<div class="loading-text-div preload">
+			Loading<span class="loader__dot">.</span><span class="loader__dot">.</span
+			><span class="loader__dot">.</span>
+		</div>
+		<div id="tooltip"></div>
+		<script src="/ammo/ammo.js"></script>
+		<script type="module" src="/src/app.js"></script>
+	</body>
+</html>
