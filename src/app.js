@@ -65,6 +65,7 @@ import {
 } from "./resources/utils";
 
 import { PhysicsEngine } from "./core/PhysicsEngine";
+import { GameLoop } from "./core/GameLoop";
 import {
 	createBall as createBallObj,
 	createBeachBall,
@@ -101,6 +102,9 @@ Ammo().then((Ammo) => {
 	// list of hyperlink objects
 	var objectsWithLinks = [];
 
+	// 游戏循环实例
+	let gameLoop = null;
+
 	//function to create physics world with Ammo.js
 	function createPhysicsWorld() {
 		physicsEngine.createWorld({
@@ -110,7 +114,12 @@ Ammo().then((Ammo) => {
 
 	// 对象创建函数已移至 src/objects/ 目录
 
+	/**
+	 * 移动球体
+	 */
 	function moveBall() {
+		if (!ballObject) return;
+
 		const movementConfig = GAMEPLAY_CONFIG.ballMovement;
 		let scalingFactor = movementConfig.scalingFactor;
 		let moveX = moveDirection.right - moveDirection.left;
@@ -136,16 +145,13 @@ Ammo().then((Ammo) => {
 		physicsBody.setLinearVelocity(resultantImpulse);
 	}
 
-	function renderFrame() {
-		// FPS stats module
-		stats.begin();
-
-		const renderConfig = GAMEPLAY_CONFIG.renderLoop;
-		const elapsedTime =
-			galaxyClock.getElapsedTime() + renderConfig.galaxyTimeOffset;
-
-		let deltaTime = clock.getDelta();
-		if (!isTouchscreenDevice())
+	/**
+	 * 更新逻辑（每帧调用）
+	 * @param {number} deltaTime - 时间差（秒）
+	 */
+	function onUpdate(deltaTime) {
+		// 处理球体移动
+		if (!isTouchscreenDevice()) {
 			if (document.hasFocus()) {
 				moveBall();
 			} else {
@@ -154,22 +160,22 @@ Ammo().then((Ammo) => {
 				moveDirection.left = 0;
 				moveDirection.right = 0;
 			}
-		else {
+		} else {
 			moveBall();
 		}
 
+		// 更新物理引擎
 		updatePhysics(deltaTime);
 
+		// 更新粒子系统
 		moveParticles();
+	}
 
+	/**
+	 * 渲染逻辑（每帧调用）
+	 */
+	function onRender() {
 		renderer.render(scene, camera);
-		stats.end();
-
-		galaxyMaterial.uniforms.uTime.value = elapsedTime * 5;
-		//galaxyPoints.position.set(-50, -50, 0);
-
-		// tells browser theres animation, update before the next repaint
-		requestAnimationFrame(renderFrame);
 	}
 
 	//loading page section
@@ -190,12 +196,19 @@ Ammo().then((Ammo) => {
 		}, 1000);
 	}
 
+	/**
+	 * 更新物理引擎逻辑
+	 * @param {number} deltaTime - 时间差（秒）
+	 */
 	function updatePhysics(deltaTime) {
 		// 更新物理引擎（会自动同步所有刚体的位置和旋转）
 		physicsEngine.update(deltaTime);
 
 		//check to see if ball escaped the plane
-		if (ballObject && ballObject.position.y < -50) {
+		if (
+			ballObject &&
+			ballObject.position.y < GAMEPLAY_CONFIG.ballFallThreshold
+		) {
 			scene.remove(ballObject);
 			physicsEngine.removeRigidBody(ballObject);
 			ballObject = createBallObj(Ammo, physicsEngine);
@@ -398,7 +411,17 @@ Ammo().then((Ammo) => {
 
 		setupEventHandlers();
 		// window.addEventListener('mousemove', onDocumentMouseMove, false);
-		renderFrame();
+
+		// 创建并启动游戏循环
+		gameLoop = new GameLoop({
+			onUpdate,
+			onRender,
+			stats,
+			clock,
+			galaxyClock,
+			galaxyMaterial,
+		});
+		gameLoop.start();
 	}
 
 	//check if user's browser has WebGL capabilities

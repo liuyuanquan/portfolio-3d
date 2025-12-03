@@ -80,7 +80,8 @@ portfolio-3d/
 │   │   ├── positions.js  # 场景对象位置配置
 │   │   └── index.js      # 统一导出
 │   ├── core/        # 核心模块
-│   │   └── PhysicsEngine.js  # 物理引擎管理类
+│   │   ├── PhysicsEngine.js  # 物理引擎管理类
+│   │   └── GameLoop.js       # 游戏主循环管理类
 │   ├── objects/     # 对象创建模块
 │   │   ├── Balls.js          # 球体对象
 │   │   ├── Boxes.js          # 盒子对象
