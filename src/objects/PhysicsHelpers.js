@@ -4,6 +4,7 @@
 import * as THREE from "three";
 import { scene } from "../resources/world";
 import { PhysicsEngine } from "../core/PhysicsEngine";
+import { PHYSICS_CONFIG } from "../config";
 
 /**
  * 为 Three.js 对象添加刚体物理
@@ -20,7 +21,7 @@ export function addRigidPhysics(Ammo, physicsEngine, item, itemScale) {
 	};
 	let scale = { x: itemScale.x, y: itemScale.y, z: itemScale.z };
 	let quat = { x: 0, y: 0, z: 0, w: 1 };
-	let mass = 0; // 质量为 0 表示静态物体
+	let mass = PHYSICS_CONFIG.defaultMass.static; // 质量为 0 表示静态物体
 
 	var transform = new Ammo.btTransform();
 	transform.setIdentity();
@@ -32,7 +33,7 @@ export function addRigidPhysics(Ammo, physicsEngine, item, itemScale) {
 	let colShape = new Ammo.btBoxShape(
 		new Ammo.btVector3(scale.x * 0.5, scale.y * 0.5, scale.z * 0.5)
 	);
-	colShape.setMargin(0.05);
+	colShape.setMargin(PHYSICS_CONFIG.collisionMargin);
 	colShape.calculateLocalInertia(mass, localInertia);
 	let rbInfo = new Ammo.btRigidBodyConstructionInfo(
 		mass,
@@ -42,6 +43,6 @@ export function addRigidPhysics(Ammo, physicsEngine, item, itemScale) {
 	);
 	let body = new Ammo.btRigidBody(rbInfo);
 	body.setActivationState(physicsEngine.STATE.DISABLE_DEACTIVATION);
-	body.setCollisionFlags(2); // 静态物体标志
+	body.setCollisionFlags(PHYSICS_CONFIG.collisionFlags.static);
 	physicsEngine.addRigidBody(item, body);
 }

@@ -81,6 +81,12 @@ import {
 	loadEngineerText,
 	addRigidPhysics,
 } from "./objects";
+import {
+	PHYSICS_CONFIG,
+	OBJECTS_CONFIG,
+	GAMEPLAY_CONFIG,
+	POSITIONS_CONFIG,
+} from "./config";
 
 export let cursorHoverObjects = [];
 
@@ -98,26 +104,27 @@ Ammo().then((Ammo) => {
 	//function to create physics world with Ammo.js
 	function createPhysicsWorld() {
 		physicsEngine.createWorld({
-			gravity: { x: 0, y: -50, z: 0 },
+			gravity: PHYSICS_CONFIG.gravity,
 		});
 	}
 
 	// 对象创建函数已移至 src/objects/ 目录
 
 	function moveBall() {
-		let scalingFactor = 20;
+		const movementConfig = GAMEPLAY_CONFIG.ballMovement;
+		let scalingFactor = movementConfig.scalingFactor;
 		let moveX = moveDirection.right - moveDirection.left;
 		let moveZ = moveDirection.back - moveDirection.forward;
 		let moveY = 0;
 
-		if (ballObject.position.y < 2.01) {
+		if (ballObject.position.y < movementConfig.groundThreshold) {
 			moveX = moveDirection.right - moveDirection.left;
 			moveZ = moveDirection.back - moveDirection.forward;
 			moveY = 0;
 		} else {
 			moveX = moveDirection.right - moveDirection.left;
 			moveZ = moveDirection.back - moveDirection.forward;
-			moveY = -0.25;
+			moveY = movementConfig.airMovementY;
 		}
 
 		// no movement
@@ -133,7 +140,9 @@ Ammo().then((Ammo) => {
 		// FPS stats module
 		stats.begin();
 
-		const elapsedTime = galaxyClock.getElapsedTime() + 150;
+		const renderConfig = GAMEPLAY_CONFIG.renderLoop;
+		const elapsedTime =
+			galaxyClock.getElapsedTime() + renderConfig.galaxyTimeOffset;
 
 		let deltaTime = clock.getDelta();
 		if (!isTouchscreenDevice())

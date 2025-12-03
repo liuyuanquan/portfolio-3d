@@ -6,6 +6,8 @@ import { scene, manager } from "../resources/world";
 import { PhysicsEngine } from "../core/PhysicsEngine";
 import { addRigidPhysics } from "./PhysicsHelpers";
 import { stoneTexture } from "../resources/textures";
+import { OBJECTS_CONFIG, PHYSICS_CONFIG } from "../config";
+import { loadTexture } from "../utils/textureLoader";
 
 /**
  * 创建 X 轴方向的墙壁
@@ -15,19 +17,20 @@ import { stoneTexture } from "../resources/textures";
  * @returns {THREE.Mesh} 墙壁对象
  */
 export function createWallX(Ammo, physicsEngine, options = {}) {
+	const wallConfig = OBJECTS_CONFIG.wall.x;
 	const {
 		x,
 		y,
 		z,
-		wallScale = { x: 0.125, y: 4, z: 175 },
+		wallScale = wallConfig.scale,
 	} = options;
 
 	const wall = new THREE.Mesh(
 		new THREE.BoxBufferGeometry(wallScale.x, wallScale.y, wallScale.z),
 		new THREE.MeshStandardMaterial({
-			color: 0xffffff,
-			opacity: 0.75,
-			transparent: true,
+			color: wallConfig.material.color,
+			opacity: wallConfig.material.opacity,
+			transparent: wallConfig.material.transparent,
 		})
 	);
 
@@ -52,19 +55,20 @@ export function createWallX(Ammo, physicsEngine, options = {}) {
  * @returns {THREE.Mesh} 墙壁对象
  */
 export function createWallZ(Ammo, physicsEngine, options = {}) {
+	const wallConfig = OBJECTS_CONFIG.wall.z;
 	const {
 		x,
 		y,
 		z,
-		wallScale = { x: 175, y: 4, z: 0.125 },
+		wallScale = wallConfig.scale,
 	} = options;
 
 	const wall = new THREE.Mesh(
 		new THREE.BoxBufferGeometry(wallScale.x, wallScale.y, wallScale.z),
 		new THREE.MeshStandardMaterial({
-			color: 0xffffff,
-			opacity: 0.75,
-			transparent: true,
+			color: wallConfig.material.color,
+			opacity: wallConfig.material.opacity,
+			transparent: wallConfig.material.transparent,
 		})
 	);
 
@@ -106,7 +110,7 @@ export function createBrick(Ammo, physicsEngine, options = {}) {
 	var shape = new Ammo.btBoxShape(
 		new Ammo.btVector3(sx * 0.5, sy * 0.5, sz * 0.5)
 	);
-	shape.setMargin(0.05);
+	shape.setMargin(PHYSICS_CONFIG.collisionMargin);
 
 	createBrickBody(Ammo, physicsEngine, threeObject, shape, mass, pos, quat);
 
@@ -221,7 +225,7 @@ export function wallOfBricks(Ammo, physicsEngine, options = {}) {
 				pos: pos.clone(),
 				quat: quat.clone(),
 				material: new THREE.MeshStandardMaterial({
-					map: loader.load(stoneTexture),
+					map: loadTexture(loader, stoneTexture),
 				}),
 			});
 			brick.castShadow = true;

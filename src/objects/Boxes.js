@@ -4,6 +4,8 @@
 import * as THREE from "three";
 import { scene, manager } from "../resources/world";
 import { addRigidPhysics } from "./PhysicsHelpers";
+import { OBJECTS_CONFIG } from "../config";
+import { loadTexture } from "../utils/textureLoader";
 
 // 注意：cursorHoverObjects 需要从外部传入，避免循环依赖
 
@@ -36,13 +38,12 @@ export function createBox(
 
 	const boxScale = { x: scaleX, y: scaleY, z: scaleZ };
 	let quat = { x: 0, y: 0, z: 0, w: 1 };
+	const boxConfig = OBJECTS_CONFIG.box;
 	let mass = 0; // 质量为 0 表示静态物体
 
 	// 加载链接 logo
 	const loader = new THREE.TextureLoader(manager);
-	const texture = loader.load(boxTexture);
-	texture.magFilter = THREE.LinearFilter;
-	texture.minFilter = THREE.LinearFilter;
+	const texture = loadTexture(loader, boxTexture);
 	texture.encoding = THREE.sRGBEncoding;
 	const loadedTexture = new THREE.MeshBasicMaterial({
 		map: texture,
@@ -51,7 +52,7 @@ export function createBox(
 	});
 
 	var borderMaterial = new THREE.MeshBasicMaterial({
-		color: color,
+		color: color !== undefined ? color : boxConfig.defaultColor,
 	});
 	borderMaterial.color.convertSRGBToLinear();
 
