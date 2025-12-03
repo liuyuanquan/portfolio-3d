@@ -7,6 +7,39 @@
 
 ## [未发布]
 
+## [1.2.7] - 2025-12-04
+
+### 重构
+
+- **配置模块 TypeScript 迁移**
+  - 将 `src/config/` 目录下的所有文件从 JavaScript 迁移到 TypeScript
+  - `gameplay.js` → `gameplay.ts`，使用 `as const` + `typeof` 简化类型定义
+  - `objects.js` → `objects.ts`，自动推导类型
+  - `physics.js` → `physics.ts`，自动推导类型
+  - `positions.js` → `positions.ts`，自动推导类型
+  - `scene.js` → `scene.ts`，自动推导类型
+  - `index.js` → `index.ts`，统一导出接口和类型
+  - 所有配置文件现在都提供完整的类型支持
+
+### 优化
+
+- **用户体验优化**
+  - 页面加载完成后自动点击开始按钮，无需手动点击
+  - 改进启动流程，提供更流畅的体验
+
+- **代码清理**
+  - 删除未使用的 `skip-link` 元素（无障碍访问功能）
+  - 删除未使用的 `tooltip` 元素和相关 CSS 样式
+  - 清理无用代码，减少 DOM 元素
+
+### 变更
+
+- `src/config/` 目录现在完全使用 TypeScript
+- 所有配置常量使用 `as const` 确保类型安全和不可变性
+- 通过 `typeof` 自动推导类型，减少重复代码
+- `index.html` 移除未使用的元素
+- `public/css/style.css` 移除 tooltip 样式
+
 ## [1.2.6] - 2025-12-04
 
 ### 优化

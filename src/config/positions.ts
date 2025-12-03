@@ -1,5 +1,6 @@
 /**
- * 场景对象位置配置
+ * 场景对象位置配置常量
+ * 使用 as const 确保类型安全，并通过 typeof 导出类型
  */
 export const POSITIONS_CONFIG = {
 	// 墙壁位置
@@ -99,4 +100,11 @@ export const POSITIONS_CONFIG = {
 		{ x: 63, z: -47 },
 		{ x: 63, z: -43 },
 	],
-};
+} as const;
+
+/**
+ * 位置配置类型
+ * 从常量自动推导类型，无需手动定义接口
+ */
+export type PositionsConfig = typeof POSITIONS_CONFIG;
+

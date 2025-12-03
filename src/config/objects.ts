@@ -1,5 +1,6 @@
 /**
- * 对象默认配置
+ * 对象默认配置常量
+ * 使用 as const 确保类型安全，并通过 typeof 导出类型
  */
 export const OBJECTS_CONFIG = {
 	// 球体配置
@@ -148,4 +149,10 @@ export const OBJECTS_CONFIG = {
 		rotationX: -Math.PI * 0.5,
 		positionY: 0.01,
 	},
-};
+} as const;
+
+/**
+ * 对象配置类型
+ * 从常量自动推导类型，无需手动定义接口
+ */
+export type ObjectsConfig = typeof OBJECTS_CONFIG;

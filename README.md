@@ -72,13 +72,13 @@ portfolio-3d/
 │   ├── img/         # 图片资源
 │   └── json/        # JSON 文件（字体等）
 ├── src/             # 源代码
-│   ├── config/      # 配置管理模块
-│   │   ├── physics.js    # 物理引擎配置
-│   │   ├── scene.js      # 场景配置
-│   │   ├── objects.js    # 对象默认配置
-│   │   ├── gameplay.js   # 游戏玩法配置
-│   │   ├── positions.js  # 场景对象位置配置
-│   │   └── index.js      # 统一导出
+│   ├── config/      # 配置管理模块（TypeScript）
+│   │   ├── physics.ts    # 物理引擎配置
+│   │   ├── scene.ts      # 场景配置
+│   │   ├── objects.ts    # 对象默认配置
+│   │   ├── gameplay.ts   # 游戏玩法配置
+│   │   ├── positions.ts  # 场景对象位置配置
+│   │   └── index.ts      # 统一导出
 │   ├── core/        # 核心模块
 │   │   ├── PhysicsEngine.js  # 物理引擎管理类
 │   │   └── GameLoop.js       # 游戏主循环管理类

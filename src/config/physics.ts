@@ -1,5 +1,6 @@
 /**
- * 物理引擎配置
+ * 物理引擎配置常量
+ * 使用 as const 确保类型安全，并通过 typeof 导出类型
  */
 export const PHYSICS_CONFIG = {
 	// 重力配置
@@ -37,4 +38,11 @@ export const PHYSICS_CONFIG = {
 	collisionFlags: {
 		static: 2,
 	},
-};
+} as const;
+
+/**
+ * 物理引擎配置类型
+ * 从常量自动推导类型，无需手动定义接口
+ */
+export type PhysicsConfig = typeof PHYSICS_CONFIG;
+

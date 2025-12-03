@@ -76,14 +76,6 @@
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
 	</head>
 	<body id="document-body">
-		<!-- Skip to main content for accessibility -->
-		<a
-			href="#WEBGLcontainer"
-			class="skip-link"
-			style="position: absolute; left: -9999px; z-index: 999"
-			>Skip to main content</a
-		>
-
 		<div id="WEBGLcontainer" role="main" aria-label="3D Portfolio Scene"></div>
 		<div id="joystick-wrapper" aria-label="Joystick controls"></div>
 		<div class="fadeOutDiv preload-overlay" id="preload-overlay">
@@ -104,12 +96,11 @@
 				<div class="circle preload"></div>
 				<div class="circle preload"></div>
 			</div>
+			<div class="loading-text-div preload">
+				Loading<span class="loader__dot">.</span
+				><span class="loader__dot">.</span><span class="loader__dot">.</span>
+			</div>
 		</div>
-		<div class="loading-text-div preload">
-			Loading<span class="loader__dot">.</span><span class="loader__dot">.</span
-			><span class="loader__dot">.</span>
-		</div>
-		<div id="tooltip"></div>
 		<script src="/ammo/ammo.js"></script>
 		<script type="module" src="/src/app.js"></script>
 	</body>

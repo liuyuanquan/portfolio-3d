@@ -1,5 +1,6 @@
 /**
- * 游戏玩法配置
+ * 游戏玩法配置常量
+ * 使用 as const 确保类型安全，并通过 typeof 导出类型
  */
 export const GAMEPLAY_CONFIG = {
 	// 球体移动配置
@@ -46,4 +47,10 @@ export const GAMEPLAY_CONFIG = {
 		defaultScale: { x: 0.1, y: 0.1, z: 0.1 },
 		mass: 0,
 	},
-};
+} as const;
+
+/**
+ * 游戏玩法配置类型
+ * 从常量自动推导类型，无需手动定义接口
+ */
+export type GameplayConfig = typeof GAMEPLAY_CONFIG;

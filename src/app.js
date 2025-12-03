@@ -236,6 +236,10 @@ Ammo().then((Ammo) => {
 					postloadDivs[i].style.visibility = "visible"; // or
 					postloadDivs[i].style.display = "block";
 				}
+				// 页面加载完成后，延迟 1 秒自动点击开始按钮
+				setTimeout(() => {
+					startButton.click();
+				}, 0);
 			}
 		}, 1000);
 		//console.log("Loading complete");

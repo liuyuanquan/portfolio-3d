@@ -1,5 +1,6 @@
 /**
- * 场景配置
+ * 场景配置常量
+ * 使用 as const 确保类型安全，并通过 typeof 导出类型
  */
 export const SCENE_CONFIG = {
 	// 场景背景色
@@ -58,4 +59,10 @@ export const SCENE_CONFIG = {
 			enabled: true,
 		},
 	},
-};
+} as const;
+
+/**
+ * 场景配置类型
+ * 从常量自动推导类型，无需手动定义接口
+ */
+export type SceneConfig = typeof SCENE_CONFIG;
