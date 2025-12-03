@@ -114,7 +114,13 @@ git commit -m "fix bug"      # 缺少作用域和详细描述
 1. 构建项目
 2. 部署到 GitHub Pages
 
-访问地址：https://liuyuanquan.github.io/portfolio-3d/
+**访问地址：** https://liuyuanquan.github.io/portfolio-3d/
+
+### 部署步骤
+
+1. 前往 GitHub 仓库设置：https://github.com/liuyuanquan/portfolio-3d/settings/pages
+2. 在 Source 中选择 **GitHub Actions**
+3. 保存设置后，每次推送到 `main` 分支都会自动部署
 
 ### 手动部署
 
