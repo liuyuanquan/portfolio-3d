@@ -2,13 +2,17 @@
  * 物理引擎管理类
  * 封装 Ammo.js 物理世界的创建、管理和更新逻辑
  */
+import { PHYSICS_CONFIG } from "../config";
+
 export class PhysicsEngine {
 	constructor(Ammo) {
 		this.Ammo = Ammo;
 		this.physicsWorld = null;
 		this.rigidBodies = [];
 		this.tmpTrans = new Ammo.btTransform();
-		this.STATE = { DISABLE_DEACTIVATION: 4 };
+		this.STATE = {
+			DISABLE_DEACTIVATION: PHYSICS_CONFIG.state.DISABLE_DEACTIVATION,
+		};
 	}
 
 	/**
@@ -17,7 +21,7 @@ export class PhysicsEngine {
 	 * @param {Object} options.gravity - 重力向量 {x, y, z}
 	 */
 	createWorld(options = {}) {
-		const { gravity = { x: 0, y: -50, z: 0 } } = options;
+		const { gravity = PHYSICS_CONFIG.gravity } = options;
 
 		// 碰撞检测配置
 		const collisionConfiguration =

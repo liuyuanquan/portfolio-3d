@@ -3,6 +3,7 @@
  */
 import * as THREE from "three";
 import { scene, manager } from "../resources/world";
+import { OBJECTS_CONFIG } from "../config";
 
 const BASE_URL = import.meta.env.BASE_URL;
 
@@ -12,12 +13,13 @@ const BASE_URL = import.meta.env.BASE_URL;
  * @returns {Promise<THREE.Mesh>} 文字对象
  */
 export function loadFloydText(options = {}) {
+	const floydConfig = OBJECTS_CONFIG.text.floyd;
 	const {
-		text = "0xFloyd",
-		color = 0xfffc00,
-		size = 3,
-		height = 0.5,
-		position = { x: 0, y: 0.1, z: -20 },
+		text = floydConfig.text,
+		color = floydConfig.color,
+		size = floydConfig.size,
+		height = floydConfig.height,
+		position = floydConfig.position,
 	} = options;
 
 	return new Promise((resolve) => {
@@ -31,23 +33,24 @@ export function loadFloydText(options = {}) {
 				new THREE.MeshPhongMaterial({ color: color }), // side
 			];
 
+			const geometryConfig = floydConfig.geometry;
 			var geometry = new THREE.TextGeometry(text, {
 				font: font,
 				size: size,
 				height: height,
-				curveSegments: 12,
-				bevelEnabled: true,
-				bevelThickness: 0.1,
-				bevelSize: 0.11,
-				bevelOffset: 0,
-				bevelSegments: 1,
+				curveSegments: geometryConfig.curveSegments,
+				bevelEnabled: geometryConfig.bevelEnabled,
+				bevelThickness: geometryConfig.bevelThickness,
+				bevelSize: geometryConfig.bevelSize,
+				bevelOffset: geometryConfig.bevelOffset,
+				bevelSegments: geometryConfig.bevelSegments,
 			});
 
 			geometry.computeBoundingBox();
 			geometry.computeVertexNormals();
 
 			xMid =
-				-0.15 *
+				floydConfig.translateX *
 				(geometry.boundingBox.max.x - geometry.boundingBox.min.x);
 
 			geometry.translate(xMid, 0, 0);
@@ -73,18 +76,20 @@ export function loadFloydText(options = {}) {
  * @returns {Promise<THREE.Mesh>} 文字对象
  */
 export function loadEngineerText(options = {}) {
+	const engineerConfig = OBJECTS_CONFIG.text.engineer;
 	const {
-		text = "SOFTWARE ENGINEER",
-		color = 0x00ff08,
-		size = 1.5,
-		height = 0.5,
-		position = { x: 24, y: 0.1, z: -20 },
+		text = engineerConfig.text,
+		color = engineerConfig.color,
+		size = engineerConfig.size,
+		height = engineerConfig.height,
+		position = engineerConfig.position,
 	} = options;
 
 	return new Promise((resolve) => {
 		var text_loader = new THREE.FontLoader();
 
-		text_loader.load(`${BASE_URL}json/Roboto_Regular.json`, function (font) {
+		const fontPath = OBJECTS_CONFIG.text.font;
+		text_loader.load(`${BASE_URL}${fontPath}`, function (font) {
 			var xMid, textMesh;
 
 			var textMaterials = [
@@ -92,21 +97,22 @@ export function loadEngineerText(options = {}) {
 				new THREE.MeshPhongMaterial({ color: color }), // side
 			];
 
+			const geometryConfig = engineerConfig.geometry;
 			var geometry = new THREE.TextGeometry(text, {
 				font: font,
 				size: size,
 				height: height,
-				curveSegments: 20,
-				bevelEnabled: true,
-				bevelThickness: 0.25,
-				bevelSize: 0.1,
+				curveSegments: geometryConfig.curveSegments,
+				bevelEnabled: geometryConfig.bevelEnabled,
+				bevelThickness: geometryConfig.bevelThickness,
+				bevelSize: geometryConfig.bevelSize,
 			});
 
 			geometry.computeBoundingBox();
 			geometry.computeVertexNormals();
 
 			xMid =
-				-0.5 *
+				engineerConfig.translateX *
 				(geometry.boundingBox.max.x - geometry.boundingBox.min.x);
 
 			geometry.translate(xMid, 0, 0);

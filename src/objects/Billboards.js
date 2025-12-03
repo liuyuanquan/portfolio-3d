@@ -5,6 +5,8 @@ import * as THREE from "three";
 import { scene, manager } from "../resources/world";
 import { addRigidPhysics } from "./PhysicsHelpers";
 import { woodTexture } from "../resources/textures";
+import { OBJECTS_CONFIG } from "../config";
+import { loadTexture } from "../utils/textureLoader";
 
 // 注意：cursorHoverObjects 需要从外部传入，避免循环依赖
 
@@ -16,6 +18,7 @@ import { woodTexture } from "../resources/textures";
  * @returns {Object} 包含 pole 和 sign 的对象
  */
 export function createBillboard(Ammo, physicsEngine, options = {}) {
+	const billboardConfig = OBJECTS_CONFIG.billboard.horizontal;
 	const {
 		x,
 		y,
@@ -23,8 +26,8 @@ export function createBillboard(Ammo, physicsEngine, options = {}) {
 		textureImage,
 		urlLink,
 		rotation = 0,
-		poleScale = { x: 1, y: 5, z: 1 },
-		signScale = { x: 30, y: 15, z: 1 },
+		poleScale = billboardConfig.poleScale,
+		signScale = billboardConfig.signScale,
 	} = options;
 
 	const loader = new THREE.TextureLoader(manager);
@@ -32,13 +35,11 @@ export function createBillboard(Ammo, physicsEngine, options = {}) {
 	const billboardPole = new THREE.Mesh(
 		new THREE.BoxBufferGeometry(poleScale.x, poleScale.y, poleScale.z),
 		new THREE.MeshStandardMaterial({
-			map: loader.load(woodTexture),
+			map: loadTexture(loader, woodTexture),
 		})
 	);
 
-	const texture = loader.load(textureImage);
-	texture.magFilter = THREE.LinearFilter;
-	texture.minFilter = THREE.LinearFilter;
+	const texture = loadTexture(loader, textureImage);
 	texture.encoding = THREE.sRGBEncoding;
 	var borderMaterial = new THREE.MeshBasicMaterial({
 		color: 0x000000,
@@ -66,7 +67,7 @@ export function createBillboard(Ammo, physicsEngine, options = {}) {
 	billboardPole.position.z = z;
 
 	billboardSign.position.x = x;
-	billboardSign.position.y = y + 10;
+	billboardSign.position.y = y + billboardConfig.signOffsetY;
 	billboardSign.position.z = z;
 
 	/* Rotate Billboard */
@@ -99,6 +100,7 @@ export function createBillboard(Ammo, physicsEngine, options = {}) {
  * @returns {Object} 包含 pole 和 sign 的对象
  */
 export function createBillboardRotated(Ammo, physicsEngine, options = {}) {
+	const billboardConfig = OBJECTS_CONFIG.billboard.vertical;
 	const {
 		x,
 		y,
@@ -106,20 +108,18 @@ export function createBillboardRotated(Ammo, physicsEngine, options = {}) {
 		textureImage,
 		urlLink,
 		rotation = 0,
-		poleScale = { x: 1, y: 2.5, z: 1 },
-		signScale = { x: 15, y: 20, z: 1 },
+		poleScale = billboardConfig.poleScale,
+		signScale = billboardConfig.signScale,
 	} = options;
 
 	const loader = new THREE.TextureLoader(manager);
 	const billboardPole = new THREE.Mesh(
 		new THREE.BoxBufferGeometry(poleScale.x, poleScale.y, poleScale.z),
 		new THREE.MeshStandardMaterial({
-			map: loader.load(woodTexture),
+			map: loadTexture(loader, woodTexture),
 		})
 	);
-	const texture = loader.load(textureImage);
-	texture.magFilter = THREE.LinearFilter;
-	texture.minFilter = THREE.LinearFilter;
+	const texture = loadTexture(loader, textureImage);
 	texture.encoding = THREE.sRGBEncoding;
 	var borderMaterial = new THREE.MeshBasicMaterial({
 		color: 0x000000,
@@ -147,7 +147,7 @@ export function createBillboardRotated(Ammo, physicsEngine, options = {}) {
 	billboardPole.position.z = z;
 
 	billboardSign.position.x = x;
-	billboardSign.position.y = y + 11.25;
+	billboardSign.position.y = y + billboardConfig.signOffsetY;
 	billboardSign.position.z = z;
 
 	/* Rotate Billboard */

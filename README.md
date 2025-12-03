@@ -72,6 +72,13 @@ portfolio-3d/
 │   ├── img/         # 图片资源
 │   └── json/        # JSON 文件（字体等）
 ├── src/             # 源代码
+│   ├── config/      # 配置管理模块
+│   │   ├── physics.js    # 物理引擎配置
+│   │   ├── scene.js      # 场景配置
+│   │   ├── objects.js    # 对象默认配置
+│   │   ├── gameplay.js   # 游戏玩法配置
+│   │   ├── positions.js  # 场景对象位置配置
+│   │   └── index.js      # 统一导出
 │   ├── core/        # 核心模块
 │   │   └── PhysicsEngine.js  # 物理引擎管理类
 │   ├── objects/     # 对象创建模块
@@ -85,6 +92,8 @@ portfolio-3d/
 │   │   ├── PhysicsHelpers.js # 物理辅助函数
 │   │   └── index.js          # 统一导出
 │   ├── resources/   # 资源管理模块
+│   ├── utils/        # 工具函数模块
+│   │   └── textureLoader.js  # 纹理加载辅助函数
 │   ├── shaders/     # GLSL 着色器文件
 │   ├── app.js       # 主应用入口
 │   └── WebGL.js     # WebGL 检测模块

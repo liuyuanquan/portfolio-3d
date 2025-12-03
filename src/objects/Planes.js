@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { scene, manager } from "../resources/world";
 import { PhysicsEngine } from "../core/PhysicsEngine";
 import { addRigidPhysics } from "./PhysicsHelpers";
+import { OBJECTS_CONFIG, PHYSICS_CONFIG } from "../config";
 
 /**
  * 创建网格平面
@@ -14,29 +15,32 @@ import { addRigidPhysics } from "./PhysicsHelpers";
  * @returns {THREE.Mesh} 平面对象
  */
 export function createGridPlane(Ammo, physicsEngine, options = {}) {
+	const planeConfig = OBJECTS_CONFIG.plane;
 	const {
-		pos = { x: 0, y: -0.25, z: 0 },
-		scale = { x: 175, y: 0.5, z: 175 },
-		quat = { x: 0, y: 0, z: 0, w: 1 },
-		mass = 0, // 质量为 0 表示静态物体
-		size = 175,
-		divisions = 20,
+		pos = planeConfig.position,
+		scale = planeConfig.scale,
+		quat = planeConfig.quaternion,
+		mass = planeConfig.mass,
+		size = planeConfig.size,
+		divisions = planeConfig.divisions,
 	} = options;
 
 	// 创建网格覆盖层
-	var grid = new THREE.GridHelper(size, divisions, 0xffffff, 0xffffff);
-	grid.material.opacity = 0.5;
+	const gridConfig = planeConfig.grid;
+	var grid = new THREE.GridHelper(size, divisions, gridConfig.color1, gridConfig.color2);
+	grid.material.opacity = gridConfig.opacity;
 	grid.material.transparent = true;
-	grid.position.y = 0.005;
+	grid.position.y = gridConfig.positionY;
 	scene.add(grid);
 
 	// 创建 Three.js 平面
+	const materialConfig = planeConfig.material;
 	let blockPlane = new THREE.Mesh(
 		new THREE.BoxBufferGeometry(),
 		new THREE.MeshPhongMaterial({
-			color: 0xffffff,
-			transparent: true,
-			opacity: 0.25,
+			color: materialConfig.color,
+			transparent: materialConfig.transparent,
+			opacity: materialConfig.opacity,
 		})
 	);
 	blockPlane.position.set(pos.x, pos.y, pos.z);
@@ -57,7 +61,7 @@ export function createGridPlane(Ammo, physicsEngine, options = {}) {
 	let colShape = new Ammo.btBoxShape(
 		new Ammo.btVector3(scale.x * 0.5, scale.y * 0.5, scale.z * 0.5)
 	);
-	colShape.setMargin(0.05);
+	colShape.setMargin(PHYSICS_CONFIG.collisionMargin);
 
 	let localInertia = new Ammo.btVector3(0, 0, 0);
 	colShape.calculateLocalInertia(mass, localInertia);
@@ -69,8 +73,8 @@ export function createGridPlane(Ammo, physicsEngine, options = {}) {
 		localInertia
 	);
 	let body = new Ammo.btRigidBody(rigidBodyStruct);
-	body.setFriction(10);
-	body.setRollingFriction(10);
+	body.setFriction(PHYSICS_CONFIG.friction.plane);
+	body.setRollingFriction(PHYSICS_CONFIG.friction.rolling);
 
 	// 添加到物理世界
 	physicsEngine.addRigidBody(blockPlane, body);
