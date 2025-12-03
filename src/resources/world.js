@@ -85,7 +85,8 @@ export function createWorld() {
 
 export function glowingParticles() {
   var particleTextureLoader = new THREE.TextureLoader(manager);
-  var particleTexture = particleTextureLoader.load('/img/spark.png');
+  const BASE_URL = import.meta.env.BASE_URL;
+  var particleTexture = particleTextureLoader.load(`${BASE_URL}img/spark.png`);
 
   particleGroup = new THREE.Object3D();
   particleGroup.position.x = -1;

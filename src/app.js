@@ -171,8 +171,9 @@ Ammo().then((Ammo) => {
 		let quat = { x: 0, y: 0, z: 0, w: 1 };
 		let mass = 3;
 
+		const BASE_URL = import.meta.env.BASE_URL;
 		var marble_loader = new THREE.TextureLoader(manager);
-		var marbleTexture = marble_loader.load("/img/earth.jpg");
+		var marbleTexture = marble_loader.load(`${BASE_URL}img/earth.jpg`);
 		marbleTexture.wrapS = marbleTexture.wrapT = THREE.RepeatWrapping;
 		marbleTexture.repeat.set(1, 1);
 		marbleTexture.anisotropy = 1;
@@ -243,8 +244,9 @@ Ammo().then((Ammo) => {
 		let mass = 20;
 
 		//import beach ball texture
+		const BASE_URL = import.meta.env.BASE_URL;
 		var texture_loader = new THREE.TextureLoader(manager);
-		var beachTexture = texture_loader.load("/img/BeachBallColor.jpg");
+		var beachTexture = texture_loader.load(`${BASE_URL}img/BeachBallColor.jpg`);
 		beachTexture.wrapS = beachTexture.wrapT = THREE.RepeatWrapping;
 		beachTexture.repeat.set(1, 1);
 		beachTexture.anisotropy = 1;
@@ -374,9 +376,10 @@ Ammo().then((Ammo) => {
 
 	//loads text for Floyd Mesh
 	function loadFloydText() {
+		const BASE_URL = import.meta.env.BASE_URL;
 		var text_loader = new THREE.FontLoader();
 
-		text_loader.load("/json/Roboto_Regular.json", function (font) {
+		text_loader.load(`${BASE_URL}json/Roboto_Regular.json`, function (font) {
 			var xMid, text;
 
 			var color = 0xfffc00;
@@ -418,9 +421,10 @@ Ammo().then((Ammo) => {
 
 	//create "software engineer text"
 	function loadEngineerText() {
+		const BASE_URL = import.meta.env.BASE_URL;
 		var text_loader = new THREE.FontLoader();
 
-		text_loader.load("/json/Roboto_Regular.json", function (font) {
+		text_loader.load(`${BASE_URL}json/Roboto_Regular.json`, function (font) {
 			var xMid, text;
 
 			var color = 0x00ff08;

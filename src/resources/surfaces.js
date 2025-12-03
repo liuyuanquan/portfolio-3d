@@ -1,10 +1,12 @@
 import * as THREE from "three";
 import { scene, manager } from "./world";
 
+const BASE_URL = import.meta.env.BASE_URL;
+
 export function simpleText(x, y, z, inputText, fontSize) {
   var text_loader = new THREE.FontLoader();
 
-  text_loader.load("/json/Roboto_Regular.json", function (font) {
+  text_loader.load(`${BASE_URL}json/Roboto_Regular.json`, function (font) {
     var xMid, text;
 
     var color = 0xffffff;
@@ -43,7 +45,7 @@ export function simpleText(x, y, z, inputText, fontSize) {
 export function floatingLabel(x, y, z, inputMessage) {
   var text_loader = new THREE.FontLoader();
 
-  text_loader.load("/json/Roboto_Regular.json", function (font) {
+  text_loader.load(`${BASE_URL}json/Roboto_Regular.json`, function (font) {
     var xMid, text;
 
     var color = 0xffffff;
