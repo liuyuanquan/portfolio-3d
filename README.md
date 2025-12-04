@@ -98,10 +98,8 @@ portfolio-3d/
 │   ├── resources/   # 资源管理模块（TypeScript）
 │   │   ├── world.ts         # 场景、相机、渲染器初始化
 │   │   ├── surfaces.ts      # 表面和文本创建
-│   │   ├── cameraUtils.ts   # 相机控制和交互工具
-│   │   ├── eventHandlers.ts # 事件处理
-│   │   ├── preload.ts       # 预加载管理
-│   │   └── textures.ts      # 纹理资源管理（已移至 config/resources.ts）
+│   │   ├── cameraUtils.ts   # 相机控制和交互工具（包含交互对象管理）
+│   │   └── eventHandlers.ts # 事件处理
 │   ├── utils/        # 工具函数模块（TypeScript）
 │   │   ├── textureLoader.ts  # 纹理加载辅助函数
 │   │   ├── math.ts          # 数学工具函数

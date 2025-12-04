@@ -88,11 +88,18 @@ select {
 	transform: translateX(-50%);
 	text-align: center;
 	border-radius: 100%;
-	display: flex; /* [1] */
-	justify-content: center; /* [2] */
+	justify-content: center;
 	align-items: center;
-	visibility: hidden;
 	opacity: 1;
+	/* 默认隐藏，触摸设备通过媒体查询显示 */
+	display: none;
+}
+
+/* 触摸设备显示摇杆 */
+@media (hover: none) and (pointer: coarse) {
+	#joystick-wrapper {
+		display: flex;
+	}
 }
 
 #joystick {

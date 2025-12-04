@@ -13,28 +13,11 @@ import { loadTexture } from "../utils/textureLoader";
  * 创建链接盒子
  * @param {Object} Ammo - Ammo.js 实例
  * @param {PhysicsEngine} physicsEngine - 物理引擎实例
- * @param {Array} objectsWithLinks - 链接对象数组
  * @param {Object} options - 配置选项
  * @returns {THREE.Mesh} 盒子对象
  */
-export function createBox(
-	Ammo,
-	physicsEngine,
-	objectsWithLinks,
-	options = {}
-) {
-	const {
-		x,
-		y,
-		z,
-		scaleX,
-		scaleY,
-		scaleZ,
-		boxTexture,
-		URLLink,
-		color = 0x000000,
-		transparent = true,
-	} = options;
+export function createBox(Ammo, physicsEngine, options = {}) {
+	const { x, y, z, scaleX, scaleY, scaleZ, boxTexture, URLLink, color = 0x000000, transparent = true } = options;
 
 	const boxScale = { x: scaleX, y: scaleY, z: scaleZ };
 	let quat = { x: 0, y: 0, z: 0, w: 1 };
@@ -65,17 +48,13 @@ export function createBox(
 		borderMaterial, // Back side
 	];
 
-	const linkBox = new THREE.Mesh(
-		new THREE.BoxBufferGeometry(boxScale.x, boxScale.y, boxScale.z),
-		materials
-	);
+	const linkBox = new THREE.Mesh(new THREE.BoxBufferGeometry(boxScale.x, boxScale.y, boxScale.z), materials);
 	linkBox.position.set(x, y, z);
 	linkBox.renderOrder = 1;
 	linkBox.castShadow = true;
 	linkBox.receiveShadow = true;
 	linkBox.userData = { URL: URLLink, email: URLLink };
 	scene.add(linkBox);
-	objectsWithLinks.push(linkBox.uuid);
 
 	addRigidPhysics(Ammo, physicsEngine, linkBox, boxScale);
 
@@ -89,23 +68,11 @@ export function createBox(
  * 创建 Floyd 文字盒子（"Software Engineer" 背景）
  * @param {Object} Ammo - Ammo.js 实例
  * @param {PhysicsEngine} physicsEngine - 物理引擎实例
- * @param {Array} objectsWithLinks - 链接对象数组
  * @param {Object} options - 配置选项
  * @returns {THREE.Mesh} 盒子对象
  */
-export function floydWords(
-	Ammo,
-	physicsEngine,
-	objectsWithLinks,
-	options = {}
-) {
-	const {
-		x,
-		y,
-		z,
-		scale = { x: 37, y: 3, z: 2 },
-		color = 0xff6600,
-	} = options;
+export function floydWords(Ammo, physicsEngine, options = {}) {
+	const { x, y, z, scale = { x: 37, y: 3, z: 2 }, color = 0xff6600 } = options;
 
 	const linkBox = new THREE.Mesh(
 		new THREE.BoxBufferGeometry(scale.x, scale.y, scale.z),
@@ -117,10 +84,8 @@ export function floydWords(
 	linkBox.position.set(x, y, z);
 	linkBox.castShadow = true;
 	linkBox.receiveShadow = true;
-	objectsWithLinks.push(linkBox.uuid);
 
 	addRigidPhysics(Ammo, physicsEngine, linkBox, scale);
 
 	return linkBox;
 }
-

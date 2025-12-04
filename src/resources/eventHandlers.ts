@@ -59,8 +59,9 @@ const KEY_MAP: Record<string, keyof MoveDirection> = {
 
 /**
  * 重置所有移动方向为 0
+ * 当窗口失去焦点时调用，避免切换标签页后球体继续移动
  */
-function resetMoveDirection(): void {
+export function resetMoveDirection(): void {
 	moveDirection.forward = 0;
 	moveDirection.left = 0;
 	moveDirection.right = 0;
@@ -73,6 +74,7 @@ function resetMoveDirection(): void {
  * 注册键盘事件监听器：
  * - keydown: 按键按下时触发
  * - keyup: 按键释放时触发
+ * - blur: 窗口失去焦点时触发（重置移动方向）
  *
  * 支持的按键：
  * - W / 上箭头：前进
@@ -83,6 +85,8 @@ function resetMoveDirection(): void {
 export function setupEventHandlers(): void {
 	window.addEventListener("keydown", handleKeyDown, false);
 	window.addEventListener("keyup", handleKeyUp, false);
+	// 窗口失去焦点时重置移动方向，避免切换标签页后球体继续移动
+	window.addEventListener("blur", resetMoveDirection, false);
 }
 
 /**

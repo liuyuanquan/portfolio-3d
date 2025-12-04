@@ -7,6 +7,35 @@
 
 ## [未发布]
 
+## [1.2.11] - 2025-01-04
+
+### 重构
+
+- **交互对象管理优化**
+  - 将 `cursorHoverObjects` 从 `app.ts` 提取到 `cameraUtils.ts`，统一管理交互对象
+  - 删除未使用的 `objectsWithLinks` 数组及其相关代码，简化代码结构
+  - 删除独立的 `interactiveObjects.ts` 模块，减少不必要的抽象层
+
+- **代码简化**
+  - 将 `onRender` 函数内联为箭头函数，减少不必要的函数封装
+  - 优化摇杆初始化逻辑，将代码移到 `start()` 函数内部，确保在游戏初始化完成后执行
+
+### 优化
+
+- **摇杆显示优化**
+  - 使用 CSS 媒体查询 `@media (hover: none) and (pointer: coarse)` 自动显示/隐藏摇杆
+  - 移除 JavaScript 中的 `visibility` 设置，由 CSS 统一管理显示逻辑
+  - 删除无效的 `appDirections` 元素相关代码
+
+### 变更
+
+- `src/app.ts` 删除 `objectsWithLinks` 变量和 `onRender` 函数
+- `src/app.ts` 摇杆初始化移到 `start()` 函数内部
+- `src/objects/Boxes.js` 删除 `objectsWithLinks` 参数
+- `src/resources/cameraUtils.ts` 添加 `cursorHoverObjects` 数组导出
+- `src/resources/interactiveObjects.ts` 文件已删除
+- `public/css/style.css` 添加触摸设备媒体查询，自动显示摇杆
+
 ## [1.2.10] - 2025-01-04
 
 ### 重构

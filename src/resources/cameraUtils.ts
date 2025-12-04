@@ -10,7 +10,6 @@
  */
 import * as THREE from "three";
 import { camera, renderer, scene } from "./world";
-import { cursorHoverObjects } from "../app.js";
 import { CAMERA_CONFIG, AREA_BOUNDS } from "../config/camera";
 
 /**
@@ -20,26 +19,23 @@ import { CAMERA_CONFIG, AREA_BOUNDS } from "../config/camera";
 export const pickPosition: { x: number; y: number } = { x: 0, y: 0 };
 
 /**
+ * 可交互对象数组（用于鼠标悬停检测）
+ * 存储所有可点击的 3D 对象的引用
+ */
+export const cursorHoverObjects: THREE.Object3D[] = [];
+
+/**
  * 检查点是否在区域内
  */
 function isInArea1(position: THREE.Vector3): boolean {
 	return AREA_BOUNDS.area1.some(
-		(bounds) =>
-			position.x >= bounds.x[0] &&
-			position.x <= bounds.x[1] &&
-			position.z >= bounds.z[0] &&
-			position.z <= bounds.z[1]
+		(bounds) => position.x >= bounds.x[0] && position.x <= bounds.x[1] && position.z >= bounds.z[0] && position.z <= bounds.z[1]
 	);
 }
 
 function isInArea2(position: THREE.Vector3): boolean {
 	const bounds = AREA_BOUNDS.area2;
-	return (
-		position.x > bounds.x[0] &&
-		position.x < bounds.x[1] &&
-		position.z > bounds.z[0] &&
-		position.z < bounds.z[1]
-	);
+	return position.x > bounds.x[0] && position.x < bounds.x[1] && position.z > bounds.z[0] && position.z < bounds.z[1];
 }
 
 function isInArea3(position: THREE.Vector3): boolean {
@@ -59,15 +55,9 @@ function isInArea3(position: THREE.Vector3): boolean {
  *
  * @param ballPosition - 球体的位置对象（THREE.Object3D 或包含 position 的对象）
  */
-export function rotateCamera(
-	ballPosition: THREE.Object3D | { position: THREE.Vector3 }
-): void {
+export function rotateCamera(ballPosition: THREE.Object3D | { position: THREE.Vector3 }): void {
 	// 当前相机位置
-	const camPos = new THREE.Vector3(
-		camera.position.x,
-		camera.position.y,
-		camera.position.z
-	);
+	const camPos = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
 
 	// 目标相机位置
 	let targetPos: THREE.Vector3;
@@ -76,35 +66,19 @@ export function rotateCamera(
 
 	// 区域 1：项目展示区域
 	if (isInArea1(pos)) {
-		targetPos = new THREE.Vector3(
-			pos.x,
-			pos.y + CAMERA_CONFIG.area1.offsetY,
-			pos.z + CAMERA_CONFIG.area1.offsetZ
-		);
+		targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.area1.offsetY, pos.z + CAMERA_CONFIG.area1.offsetZ);
 	}
 	// 区域 2：技能展示区域
 	else if (isInArea2(pos)) {
-		targetPos = new THREE.Vector3(
-			pos.x,
-			pos.y + CAMERA_CONFIG.area2.offsetY,
-			pos.z + CAMERA_CONFIG.area2.offsetZ
-		);
+		targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.area2.offsetY, pos.z + CAMERA_CONFIG.area2.offsetZ);
 	}
 	// 区域 3：后方区域
 	else if (isInArea3(pos)) {
-		targetPos = new THREE.Vector3(
-			pos.x,
-			pos.y + CAMERA_CONFIG.area3.offsetY,
-			pos.z + CAMERA_CONFIG.area3.offsetZ
-		);
+		targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.area3.offsetY, pos.z + CAMERA_CONFIG.area3.offsetZ);
 	}
 	// 默认位置：其他区域
 	else {
-		targetPos = new THREE.Vector3(
-			pos.x,
-			pos.y + CAMERA_CONFIG.default.offsetY,
-			pos.z + CAMERA_CONFIG.default.offsetZ
-		);
+		targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.default.offsetY, pos.z + CAMERA_CONFIG.default.offsetZ);
 	}
 
 	// 使用线性插值平滑移动相机
@@ -166,10 +140,7 @@ export function launchClickPosition(event: MouseEvent | TouchEvent): void {
 
 	// 创建光线投射器
 	const raycaster = new THREE.Raycaster();
-	raycaster.setFromCamera(
-		new THREE.Vector2(pickPosition.x, pickPosition.y),
-		camera
-	);
+	raycaster.setFromCamera(new THREE.Vector2(pickPosition.x, pickPosition.y), camera);
 
 	// 检测与场景中所有对象的交点
 	const intersectedObjects = raycaster.intersectObjects(scene.children);
@@ -197,10 +168,7 @@ export function launchHover(event: MouseEvent): void {
 	event.preventDefault();
 
 	// 将鼠标坐标转换为归一化设备坐标（NDC）
-	const mouse = new THREE.Vector2(
-		(event.clientX / window.innerWidth) * 2 - 1,
-		-(event.clientY / window.innerHeight) * 2 + 1
-	);
+	const mouse = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1);
 
 	// 创建光线投射器
 	const raycaster = new THREE.Raycaster();
@@ -209,7 +177,6 @@ export function launchHover(event: MouseEvent): void {
 	// 检测与可交互对象的交点
 	const intersects = raycaster.intersectObjects(cursorHoverObjects);
 
-		// 更新鼠标样式
-		document.body.style.cursor = intersects.length > 0 ? "pointer" : "default";
+	// 更新鼠标样式
+	document.body.style.cursor = intersects.length > 0 ? "pointer" : "default";
 }
-
