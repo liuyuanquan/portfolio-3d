@@ -7,6 +7,41 @@
 
 ## [未发布]
 
+## [1.2.10] - 2025-01-04
+
+### 重构
+
+- **主应用文件 TypeScript 迁移**
+  - 将 `src/app.js` 迁移到 TypeScript（`src/app.ts`）
+  - 添加完整的类型定义和接口
+  - 优化代码结构，移除未使用的导入
+  - 添加详细的函数注释和文档
+
+- **类型声明文件重组**
+  - 将 Ammo.js 类型声明从 `vite-env.d.ts` 提取到 `src/global.d.ts`
+  - 统一管理全局类型声明，提高代码组织性
+
+### 优化
+
+- **HTML 优化**
+  - 将所有 meta 标签内容改为英文，提升国际化支持
+  - 优化 meta 标签格式，改为单行展示，提高可读性
+  - 删除不必要的 `id="document-body"`，改用 `document.body`
+  - 删除 `referrer` meta 标签（使用浏览器默认策略）
+  - 将 `lang` 属性从 `zh-CN` 改为 `en`，与内容语言一致
+
+- **代码优化**
+  - 修复所有 TypeScript 类型错误
+  - 优化 DOM 元素访问方式，使用类型断言提高类型安全
+  - 统一代码风格和命名规范
+
+### 变更
+
+- `src/app.js` → `src/app.ts`（主应用文件 TypeScript 迁移）
+- `src/ammo.d.ts` → `src/global.d.ts`（类型声明文件重组）
+- `index.html` 所有 meta 标签内容改为英文
+- `src/resources/cameraUtils.ts` 更新为使用 `document.body` 替代 `getElementById`
+
 ## [1.2.9] - 2025-01-04
 
 ### 重构

@@ -10,7 +10,7 @@
  */
 import * as THREE from "three";
 import { camera, renderer, scene } from "./world";
-import { cursorHoverObjects } from "../app";
+import { cursorHoverObjects } from "../app.js";
 import { CAMERA_CONFIG, AREA_BOUNDS } from "../config/camera";
 
 /**
@@ -209,10 +209,7 @@ export function launchHover(event: MouseEvent): void {
 	// 检测与可交互对象的交点
 	const intersects = raycaster.intersectObjects(cursorHoverObjects);
 
-	// 更新鼠标样式
-	const body = document.getElementById("document-body");
-	if (body) {
-		body.style.cursor = intersects.length > 0 ? "pointer" : "default";
-	}
+		// 更新鼠标样式
+		document.body.style.cursor = intersects.length > 0 ? "pointer" : "default";
 }
 

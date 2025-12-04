@@ -21,6 +21,7 @@
 
 - **Three.js** - 3D 图形渲染库
 - **Ammo.js** - 物理引擎（Bullet Physics 的 JavaScript 移植版）
+- **TypeScript** - 类型安全的 JavaScript 超集
 - **JavaScript (ES Modules)** - 现代 JavaScript 模块系统
 - **Vite** - 快速的前端构建工具和开发服务器
 - **Node.js** - JavaScript 运行时环境
@@ -106,7 +107,9 @@ portfolio-3d/
 │   │   ├── math.ts          # 数学工具函数
 │   │   └── index.ts         # 统一导出
 │   ├── shaders/     # GLSL 着色器文件
-│   └── app.js       # 主应用入口
+│   ├── app.ts       # 主应用入口（TypeScript）
+│   ├── global.d.ts  # 全局类型声明
+│   └── vite-env.d.ts # Vite 环境类型声明
 ├── index.html       # HTML 入口文件
 └── vite.config.js   # Vite 配置文件
 ```

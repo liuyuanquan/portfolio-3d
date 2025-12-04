@@ -4,7 +4,6 @@
  *
  * 功能：
  * - 键盘方向键和 WASD 键控制
- * - 触摸设备检测
  * - 虚拟摇杆创建和控制（使用 nippleJS 库）
  * - 移动方向状态管理
  */
@@ -112,25 +111,6 @@ function handleKeyUp(event: KeyboardEvent): void {
 	if (direction) {
 		moveDirection[direction] = 0;
 	}
-}
-
-/**
- * 检测是否为触摸设备
- *
- * 通过多种方式检测设备是否支持触摸：
- * 1. 检查 window.ontouchstart 属性
- * 2. 检查 navigator.msPointerEnabled（Windows 8）
- * 3. 检查 document.documentElement.ontouchstart
- *
- * @returns 如果设备支持触摸，返回 true；否则返回 false
- */
-export function isTouchscreenDevice(): boolean {
-	return (
-		"ontouchstart" in window ||
-		("msPointerEnabled" in window.navigator &&
-			(window.navigator as any).msPointerEnabled) ||
-		"ontouchstart" in document.documentElement
-	);
 }
 
 /**

@@ -7,3 +7,4 @@ export {
 	getRandomInt,
 	clamp,
 } from "./math";
+export { isTouchscreenDevice } from "./device";
