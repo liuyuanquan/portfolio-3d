@@ -2,7 +2,7 @@
  * 盒子对象创建函数
  */
 import * as THREE from "three";
-import { scene, manager } from "../resources/world";
+import { scene } from "../resources/world";
 import { addRigidPhysics } from "./PhysicsHelpers";
 import { OBJECTS_CONFIG } from "../config";
 import { loadTexture } from "../utils/textureLoader";
@@ -25,9 +25,7 @@ export function createBox(Ammo, physicsEngine, options = {}) {
 	let mass = 0; // 质量为 0 表示静态物体
 
 	// 加载链接 logo
-	const loader = new THREE.TextureLoader(manager);
-	const texture = loadTexture(loader, boxTexture);
-	texture.encoding = THREE.sRGBEncoding;
+	const texture = loadTexture(boxTexture);
 	const loadedTexture = new THREE.MeshBasicMaterial({
 		map: texture,
 		transparent: transparent,
@@ -56,7 +54,7 @@ export function createBox(Ammo, physicsEngine, options = {}) {
 	linkBox.userData = { URL: URLLink, email: URLLink };
 	scene.add(linkBox);
 
-	addRigidPhysics(Ammo, physicsEngine, linkBox, boxScale);
+	addRigidPhysics(linkBox, { scale: boxScale });
 
 	// cursorHoverObjects 需要从外部传入
 	// cursorHoverObjects.push(linkBox);
@@ -85,7 +83,7 @@ export function floydWords(Ammo, physicsEngine, options = {}) {
 	linkBox.castShadow = true;
 	linkBox.receiveShadow = true;
 
-	addRigidPhysics(Ammo, physicsEngine, linkBox, scale);
+	addRigidPhysics(linkBox, { scale });
 
 	return linkBox;
 }

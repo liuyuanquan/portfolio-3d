@@ -15,7 +15,7 @@ import * as THREE from "three";
 import Stats from "stats.js";
 import galaxyVertexShader from "../shaders/vertex.glsl?raw";
 import galaxyFragmentShader from "../shaders/fragment.glsl?raw";
-import { SCENE_CONFIG, GAMEPLAY_CONFIG } from "../config";
+import { GAMEPLAY_CONFIG } from "../config";
 import { loadTexture } from "../utils/textureLoader";
 import { getRandomArbitrary } from "../utils/math";
 
@@ -222,95 +222,47 @@ export function createWorld(): void {
 
 	// 创建场景
 	scene = new THREE.Scene();
-	scene.background = new THREE.Color(SCENE_CONFIG.backgroundColor);
+	scene.background = new THREE.Color(0x000000);
 
-	// 创建相机
-	const camConfig = SCENE_CONFIG.camera;
-	camera = new THREE.PerspectiveCamera(
-		camConfig.fov,
-		window.innerWidth / window.innerHeight,
-		camConfig.near,
-		camConfig.far
-	);
-	camera.position.set(
-		camConfig.initialPosition.x,
-		camConfig.initialPosition.y,
-		camConfig.initialPosition.z
-	);
+	// 创建透视相机
+	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
+	camera.position.set(0, 30, 70);
 
 	// 创建半球光（环境光）
-	const hemiConfig = SCENE_CONFIG.hemisphereLight;
-	const hemiLight = new THREE.HemisphereLight(
-		hemiConfig.color,
-		hemiConfig.groundColor,
-		hemiConfig.intensity
-	);
-	hemiLight.color.setHSL(
-		hemiConfig.colorHSL.h,
-		hemiConfig.colorHSL.s,
-		hemiConfig.colorHSL.l
-	);
-	hemiLight.groundColor.setHSL(
-		hemiConfig.groundColorHSL.h,
-		hemiConfig.groundColorHSL.s,
-		hemiConfig.groundColorHSL.l
-	);
-	hemiLight.position.set(
-		hemiConfig.position.x,
-		hemiConfig.position.y,
-		hemiConfig.position.z
-	);
+	const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.1);
+	hemiLight.color.setHSL(0.6, 0.6, 0.6);
+	hemiLight.groundColor.setHSL(0.1, 1, 0.4);
+	hemiLight.position.set(0, 50, 0);
 	scene.add(hemiLight);
 
 	// 创建方向光（主光源）
-	const dirConfig = SCENE_CONFIG.directionalLight;
-	const dirLight = new THREE.DirectionalLight(
-		dirConfig.color,
-		dirConfig.intensity
-	);
-	dirLight.color.setHSL(
-		dirConfig.colorHSL.h,
-		dirConfig.colorHSL.s,
-		dirConfig.colorHSL.l
-	);
-	dirLight.position.set(
-		dirConfig.position.x,
-		dirConfig.position.y,
-		dirConfig.position.z
-	);
-	dirLight.position.multiplyScalar(dirConfig.multiplyScalar);
+	const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+	dirLight.color.setHSL(0.1, 1, 0.95);
+	dirLight.position.set(-10, 100, 50);
+	dirLight.position.multiplyScalar(100);
 	scene.add(dirLight);
 
 	// 配置方向光阴影
-	dirLight.castShadow = dirConfig.castShadow;
-	dirLight.shadow.mapSize.width = dirConfig.shadow.mapSize.width;
-	dirLight.shadow.mapSize.height = dirConfig.shadow.mapSize.height;
-
-	const shadowCam = dirConfig.shadow.camera;
-	dirLight.shadow.camera.left = shadowCam.left;
-	dirLight.shadow.camera.right = shadowCam.right;
-	dirLight.shadow.camera.top = shadowCam.top;
-	dirLight.shadow.camera.bottom = shadowCam.bottom;
-	dirLight.shadow.camera.far = shadowCam.far;
+	dirLight.castShadow = true;
+	dirLight.shadow.mapSize.width = 4096;
+	dirLight.shadow.mapSize.height = 4096;
+	dirLight.shadow.camera.left = -200;
+	dirLight.shadow.camera.right = 200;
+	dirLight.shadow.camera.top = 200;
+	dirLight.shadow.camera.bottom = -200;
+	dirLight.shadow.camera.far = 15000;
 
 	// 创建渲染器
-	const rendererConfig = SCENE_CONFIG.renderer;
-	renderer = new THREE.WebGLRenderer({ antialias: rendererConfig.antialias });
+	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.outputEncoding = THREE.sRGBEncoding;
+	renderer.shadowMap.enabled = true;
 	document.body.appendChild(renderer.domElement);
 
 	// 创建性能统计
 	stats = new Stats();
 	document.body.appendChild(stats.dom);
-
-	// 配置渲染器输出编码（替代已废弃的 gammaInput/gammaOutput）
-	renderer.outputEncoding = THREE[
-		rendererConfig.outputEncoding as keyof typeof THREE
-	] as THREE.TextureEncoding;
-
-	// 启用阴影映射
-	renderer.shadowMap.enabled = rendererConfig.shadowMap.enabled;
 }
 
 /**
@@ -319,12 +271,8 @@ export function createWorld(): void {
  * 创建一组使用 Sprite 材质的发光粒子，用于视觉效果
  */
 export function glowingParticles(): void {
-	const particleTextureLoader = new THREE.TextureLoader(manager);
 	const BASE_URL = (import.meta.env as any).BASE_URL;
-	const particleTexture = loadTexture(
-		particleTextureLoader,
-		`${BASE_URL}img/spark.png`
-	);
+	const particleTexture = loadTexture(`${BASE_URL}img/spark.png`);
 
 	// 创建粒子组
 	particleGroup = new THREE.Object3D();
@@ -349,18 +297,10 @@ export function glowingParticles(): void {
 
 		// 创建 Sprite 对象
 		const sprite = new THREE.Sprite(spriteMaterial);
-		sprite.scale.set(
-			particlesConfig.spriteScale.x,
-			particlesConfig.spriteScale.y,
-			particlesConfig.spriteScale.z
-		);
+		sprite.scale.set(particlesConfig.spriteScale.x, particlesConfig.spriteScale.y, particlesConfig.spriteScale.z);
 
 		// 设置随机位置
-		sprite.position.set(
-			Math.random() - 0.5,
-			Math.random() - 0.5,
-			Math.random() - 0.5
-		);
+		sprite.position.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
 		sprite.position.setLength(radiusRange * (Math.random() * 0.1 + 0.9));
 
 		// 设置随机颜色
@@ -391,21 +331,12 @@ export function glowingParticles(): void {
  * @param zScale - Z 轴缩放
  * @param boxTexture - 纹理路径
  */
-export function createLensFlare(
-	x: number,
-	y: number,
-	z: number,
-	xScale: number,
-	zScale: number,
-	boxTexture: string
-): void {
+export function createLensFlare(x: number, y: number, z: number, xScale: number, zScale: number, boxTexture: string): void {
 	// 创建平面几何体
 	const geometry = new THREE.PlaneBufferGeometry(xScale, zScale);
 
 	// 加载纹理
-	const loader = new THREE.TextureLoader();
-	const texture = loadTexture(loader, boxTexture);
-	texture.encoding = THREE.sRGBEncoding;
+	const texture = loadTexture(boxTexture);
 
 	// 创建材质
 	const material = new THREE.MeshBasicMaterial({
@@ -437,18 +368,9 @@ export function addParticles(): void {
 	// 生成粒子顶点
 	for (let i = 0; i < PARTICLES_CONFIG.backgroundCount; i++) {
 		const vertex = new THREE.Vector3();
-		vertex.x = getRandomArbitrary(
-			PARTICLES_CONFIG.backgroundRange.x.min,
-			PARTICLES_CONFIG.backgroundRange.x.max
-		);
-		vertex.y = getRandomArbitrary(
-			PARTICLES_CONFIG.backgroundRange.y.min,
-			PARTICLES_CONFIG.backgroundRange.y.max
-		);
-		vertex.z = getRandomArbitrary(
-			PARTICLES_CONFIG.backgroundRange.z.min,
-			PARTICLES_CONFIG.backgroundRange.z.max
-		);
+		vertex.x = getRandomArbitrary(PARTICLES_CONFIG.backgroundRange.x.min, PARTICLES_CONFIG.backgroundRange.x.max);
+		vertex.y = getRandomArbitrary(PARTICLES_CONFIG.backgroundRange.y.min, PARTICLES_CONFIG.backgroundRange.y.max);
+		vertex.z = getRandomArbitrary(PARTICLES_CONFIG.backgroundRange.z.min, PARTICLES_CONFIG.backgroundRange.z.max);
 		geometry.vertices.push(vertex);
 	}
 
@@ -509,25 +431,13 @@ export const generateGalaxy = (): void => {
 
 		// 计算位置
 		const radius = Math.random() * parameters.radius;
-		const branchAngle =
-			((i % parameters.branches) / parameters.branches) * Math.PI * 2;
+		const branchAngle = ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
 
 		// 计算随机偏移
-		const randomX =
-			Math.pow(Math.random(), parameters.randomnessPower) *
-			(Math.random() < 0.5 ? 1 : -1) *
-			parameters.randomness *
-			radius;
-		const randomY =
-			Math.pow(Math.random(), parameters.randomnessPower) *
-			(Math.random() < 0.5 ? 1 : -1) *
-			parameters.randomness *
-			radius;
+		const randomX = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
+		const randomY = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
 		const randomZ =
-			Math.pow(Math.random(), parameters.randomnessPower) *
-				(Math.random() < 0.5 ? 1 : -1) *
-				parameters.randomness *
-				radius +
+			Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius +
 			GALAXY_POSITION_CONFIG.zOffset;
 
 		// 设置基础位置（圆形分布）
@@ -556,10 +466,7 @@ export const generateGalaxy = (): void => {
 	geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 	geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 	geometry.setAttribute("aScale", new THREE.BufferAttribute(scales, 1));
-	geometry.setAttribute(
-		"aRandomness",
-		new THREE.BufferAttribute(randomness, 3)
-	);
+	geometry.setAttribute("aRandomness", new THREE.BufferAttribute(randomness, 3));
 
 	/**
 	 * 创建材质
@@ -591,57 +498,39 @@ export const generateGalaxy = (): void => {
  */
 export function moveParticles(): void {
 	// 旋转粒子系统
-	particleSystemObject.rotation.z +=
-		PARTICLE_ANIMATION_CONFIG.particleSystemRotationSpeed;
+	particleSystemObject.rotation.z += PARTICLE_ANIMATION_CONFIG.particleSystemRotationSpeed;
 
 	// 旋转镜头光晕
-	lensFlareObject.rotation.z +=
-		PARTICLE_ANIMATION_CONFIG.lensFlareRotationSpeed;
+	lensFlareObject.rotation.z += PARTICLE_ANIMATION_CONFIG.lensFlareRotationSpeed;
 
 	// 移动镜头光晕
-	if (
-		lensFlareObject.position.x < PARTICLE_ANIMATION_CONFIG.lensFlareBounds.x.max
-	) {
-		lensFlareObject.position.x +=
-			PARTICLE_ANIMATION_CONFIG.lensFlareMoveSpeed.x;
-		lensFlareObject.position.y +=
-			PARTICLE_ANIMATION_CONFIG.lensFlareMoveSpeed.y;
+	if (lensFlareObject.position.x < PARTICLE_ANIMATION_CONFIG.lensFlareBounds.x.max) {
+		lensFlareObject.position.x += PARTICLE_ANIMATION_CONFIG.lensFlareMoveSpeed.x;
+		lensFlareObject.position.y += PARTICLE_ANIMATION_CONFIG.lensFlareMoveSpeed.y;
 	} else {
 		// 重置位置
-		lensFlareObject.position.x =
-			PARTICLE_ANIMATION_CONFIG.lensFlareBounds.x.min;
-		lensFlareObject.position.y =
-			PARTICLE_ANIMATION_CONFIG.lensFlareBounds.y.default;
+		lensFlareObject.position.x = PARTICLE_ANIMATION_CONFIG.lensFlareBounds.x.min;
+		lensFlareObject.position.y = PARTICLE_ANIMATION_CONFIG.lensFlareBounds.y.default;
 	}
 
 	// 更新发光粒子动画
-	const time =
-		PARTICLE_ANIMATION_CONFIG.glowingParticlesTimeMultiplier *
-		clock.getElapsedTime();
+	const time = PARTICLE_ANIMATION_CONFIG.glowingParticlesTimeMultiplier * clock.getElapsedTime();
 
 	for (let c = 0; c < particleGroup.children.length; c++) {
 		const sprite = particleGroup.children[c] as THREE.Sprite;
 
 		// 计算脉冲系数（基于正弦波）
-		const a =
-			particleAttributes.randomness[c] +
-			PARTICLE_ANIMATION_CONFIG.glowingParticlesPulse.randomnessOffset;
+		const a = particleAttributes.randomness[c] + PARTICLE_ANIMATION_CONFIG.glowingParticlesPulse.randomnessOffset;
 		const pulseFactor =
-			Math.sin(a * time) *
-				PARTICLE_ANIMATION_CONFIG.glowingParticlesPulse.amplitude +
-			PARTICLE_ANIMATION_CONFIG.glowingParticlesPulse.base;
+			Math.sin(a * time) * PARTICLE_ANIMATION_CONFIG.glowingParticlesPulse.amplitude + PARTICLE_ANIMATION_CONFIG.glowingParticlesPulse.base;
 
 		// 更新位置（基于初始位置和脉冲系数）
 		const startPos = particleAttributes.startPosition[c];
 		sprite.position.x = startPos.x * pulseFactor;
-		sprite.position.y =
-			startPos.y *
-			pulseFactor *
-			PARTICLE_ANIMATION_CONFIG.glowingParticlesPulse.yMultiplier;
+		sprite.position.y = startPos.y * pulseFactor * PARTICLE_ANIMATION_CONFIG.glowingParticlesPulse.yMultiplier;
 		sprite.position.z = startPos.z * pulseFactor;
 	}
 
 	// 旋转整个粒子组
-	particleGroup.rotation.y =
-		time * PARTICLE_ANIMATION_CONFIG.particleGroupRotationSpeed;
+	particleGroup.rotation.y = time * PARTICLE_ANIMATION_CONFIG.particleGroupRotationSpeed;
 }

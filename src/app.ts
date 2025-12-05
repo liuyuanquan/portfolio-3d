@@ -48,8 +48,7 @@ import {
 	floydWords,
 	createBillboard,
 	createBillboardRotated,
-	createWallX,
-	createWallZ,
+	createWall,
 	wallOfBricks,
 	createGridPlane,
 	createTriangle,
@@ -57,7 +56,7 @@ import {
 	loadEngineerText,
 } from "./objects";
 
-import { PHYSICS_CONFIG, GAMEPLAY_CONFIG } from "./config";
+import { GAMEPLAY_CONFIG, OBJECTS_CONFIG } from "./config";
 
 /**
  * 主函数
@@ -75,8 +74,8 @@ async function main(): Promise<void> {
 	const AmmoLib = await Ammo();
 
 	// ==================== 核心实例创建 ====================
-	// 创建物理引擎实例
-	const physicsEngine = new PhysicsEngine(AmmoLib);
+	// 初始化物理引擎单例
+	const physicsEngine = PhysicsEngine.getInstance(AmmoLib);
 
 	// ==================== 变量定义 ====================
 	/**
@@ -197,21 +196,52 @@ async function main(): Promise<void> {
 	function start(): void {
 		// 1. 创建 Three.js 世界场景
 		createWorld();
+
 		// 2. 创建 Ammo.js 物理世界
-		physicsEngine.createWorld({
-			gravity: PHYSICS_CONFIG.gravity,
-		});
+		physicsEngine.createWorld();
 
 		// 3. 创建基础物理对象
-		createGridPlane(AmmoLib, physicsEngine);
-		ballObject = createBallObj(AmmoLib, physicsEngine);
+		createGridPlane();
+		ballObject = createBallObj();
 
-		createWallX(AmmoLib, physicsEngine, { x: 87.5, y: 1.75, z: 0 });
-		createWallX(AmmoLib, physicsEngine, { x: -87.5, y: 1.75, z: 0 });
-		createWallZ(AmmoLib, physicsEngine, { x: 0, y: 1.75, z: 87.5 });
-		createWallZ(AmmoLib, physicsEngine, { x: 0, y: 1.75, z: -87.5 });
+		// 4. 创建墙壁（根据平面尺寸动态计算）
+		const planeScale = OBJECTS_CONFIG.plane.scale;
+		const planePosition = OBJECTS_CONFIG.plane.position;
+		const wallY = 1.75;
 
-		// 4. 创建广告牌和链接盒子
+		// 计算平面边缘位置（平面中心 + 半尺寸）
+		const planeHalfWidth = planeScale.x * 0.5;
+		const planeHalfDepth = planeScale.z * 0.5;
+
+		// X 方向墙壁：放在平面的左右边缘，z 长度等于平面的 z 尺寸
+		createWall({
+			x: planePosition.x + planeHalfWidth,
+			y: wallY,
+			z: planePosition.z,
+			wallScale: { x: 0.125, y: 4, z: planeScale.z },
+		});
+		createWall({
+			x: planePosition.x - planeHalfWidth,
+			y: wallY,
+			z: planePosition.z,
+			wallScale: { x: 0.125, y: 4, z: planeScale.z },
+		});
+
+		// Z 方向墙壁：放在平面的前后边缘，x 长度等于平面的 x 尺寸
+		createWall({
+			x: planePosition.x,
+			y: wallY,
+			z: planePosition.z + planeHalfDepth,
+			wallScale: { x: planeScale.x, y: 4, z: 0.125 },
+		});
+		createWall({
+			x: planePosition.x,
+			y: wallY,
+			z: planePosition.z - planeHalfDepth,
+			wallScale: { x: planeScale.x, y: 4, z: 0.125 },
+		});
+
+		// 5. 创建广告牌和链接盒子
 		const billboard1 = createBillboard(AmmoLib, physicsEngine, {
 			x: -80,
 			y: 2.5,
@@ -336,7 +366,9 @@ async function main(): Promise<void> {
 		simpleText(-42, 0.01, -30, "PROJECTS", 3);
 		simpleText(61, 0.01, -15, "TIMELINE", 3);
 
-		wallOfBricks(AmmoLib, physicsEngine);
+		// 创建砖墙
+		wallOfBricks();
+
 		createTriangle({ x: 63, z: -55 });
 		createTriangle({ x: 63, z: -51 });
 		createTriangle({ x: 63, z: -47 });
@@ -347,7 +379,7 @@ async function main(): Promise<void> {
 		generateGalaxy();
 
 		// 创建沙滩球（必须在所有资源加载完成后，所以放在 start() 的最后）
-		createBeachBall(AmmoLib, physicsEngine);
+		createBeachBall();
 
 		setupEventHandlers();
 

@@ -2,6 +2,8 @@
  * 对象默认配置常量
  * 使用 as const 确保类型安全，并通过 typeof 导出类型
  */
+const BASE_URL: string = (import.meta.env as any).BASE_URL;
+
 export const OBJECTS_CONFIG = {
 	// 球体配置
 	ball: {
@@ -9,24 +11,16 @@ export const OBJECTS_CONFIG = {
 		radius: 2,
 		mass: 3,
 		quaternion: { x: 0, y: 0, z: 0, w: 1 },
-		texture: "img/earth.jpg",
-		geometry: {
-			widthSegments: 32,
-			heightSegments: 32,
-		},
+		texture: `${BASE_URL}img/earth.jpg`,
 	},
 
 	// 沙滩球配置
 	beachBall: {
 		position: { x: 20, y: 30, z: 0 },
-		radius: 2,
+		radius: 3,
 		mass: 20,
 		quaternion: { x: 0, y: 0, z: 0, w: 1 },
-		texture: "img/BeachBallColor.jpg",
-		geometry: {
-			widthSegments: 32,
-			heightSegments: 32,
-		},
+		texture: `${BASE_URL}img/BeachBallColor.jpg`,
 	},
 
 	// 平面配置
@@ -35,18 +29,9 @@ export const OBJECTS_CONFIG = {
 		scale: { x: 175, y: 0.5, z: 175 },
 		mass: 0,
 		quaternion: { x: 0, y: 0, z: 0, w: 1 },
-		size: 175,
-		divisions: 20,
 		grid: {
-			color1: 0xffffff,
-			color2: 0xffffff,
-			opacity: 0.5,
+			cellSize: 10,
 			positionY: 0.005,
-		},
-		material: {
-			color: 0xffffff,
-			opacity: 0.25,
-			transparent: true,
 		},
 	},
 
@@ -54,19 +39,9 @@ export const OBJECTS_CONFIG = {
 	wall: {
 		x: {
 			scale: { x: 0.125, y: 4, z: 175 },
-			material: {
-				color: 0xffffff,
-				opacity: 0.75,
-				transparent: true,
-			},
 		},
 		z: {
 			scale: { x: 175, y: 4, z: 0.125 },
-			material: {
-				color: 0xffffff,
-				opacity: 0.75,
-				transparent: true,
-			},
 		},
 	},
 

@@ -2,7 +2,7 @@
  * 广告牌对象创建函数
  */
 import * as THREE from "three";
-import { scene, manager } from "../resources/world";
+import { scene } from "../resources/world";
 import { addRigidPhysics } from "./PhysicsHelpers";
 import { woodTexture } from "../config/resources";
 import { OBJECTS_CONFIG } from "../config";
@@ -19,28 +19,16 @@ import { loadTexture } from "../utils/textureLoader";
  */
 export function createBillboard(Ammo, physicsEngine, options = {}) {
 	const billboardConfig = OBJECTS_CONFIG.billboard.horizontal;
-	const {
-		x,
-		y,
-		z,
-		textureImage,
-		urlLink,
-		rotation = 0,
-		poleScale = billboardConfig.poleScale,
-		signScale = billboardConfig.signScale,
-	} = options;
-
-	const loader = new THREE.TextureLoader(manager);
+	const { x, y, z, textureImage, urlLink, rotation = 0, poleScale = billboardConfig.poleScale, signScale = billboardConfig.signScale } = options;
 
 	const billboardPole = new THREE.Mesh(
 		new THREE.BoxBufferGeometry(poleScale.x, poleScale.y, poleScale.z),
 		new THREE.MeshStandardMaterial({
-			map: loadTexture(loader, woodTexture),
+			map: loadTexture(woodTexture),
 		})
 	);
 
-	const texture = loadTexture(loader, textureImage);
-	texture.encoding = THREE.sRGBEncoding;
+	const texture = loadTexture(textureImage);
 	var borderMaterial = new THREE.MeshBasicMaterial({
 		color: 0x000000,
 	});
@@ -57,10 +45,7 @@ export function createBillboard(Ammo, physicsEngine, options = {}) {
 		borderMaterial, // Back side
 	];
 
-	const billboardSign = new THREE.Mesh(
-		new THREE.BoxGeometry(signScale.x, signScale.y, signScale.z),
-		materials
-	);
+	const billboardSign = new THREE.Mesh(new THREE.BoxGeometry(signScale.x, signScale.y, signScale.z), materials);
 
 	billboardPole.position.x = x;
 	billboardPole.position.y = y;
@@ -84,7 +69,7 @@ export function createBillboard(Ammo, physicsEngine, options = {}) {
 
 	scene.add(billboardPole);
 	scene.add(billboardSign);
-	addRigidPhysics(Ammo, physicsEngine, billboardPole, poleScale);
+	addRigidPhysics(billboardPole, { scale: poleScale });
 
 	// cursorHoverObjects 需要从外部传入
 	// cursorHoverObjects.push(billboardSign);
@@ -101,26 +86,15 @@ export function createBillboard(Ammo, physicsEngine, options = {}) {
  */
 export function createBillboardRotated(Ammo, physicsEngine, options = {}) {
 	const billboardConfig = OBJECTS_CONFIG.billboard.vertical;
-	const {
-		x,
-		y,
-		z,
-		textureImage,
-		urlLink,
-		rotation = 0,
-		poleScale = billboardConfig.poleScale,
-		signScale = billboardConfig.signScale,
-	} = options;
+	const { x, y, z, textureImage, urlLink, rotation = 0, poleScale = billboardConfig.poleScale, signScale = billboardConfig.signScale } = options;
 
-	const loader = new THREE.TextureLoader(manager);
 	const billboardPole = new THREE.Mesh(
 		new THREE.BoxBufferGeometry(poleScale.x, poleScale.y, poleScale.z),
 		new THREE.MeshStandardMaterial({
-			map: loadTexture(loader, woodTexture),
+			map: loadTexture(woodTexture),
 		})
 	);
-	const texture = loadTexture(loader, textureImage);
-	texture.encoding = THREE.sRGBEncoding;
+	const texture = loadTexture(textureImage);
 	var borderMaterial = new THREE.MeshBasicMaterial({
 		color: 0x000000,
 	});
@@ -137,10 +111,7 @@ export function createBillboardRotated(Ammo, physicsEngine, options = {}) {
 		borderMaterial, // Back side
 	];
 
-	const billboardSign = new THREE.Mesh(
-		new THREE.BoxGeometry(signScale.x, signScale.y, signScale.z),
-		materials
-	);
+	const billboardSign = new THREE.Mesh(new THREE.BoxGeometry(signScale.x, signScale.y, signScale.z), materials);
 
 	billboardPole.position.x = x;
 	billboardPole.position.y = y;
@@ -164,8 +135,8 @@ export function createBillboardRotated(Ammo, physicsEngine, options = {}) {
 
 	scene.add(billboardPole);
 	scene.add(billboardSign);
-	addRigidPhysics(Ammo, physicsEngine, billboardPole, poleScale);
-	addRigidPhysics(Ammo, physicsEngine, billboardSign, signScale);
+	addRigidPhysics(billboardPole, { scale: poleScale });
+	addRigidPhysics(billboardSign, { scale: signScale });
 
 	// cursorHoverObjects 需要从外部传入
 	// cursorHoverObjects.push(billboardSign);

@@ -276,9 +276,7 @@ export function allSkillsSection(
 	const geometry = new THREE.PlaneBufferGeometry(xScale, zScale);
 
 	// 加载纹理
-	const loader = new THREE.TextureLoader(manager);
-	const texture = loadTexture(loader, boxTexture);
-	texture.encoding = THREE.sRGBEncoding;
+	const texture = loadTexture(boxTexture);
 
 	// 创建材质
 	const material = new THREE.MeshBasicMaterial({
@@ -328,8 +326,7 @@ export function createTextOnPlane(
 	const geometry = new THREE.PlaneBufferGeometry(size1, size2);
 
 	// 加载纹理
-	const loader = new THREE.TextureLoader(manager);
-	const texture = loadTexture(loader, inputText, {
+	const texture = loadTexture(inputText, {
 		magFilter: THREE.NearestFilter,
 		minFilter: THREE.LinearFilter,
 	});

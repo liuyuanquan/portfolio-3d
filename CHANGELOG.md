@@ -7,7 +7,61 @@
 
 ## [未发布]
 
-## [1.2.11] - 2025-01-04
+## [1.2.13] - 2025-12-05
+
+### 重构
+
+- **统一物理体创建接口**
+  - `Planes.ts` 改用 `addRigidPhysics` 函数，统一物理体创建逻辑
+  - 扩展 `addRigidPhysics` 函数，支持 `friction` 参数设置摩擦系数
+  - 移除 `Planes.ts` 中重复的物理体创建代码，提高代码复用性
+
+### 修复
+
+- 修复 `CHANGELOG.md` 中版本日期错误（2025-01-04 → 2025-12-04）
+
+### 变更
+
+- `package.json` 版本号更新至 `1.2.13`
+- `src/objects/Planes.ts` 移除重复的物理体创建代码，改用 `addRigidPhysics`
+- `src/objects/PhysicsHelpers.ts` 扩展 `addRigidPhysics` 支持 `friction` 参数
+- `src/global.d.ts` 更新 `AddRigidPhysicsOptions` 接口，添加 `friction` 属性
+- `CHANGELOG.md` 修复版本 1.2.9、1.2.10、1.2.11、1.2.12 的日期错误
+
+## [1.2.12] - 2025-12-04
+
+### 重构
+
+- **PhysicsEngine 单例模式**
+  - 将 `PhysicsEngine` 改为单例模式，使用 `getInstance()` 方法获取实例
+  - 构造函数改为私有，防止外部直接实例化
+  - 移除所有函数中的 `physicsEngine` 参数，统一使用单例访问
+
+- **Balls.js 转换为 TypeScript**
+  - 将 `src/objects/Balls.js` 迁移到 `src/objects/Balls.ts`
+  - 添加完整的类型定义和接口
+  - 优化代码结构，移除不必要的边界计算
+
+- **属性访问封装**
+  - 将 `PhysicsEngine` 的属性改为私有，通过 getter 方法访问
+  - 添加 `getAmmo()`、`getPhysicsWorld()`、`getRigidBodies()`、`getTmpTrans()` 方法
+  - 统一代码风格，提高封装性
+
+- **代码注释优化**
+  - 统一 `PhysicsEngine.ts` 的注释风格，与 `Planes.ts` 保持一致
+  - 简化冗余注释，保持代码简洁明了
+  - 添加代码块分隔符，提高可读性
+
+### 变更
+
+- `package.json` 版本号更新至 `1.2.12`
+- `src/objects/Balls.js` 文件已删除
+- `src/objects/Balls.ts` 文件已创建
+- `src/core/PhysicsEngine.ts` 改为单例模式，属性访问改为 getter 方法
+- `src/objects/Planes.ts` 移除 `physicsEngine` 参数
+- `src/app.ts` 更新为使用 `PhysicsEngine.getInstance()` 获取单例
+
+## [1.2.11] - 2025-12-04
 
 ### 重构
 
@@ -36,7 +90,7 @@
 - `src/resources/interactiveObjects.ts` 文件已删除
 - `public/css/style.css` 添加触摸设备媒体查询，自动显示摇杆
 
-## [1.2.10] - 2025-01-04
+## [1.2.10] - 2025-12-04
 
 ### 重构
 
@@ -71,7 +125,7 @@
 - `index.html` 所有 meta 标签内容改为英文
 - `src/resources/cameraUtils.ts` 更新为使用 `document.body` 替代 `getElementById`
 
-## [1.2.9] - 2025-01-04
+## [1.2.9] - 2025-12-04
 
 ### 重构
 

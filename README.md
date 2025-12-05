@@ -86,14 +86,14 @@ portfolio-3d/
 │   │   ├── PhysicsEngine.ts  # 物理引擎管理类
 │   │   └── GameLoop.ts       # 游戏主循环管理类
 │   ├── objects/     # 对象创建模块
-│   │   ├── Balls.js          # 球体对象
+│   │   ├── Balls.ts          # 球体对象 (TypeScript)
 │   │   ├── Boxes.js          # 盒子对象
 │   │   ├── Billboards.js     # 广告牌对象
-│   │   ├── Walls.js          # 墙壁对象
-│   │   ├── Planes.js         # 平面对象
+│   │   ├── Walls.ts          # 墙壁对象 (TypeScript)
+│   │   ├── Planes.ts         # 平面对象 (TypeScript)
 │   │   ├── Shapes.js         # 形状对象
 │   │   ├── Text.js           # 3D 文字对象
-│   │   ├── PhysicsHelpers.js # 物理辅助函数
+│   │   ├── PhysicsHelpers.ts # 物理辅助函数 (TypeScript)
 │   │   └── index.js          # 统一导出
 │   ├── resources/   # 资源管理模块（TypeScript）
 │   │   ├── world.ts         # 场景、相机、渲染器初始化
