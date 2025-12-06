@@ -46,6 +46,8 @@ const BILLBOARDS_CONFIG = [
 		urlLink: "https://github.com/liuyuanquan/portfolio-3d",
 		type: "horizontal" as const,
 		rotation: Math.PI * 0.22,
+		inputText: `${BASE_URL}img/terp-solutions-text.png`,
+		textPlane: { x: -70, y: 0.01, z: -48, width: 20, height: 40 },
 	},
 	{
 		x: -45,
@@ -55,6 +57,8 @@ const BILLBOARDS_CONFIG = [
 		urlLink: "https://github.com/liuyuanquan/portfolio-3d",
 		type: "horizontal" as const,
 		rotation: Math.PI * 0.17,
+		inputText: `${BASE_URL}img/bagholderbets-text.png`,
+		textPlane: { x: -42, y: 0.01, z: -53, width: 20, height: 40 },
 	},
 	{
 		x: -17,
@@ -64,6 +68,8 @@ const BILLBOARDS_CONFIG = [
 		urlLink: "https://github.com/liuyuanquan/portfolio-3d",
 		type: "vertical" as const,
 		rotation: Math.PI * 0.15,
+		inputText: `${BASE_URL}img/home-sweet-home-text.png`,
+		textPlane: { x: -14, y: 0.01, z: -49, width: 20, height: 40 },
 	},
 ] as const;
 
@@ -203,6 +209,53 @@ function createBillboardSign(options: {
 }
 
 /**
+ * 在平面上创建文本纹理
+ *
+ * 创建一个带有文本图片纹理的平面，用于在场景中显示文本
+ *
+ * @param x - X 轴位置
+ * @param y - Y 轴位置
+ * @param z - Z 轴位置
+ * @param inputText - 文本图片路径
+ * @param size1 - X 轴尺寸（宽度）
+ * @param size2 - Z 轴尺寸（长度）
+ */
+function createTextOnPlane(x: number, y: number, z: number, inputText: string, size1: number, size2: number): void {
+	// 创建平面几何体
+	const geometry = new THREE.PlaneBufferGeometry(size1, size2);
+
+	// 加载纹理
+	const texture = loadTexture(inputText, {
+		// 使用 nearest 过滤器，避免模糊效果
+		magFilter: THREE.NearestFilter,
+		// 使用 linear 过滤器，避免模糊效果
+		minFilter: THREE.LinearFilter,
+	});
+
+	// 创建材质（使用 alphaMap 实现透明效果）
+	const material = new THREE.MeshBasicMaterial({
+		// 使用 alphaMap 实现透明效果
+		alphaMap: texture,
+		// 设置透明效果
+		transparent: true,
+	});
+	// 设置深度写入
+	material.depthWrite = true;
+	// 设置深度测试
+	material.depthTest = true;
+
+	// 创建网格对象
+	const textMesh = new THREE.Mesh(geometry, material);
+	// 设置位置、旋转、渲染顺序
+	textMesh.position.set(x, y, z);
+	textMesh.rotation.x = -Math.PI * 0.5; // -90度，使平面水平
+	textMesh.renderOrder = 1;
+
+	// 添加到场景
+	scene.add(textMesh);
+}
+
+/**
  * 创建广告牌
  *
  * 该函数用于创建广告牌对象，支持水平和垂直两种方向。
@@ -288,5 +341,15 @@ export function createBillboards(): void {
 	for (const itemConfig of BILLBOARDS_CONFIG) {
 		const billboard = createBillboard(itemConfig);
 		cursorHoverObjects.push(billboard.sign);
+
+		// 创建广告牌对应的项目文本平面
+		createTextOnPlane(
+			itemConfig.textPlane.x,
+			itemConfig.textPlane.y,
+			itemConfig.textPlane.z,
+			itemConfig.inputText,
+			itemConfig.textPlane.width,
+			itemConfig.textPlane.height
+		);
 	}
 }

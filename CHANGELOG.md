@@ -7,6 +7,34 @@
 
 ## [未发布]
 
+## [1.2.16] - 2025-12-06
+
+### 重构
+
+- **项目展示区域优化**
+  - 将 `createProjectsSection` 单独抽取到 `ProjectsSection.ts` 文件
+  - 将 `loadFloydText` 和 `loadEngineerText` 函数合并为 `loadTexts`，实现并排显示
+  - 调整文本位置，使两个文本整体在盒子中水平居中显示
+  - 将 `TEXT_CONFIG` 内置到 `ProjectsSection.ts`，移除对 `OBJECTS_CONFIG` 的依赖
+
+- **字体加载器简化**
+  - 简化 `fontLoader.ts`，只提供 `onLoad` 回调函数，让用户完全自定义文本创建逻辑
+  - 移除所有默认的硬编码逻辑和配置选项
+  - 重命名接口为 `FontLoaderOptions`，回调函数名为 `onLoad`
+
+- **配置清理**
+  - 从 `OBJECTS_CONFIG` 中移除无用的 `text` 配置（已内置到 `ProjectsSection.ts`）
+  - 只保留 `triangle` 配置（`Shapes.js` 仍在使用）
+
+### 变更
+
+- `package.json` 版本号更新至 `1.2.16`
+- `src/objects/ProjectsSection.ts` 新增文件，包含项目展示区域相关功能
+- `src/objects/Boxes.ts` 提取 `createFloatingLabel` 函数，使用新的 `fontLoader` 接口
+- `src/utils/fontLoader.ts` 简化接口，只提供回调函数
+- `src/config/objects.ts` 移除 `text` 配置，只保留 `triangle` 配置
+- `src/objects/index.js` 更新导出，`createProjectsSection` 从 `ProjectsSection` 导出
+
 ## [1.2.15] - 2025-12-06
 
 ### 修复

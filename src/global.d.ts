@@ -56,6 +56,65 @@ interface CreateBrickOptions {
 	material: THREE.Material;
 }
 
+/**
+ * 创建链接盒子的选项
+ */
+interface CreateBoxOptions {
+	/** X 坐标 */
+	x: number;
+	/** Y 坐标 */
+	y: number;
+	/** Z 坐标 */
+	z: number;
+	/** X 轴缩放 */
+	scaleX: number;
+	/** Y 轴缩放 */
+	scaleY: number;
+	/** Z 轴缩放 */
+	scaleZ: number;
+	/** 盒子纹理路径 */
+	boxTexture: string;
+	/** 点击跳转的链接 */
+	URLLink: string;
+	/** 边框颜色，默认 0x000000 */
+	color?: number;
+	/** 是否透明，默认 true */
+	transparent?: boolean;
+	/** 图片背景色（当 transparent 为 false 时使用），默认使用 color */
+	backgroundColor?: number;
+	/** 浮动标签配置（可选） */
+	label?: {
+		/** X 坐标 */
+		x: number;
+		/** Y 坐标 */
+		y: number;
+		/** Z 坐标 */
+		z: number;
+		/** 要显示的文本内容 */
+		inputMessage: string;
+	};
+}
+
+/**
+ * 创建 Sanxing 文字盒子的选项
+ */
+interface SanxingWordsOptions {
+	/** X 坐标 */
+	x: number;
+	/** Y 坐标 */
+	y: number;
+	/** Z 坐标 */
+	z: number;
+	/** 缩放尺寸，默认 { x: 37, y: 3, z: 2 } */
+	scale?: { x: number; y: number; z: number };
+	/** 颜色，默认 0xff6600 */
+	color?: number;
+	/** 是否显示轮廓线，默认 true */
+	showOutline?: boolean;
+	/** 轮廓线颜色，默认 0xffffff（白色） */
+	outlineColor?: number;
+}
+
 // ==================== 物理相关选项 ====================
 
 /**

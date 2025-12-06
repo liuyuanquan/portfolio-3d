@@ -1,15 +1,14 @@
 /**
  * 表面和文本创建模块
- * 负责创建 3D 场景中的文本、标签和平面表面
+ * 负责创建 3D 场景中的文本和平面表面
  *
  * 功能：
  * - 创建 3D 文本对象
- * - 创建浮动标签
  * - 创建技能展示区域
  * - 在平面上创建文本纹理
  */
 import * as THREE from "three";
-import { scene, manager } from "./world";
+import { scene } from "./world";
 import { loadTexture } from "../utils/textureLoader";
 
 // ==================== 配置常量 ====================
@@ -40,14 +39,6 @@ const TEXT_MATERIAL_CONFIG = {
 } as const;
 
 /**
- * 浮动标签配置
- */
-const FLOATING_LABEL_CONFIG = {
-	/** 默认字体大小 */
-	fontSize: 1,
-} as const;
-
-/**
  * 技能区域配置
  */
 const SKILLS_SECTION_CONFIG = {
@@ -57,16 +48,6 @@ const SKILLS_SECTION_CONFIG = {
 	renderOrder: 1,
 	/** 旋转角度（-90度，使平面水平） */
 	rotationX: -Math.PI * 0.5,
-} as const;
-
-/**
- * 文本平面配置
- */
-const TEXT_PLANE_CONFIG = {
-	/** 旋转角度（-90度，使平面水平） */
-	rotationX: -Math.PI * 0.5,
-	/** 渲染顺序 */
-	renderOrder: 1,
 } as const;
 
 // ==================== 类型定义 ====================
@@ -96,9 +77,7 @@ type Font = THREE.Font;
  * @param geometry - 文本几何体
  * @returns X 轴偏移量
  */
-function calculateTextCenterOffset(
-	geometry: THREE.ShapeBufferGeometry
-): number {
+function calculateTextCenterOffset(geometry: THREE.ShapeBufferGeometry): number {
 	geometry.computeBoundingBox();
 	const boundingBox = geometry.boundingBox;
 	if (!boundingBox) {
@@ -130,12 +109,7 @@ function createTextMaterial(): THREE.MeshBasicMaterial {
  * @param rotationX - X 轴旋转角度（可选）
  * @returns 文本网格对象
  */
-function createTextMesh(
-	geometry: THREE.ShapeBufferGeometry,
-	material: THREE.MeshBasicMaterial,
-	position: Position,
-	rotationX?: number
-): THREE.Mesh {
+function createTextMesh(geometry: THREE.ShapeBufferGeometry, material: THREE.MeshBasicMaterial, position: Position, rotationX?: number): THREE.Mesh {
 	const text = new THREE.Mesh(geometry, material);
 	text.position.set(position.x, position.y, position.z);
 	if (rotationX !== undefined) {
@@ -157,13 +131,7 @@ function createTextMesh(
  * @param inputText - 要显示的文本内容
  * @param fontSize - 字体大小
  */
-export function simpleText(
-	x: number,
-	y: number,
-	z: number,
-	inputText: string,
-	fontSize: number
-): void {
+export function simpleText(x: number, y: number, z: number, inputText: string, fontSize: number): void {
 	const textLoader = new THREE.FontLoader();
 
 	textLoader.load(
@@ -183,62 +151,7 @@ export function simpleText(
 			const material = createTextMaterial();
 
 			// 创建网格对象
-			const text = createTextMesh(
-				geometry,
-				material,
-				{ x, y, z },
-				SKILLS_SECTION_CONFIG.rotationX
-			);
-
-			// 添加到场景
-			scene.add(text);
-		},
-		undefined, // onProgress
-		(error: ErrorEvent) => {
-			console.error("字体文件加载错误:", error);
-		}
-	);
-}
-
-/**
- * 创建浮动标签
- *
- * 在 3D 场景中创建垂直放置的文本标签（使用字体文件）
- *
- * @param x - X 轴位置
- * @param y - Y 轴位置
- * @param z - Z 轴位置
- * @param inputMessage - 要显示的文本内容
- */
-export function floatingLabel(
-	x: number,
-	y: number,
-	z: number,
-	inputMessage: string
-): void {
-	const textLoader = new THREE.FontLoader();
-
-	textLoader.load(
-		FONT_CONFIG.robotoRegular,
-		(font: Font) => {
-			// 创建文本形状（使用默认字体大小）
-			const shapes = font.generateShapes(
-				inputMessage,
-				FLOATING_LABEL_CONFIG.fontSize
-			);
-
-			// 创建几何体
-			const geometry = new THREE.ShapeBufferGeometry(shapes);
-
-			// 计算居中偏移
-			const xMid = calculateTextCenterOffset(geometry);
-			geometry.translate(xMid, 0, 0);
-
-			// 创建材质
-			const material = createTextMaterial();
-
-			// 创建网格对象（不旋转，保持垂直）
-			const text = createTextMesh(geometry, material, { x, y, z });
+			const text = createTextMesh(geometry, material, { x, y, z }, SKILLS_SECTION_CONFIG.rotationX);
 
 			// 添加到场景
 			scene.add(text);
@@ -300,51 +213,4 @@ export function allSkillsSection(
 
 	// 添加到场景
 	scene.add(linkBox);
-}
-
-/**
- * 在平面上创建文本纹理
- *
- * 创建一个带有文本图片纹理的平面，用于在场景中显示文本
- *
- * @param x - X 轴位置
- * @param y - Y 轴位置
- * @param z - Z 轴位置
- * @param inputText - 文本图片路径
- * @param size1 - X 轴尺寸（宽度）
- * @param size2 - Z 轴尺寸（长度）
- */
-export function createTextOnPlane(
-	x: number,
-	y: number,
-	z: number,
-	inputText: string,
-	size1: number,
-	size2: number
-): void {
-	// 创建平面几何体
-	const geometry = new THREE.PlaneBufferGeometry(size1, size2);
-
-	// 加载纹理
-	const texture = loadTexture(inputText, {
-		magFilter: THREE.NearestFilter,
-		minFilter: THREE.LinearFilter,
-	});
-
-	// 创建材质（使用 alphaMap 实现透明效果）
-	const material = new THREE.MeshBasicMaterial({
-		alphaMap: texture,
-		transparent: true,
-	});
-	material.depthWrite = true;
-	material.depthTest = true;
-
-	// 创建网格对象
-	const textMesh = new THREE.Mesh(geometry, material);
-	textMesh.position.set(x, y, z);
-	textMesh.rotation.x = TEXT_PLANE_CONFIG.rotationX;
-	textMesh.renderOrder = TEXT_PLANE_CONFIG.renderOrder;
-
-	// 添加到场景
-	scene.add(textMesh);
 }

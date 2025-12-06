@@ -11,7 +11,7 @@
  */
 import * as THREE from "three";
 import { WEBGL } from "three/examples/jsm/WebGL.js";
-import { boxTexture, inputText, URL } from "./config/resources";
+import { boxTexture, inputText } from "./config/resources";
 
 import { setupEventHandlers, moveDirection, createJoystick } from "./resources/eventHandlers";
 import { isTouchscreenDevice } from "./utils/device";
@@ -33,9 +33,9 @@ import {
 	galaxyClock,
 } from "./resources/world";
 
-import { simpleText, floatingLabel, allSkillsSection, createTextOnPlane } from "./resources/surfaces";
+import { simpleText, allSkillsSection } from "./resources/surfaces";
 
-import { launchClickPosition, rotateCamera, launchHover, cursorHoverObjects } from "./resources/cameraUtils";
+import { launchClickPosition, rotateCamera, launchHover } from "./resources/cameraUtils";
 
 import { PhysicsEngine } from "./core/PhysicsEngine";
 
@@ -44,14 +44,12 @@ import { GameLoop } from "./core/GameLoop";
 import {
 	createBall as createBallObj,
 	createBeachBall,
-	createBox,
-	floydWords,
+	createBoxes,
+	createProjectsSection,
 	createBillboards,
 	createBoundaryWalls,
 	createGridPlane,
 	createTriangle,
-	loadFloydText,
-	loadEngineerText,
 	wallOfBricks,
 } from "./objects";
 
@@ -210,84 +208,16 @@ async function main(): Promise<void> {
 		// 创建广告牌
 		createBillboards();
 
-		// 创建文本
-		floydWords(AmmoLib, physicsEngine, {
-			x: 16.2,
-			y: 1,
-			z: -20,
-		});
-		createTextOnPlane(-70, 0.01, -48, inputText.terpSolutionsText, 20, 40);
-		createTextOnPlane(-42, 0.01, -53, inputText.bagholderBetsText, 20, 40);
-		createTextOnPlane(-14, 0.01, -49, inputText.homeSweetHomeText, 20, 40);
+		// 创建项目展示区域
+		createProjectsSection();
 
-		const githubBox = createBox(AmmoLib, physicsEngine, {
-			x: 12,
-			y: 2,
-			z: -70,
-			scaleX: 4,
-			scaleY: 4,
-			scaleZ: 1,
-			boxTexture: boxTexture.Github,
-			URLLink: URL.gitHub,
-			color: 0x000000,
-			transparent: true,
-		});
-		cursorHoverObjects.push(githubBox);
-
-		const twitterBox = createBox(AmmoLib, physicsEngine, {
-			x: 19,
-			y: 2,
-			z: -70,
-			scaleX: 4,
-			scaleY: 4,
-			scaleZ: 1,
-			boxTexture: boxTexture.twitter,
-			URLLink: URL.twitter,
-			color: 0x0077b5,
-			transparent: true,
-		});
-		cursorHoverObjects.push(twitterBox);
-
-		const mailBox = createBox(AmmoLib, physicsEngine, {
-			x: 27,
-			y: 2,
-			z: -70,
-			scaleX: 4,
-			scaleY: 4,
-			scaleZ: 1,
-			boxTexture: boxTexture.mail,
-			URLLink: "mailto:arfloyd7@gmail.com",
-			color: 0x000000,
-			transparent: false,
-		});
-		cursorHoverObjects.push(mailBox);
-
-		const writingBox = createBox(AmmoLib, physicsEngine, {
-			x: 35,
-			y: 2,
-			z: -70,
-			scaleX: 4,
-			scaleY: 4,
-			scaleZ: 1,
-			boxTexture: boxTexture.writing,
-			URLLink: URL.devTo,
-			color: 0x000000,
-			transparent: false,
-		});
-		cursorHoverObjects.push(writingBox);
-
-		floatingLabel(11.875, 4.5, -70, "Github");
-		floatingLabel(19.125, 4.5, -70, "Twitter");
-		floatingLabel(26.875, 4.5, -70, "Email");
-		floatingLabel(35, 6.5, -70, "   How I \nmade this");
+		// 创建所有链接盒子
+		createBoxes();
 
 		allSkillsSection(61, 0.025, 13, 30, 60, inputText.activities);
 
 		// 创建镜头光晕
 		createLensFlare(50, -50, -800, 200, 200, boxTexture.lensFlareMain);
-
-		loadFloydText();
-		loadEngineerText();
 
 		// 根据设备类型设置提示文本
 		let touchText: string;

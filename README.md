@@ -87,10 +87,11 @@ portfolio-3d/
 │   │   └── GameLoop.ts       # 游戏主循环管理类
 │   ├── objects/     # 对象创建模块
 │   │   ├── Balls.ts          # 球体对象 (TypeScript)
-│   │   ├── Boxes.js          # 盒子对象
-│   │   ├── Billboards.js     # 广告牌对象
+│   │   ├── Boxes.ts          # 盒子对象 (TypeScript)
+│   │   ├── Billboards.ts     # 广告牌对象 (TypeScript)
 │   │   ├── Walls.ts          # 墙壁对象 (TypeScript)
 │   │   ├── Planes.ts         # 平面对象 (TypeScript)
+│   │   ├── ProjectsSection.ts # 项目展示区域 (TypeScript)
 │   │   ├── Shapes.js         # 形状对象
 │   │   ├── Text.js           # 3D 文字对象
 │   │   ├── PhysicsHelpers.ts # 物理辅助函数 (TypeScript)
