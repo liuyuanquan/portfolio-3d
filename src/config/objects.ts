@@ -2,49 +2,7 @@
  * 对象默认配置常量
  * 使用 as const 确保类型安全，并通过 typeof 导出类型
  */
-const BASE_URL: string = (import.meta.env as any).BASE_URL;
-
 export const OBJECTS_CONFIG = {
-	// 球体配置
-	ball: {
-		position: { x: 8.75, y: 0, z: 0 },
-		radius: 2,
-		mass: 3,
-		quaternion: { x: 0, y: 0, z: 0, w: 1 },
-		texture: `${BASE_URL}img/earth.jpg`,
-	},
-
-	// 沙滩球配置
-	beachBall: {
-		position: { x: 20, y: 30, z: 0 },
-		radius: 3,
-		mass: 20,
-		quaternion: { x: 0, y: 0, z: 0, w: 1 },
-		texture: `${BASE_URL}img/BeachBallColor.jpg`,
-	},
-
-	// 平面配置
-	plane: {
-		position: { x: 0, y: -0.25, z: 0 },
-		scale: { x: 175, y: 0.5, z: 175 },
-		mass: 0,
-		quaternion: { x: 0, y: 0, z: 0, w: 1 },
-		grid: {
-			cellSize: 10,
-			positionY: 0.005,
-		},
-	},
-
-	// 墙壁配置
-	wall: {
-		x: {
-			scale: { x: 0.125, y: 4, z: 175 },
-		},
-		z: {
-			scale: { x: 175, y: 4, z: 0.125 },
-		},
-	},
-
 	// 广告牌配置
 	billboard: {
 		horizontal: {
@@ -65,17 +23,6 @@ export const OBJECTS_CONFIG = {
 		defaultScale: { x: 4, y: 4, z: 1 },
 		defaultColor: 0x000000,
 		defaultTransparent: true,
-	},
-
-	// 砖块配置
-	brick: {
-		mass: 0.1,
-		length: 3,
-		depth: 3,
-		height: 1.5,
-		rows: 6,
-		bricksPerRow: 6,
-		startPosition: { x: 70, y: 0, z: -60 },
 	},
 
 	// 文字配置

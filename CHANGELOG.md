@@ -7,6 +7,30 @@
 
 ## [未发布]
 
+## [1.2.14] - 2025-12-05
+
+### 重构
+
+- **优化配置管理**
+  - 删除 `OBJECTS_CONFIG` 中已迁移的配置项（`plane`、`wall`、`brick`）
+  - 配置已分别迁移到 `Planes.ts`、`Walls.ts` 的本地配置常量中
+  - `createBoundaryWalls` 从 `Planes.ts` 导入 `PLANE_CONFIG`，避免间接引用
+
+- **代码清理**
+  - 删除 `global.d.ts` 中未使用的类型定义（`CreateGridPlaneOptions`、`WallOfBricksOptions`、`CreateBoundaryWallsOptions`）
+  - `createWall` 函数改为内部函数，不再导出
+  - `createBoundaryWalls` 函数移除返回值，改为 `void` 类型
+  - `stoneTexture` 直接内嵌到 `BRICK_WALL_CONFIG` 中，移除外部导入
+
+### 变更
+
+- `package.json` 版本号更新至 `1.2.14`
+- `src/config/objects.ts` 删除已迁移的配置项
+- `src/global.d.ts` 删除未使用的类型定义，更新注释引用
+- `src/objects/Walls.ts` 优化配置管理，移除不必要的导出
+- `src/objects/Planes.ts` 导出 `PLANE_CONFIG` 供其他模块使用
+- `src/app.ts` 启用 `wallOfBricks()` 函数调用
+
 ## [1.2.13] - 2025-12-05
 
 ### 重构
@@ -33,16 +57,19 @@
 ### 重构
 
 - **PhysicsEngine 单例模式**
+
   - 将 `PhysicsEngine` 改为单例模式，使用 `getInstance()` 方法获取实例
   - 构造函数改为私有，防止外部直接实例化
   - 移除所有函数中的 `physicsEngine` 参数，统一使用单例访问
 
 - **Balls.js 转换为 TypeScript**
+
   - 将 `src/objects/Balls.js` 迁移到 `src/objects/Balls.ts`
   - 添加完整的类型定义和接口
   - 优化代码结构，移除不必要的边界计算
 
 - **属性访问封装**
+
   - 将 `PhysicsEngine` 的属性改为私有，通过 getter 方法访问
   - 添加 `getAmmo()`、`getPhysicsWorld()`、`getRigidBodies()`、`getTmpTrans()` 方法
   - 统一代码风格，提高封装性
@@ -66,6 +93,7 @@
 ### 重构
 
 - **交互对象管理优化**
+
   - 将 `cursorHoverObjects` 从 `app.ts` 提取到 `cameraUtils.ts`，统一管理交互对象
   - 删除未使用的 `objectsWithLinks` 数组及其相关代码，简化代码结构
   - 删除独立的 `interactiveObjects.ts` 模块，减少不必要的抽象层
@@ -95,6 +123,7 @@
 ### 重构
 
 - **主应用文件 TypeScript 迁移**
+
   - 将 `src/app.js` 迁移到 TypeScript（`src/app.ts`）
   - 添加完整的类型定义和接口
   - 优化代码结构，移除未使用的导入
@@ -107,6 +136,7 @@
 ### 优化
 
 - **HTML 优化**
+
   - 将所有 meta 标签内容改为英文，提升国际化支持
   - 优化 meta 标签格式，改为单行展示，提高可读性
   - 删除不必要的 `id="document-body"`，改用 `document.body`
@@ -130,6 +160,7 @@
 ### 重构
 
 - **资源模块 TypeScript 迁移和代码重组**
+
   - 将 `src/resources/` 目录下的所有文件从 JavaScript 迁移到 TypeScript
   - `surfaces.js` → `surfaces.ts`，添加完整的类型定义和详细注释
   - `world.js` → `world.ts`，添加完整的类型定义和详细注释
@@ -198,6 +229,7 @@
 ### 优化
 
 - **用户体验优化**
+
   - 页面加载完成后自动点击开始按钮，无需手动点击
   - 改进启动流程，提供更流畅的体验
 
@@ -243,6 +275,7 @@
 ### 优化
 
 - **使用 Three.js 官方 WebGL 检测工具**
+
   - 移除自定义的 `isWebGLAvailable` 函数
   - 使用 `three/examples/jsm/WebGL.js` 中的 `WEBGL.isWebGLAvailable()`
   - 删除 `src/utils/webgl.ts`，统一使用 Three.js 官方工具

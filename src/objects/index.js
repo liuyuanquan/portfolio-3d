@@ -4,7 +4,7 @@
 export { createBall, createBeachBall } from "./Balls";
 export { createBox, floydWords } from "./Boxes";
 export { createBillboard, createBillboardRotated } from "./Billboards";
-export { createWall, wallOfBricks } from "./Walls";
+export { wallOfBricks, createBoundaryWalls } from "./Walls";
 export { createGridPlane } from "./Planes";
 export { createTriangle } from "./Shapes";
 export { loadFloydText, loadEngineerText } from "./Text";

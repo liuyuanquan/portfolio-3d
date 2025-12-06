@@ -85,6 +85,12 @@ export let camera: THREE.PerspectiveCamera;
 export let renderer: THREE.WebGLRenderer;
 
 /**
+ * 相机辅助工具对象
+ * 用于可视化相机的位置和视锥体（用于调试）
+ */
+export let cameraHelper: THREE.CameraHelper;
+
+/**
  * 性能统计对象
  * 显示 FPS 等性能指标
  */
@@ -137,6 +143,12 @@ export let galaxyMaterial: THREE.ShaderMaterial | null = null;
  * 包含所有星系粒子
  */
 export let galaxyPoints: THREE.Points | null = null;
+
+/**
+ * 方向光辅助工具对象
+ * 用于可视化方向光的位置和方向（用于调试）
+ */
+export let directionalLightHelper: THREE.DirectionalLightHelper;
 
 // ==================== 配置常量 ====================
 
@@ -224,9 +236,21 @@ export function createWorld(): void {
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(0x000000);
 
+	// 创建坐标轴辅助工具（用于调试）
+	// 红色 = X 轴，绿色 = Y 轴，蓝色 = Z 轴
+	// 参数表示坐标轴的长度（单位）
+	const axesHelper = new THREE.AxesHelper(200);
+	scene.add(axesHelper);
+
 	// 创建透视相机
 	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
 	camera.position.set(0, 30, 70);
+
+	// 创建相机辅助工具（用于调试）
+	// 显示相机的视锥体（frustum）和位置
+	// 视锥体表示相机可以看到的区域
+	cameraHelper = new THREE.CameraHelper(camera);
+	scene.add(cameraHelper);
 
 	// 创建半球光（环境光）
 	const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.1);
@@ -241,6 +265,12 @@ export function createWorld(): void {
 	dirLight.position.set(-10, 100, 50);
 	dirLight.position.multiplyScalar(100);
 	scene.add(dirLight);
+
+	// 创建方向光辅助工具（用于调试）
+	// 显示方向光的位置和方向
+	// 参数：光源对象、辅助工具的大小（单位）
+	directionalLightHelper = new THREE.DirectionalLightHelper(dirLight, 1);
+	scene.add(directionalLightHelper);
 
 	// 配置方向光阴影
 	dirLight.castShadow = true;

@@ -48,15 +48,15 @@ import {
 	floydWords,
 	createBillboard,
 	createBillboardRotated,
-	createWall,
-	wallOfBricks,
+	createBoundaryWalls,
 	createGridPlane,
 	createTriangle,
 	loadFloydText,
 	loadEngineerText,
+	wallOfBricks,
 } from "./objects";
 
-import { GAMEPLAY_CONFIG, OBJECTS_CONFIG } from "./config";
+import { GAMEPLAY_CONFIG } from "./config";
 
 /**
  * 主函数
@@ -202,44 +202,11 @@ async function main(): Promise<void> {
 
 		// 3. 创建基础物理对象
 		createGridPlane();
+
 		ballObject = createBallObj();
 
-		// 4. 创建墙壁（根据平面尺寸动态计算）
-		const planeScale = OBJECTS_CONFIG.plane.scale;
-		const planePosition = OBJECTS_CONFIG.plane.position;
-		const wallY = 1.75;
-
-		// 计算平面边缘位置（平面中心 + 半尺寸）
-		const planeHalfWidth = planeScale.x * 0.5;
-		const planeHalfDepth = planeScale.z * 0.5;
-
-		// X 方向墙壁：放在平面的左右边缘，z 长度等于平面的 z 尺寸
-		createWall({
-			x: planePosition.x + planeHalfWidth,
-			y: wallY,
-			z: planePosition.z,
-			wallScale: { x: 0.125, y: 4, z: planeScale.z },
-		});
-		createWall({
-			x: planePosition.x - planeHalfWidth,
-			y: wallY,
-			z: planePosition.z,
-			wallScale: { x: 0.125, y: 4, z: planeScale.z },
-		});
-
-		// Z 方向墙壁：放在平面的前后边缘，x 长度等于平面的 x 尺寸
-		createWall({
-			x: planePosition.x,
-			y: wallY,
-			z: planePosition.z + planeHalfDepth,
-			wallScale: { x: planeScale.x, y: 4, z: 0.125 },
-		});
-		createWall({
-			x: planePosition.x,
-			y: wallY,
-			z: planePosition.z - planeHalfDepth,
-			wallScale: { x: planeScale.x, y: 4, z: 0.125 },
-		});
+		// 4. 创建边界墙（根据平面尺寸动态计算）
+		createBoundaryWalls();
 
 		// 5. 创建广告牌和链接盒子
 		const billboard1 = createBillboard(AmmoLib, physicsEngine, {
