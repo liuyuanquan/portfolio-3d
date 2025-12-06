@@ -7,6 +7,40 @@
 
 ## [未发布]
 
+## [1.2.17] - 2025-12-06
+
+### 重构
+
+- **核心模块重组**
+  - 将 `World.ts` 从 `resources` 目录移动到 `core` 目录，与 `PhysicsEngine.ts` 并列
+  - 将 `cameraUtils.ts` 从 `resources` 目录移动到 `core` 目录，重命名为 `CameraControl.ts`
+  - 将 `input.ts` 重命名为 `InputManager.ts`，统一核心模块命名规范
+  - 所有核心模块现在使用首字母大写的命名规范
+
+- **物理引擎优化**
+  - 将 `addRigidPhysics` 函数从 `utils/physics.ts` 移动到 `PhysicsEngine.ts` 作为实例方法
+  - 简化 `PhysicsEngine.ts` 注释，只保留关键信息
+  - 优化 `addRigidPhysics` 实现，直接使用 `this.Ammo` 和 `this.STATE`
+
+- **相机控制优化**
+  - 将 `CAMERA_CONFIG` 内置到 `CameraControl.ts`，移除对外部配置的依赖
+  - 简化 `CameraControl.ts` 注释，只保留关键信息
+  - 从 `config/index.ts` 中移除 `CAMERA_CONFIG` 和 `CameraConfig` 类型
+
+- **代码优化**
+  - 简化多个核心文件的注释，移除冗余说明
+  - 优化 `PhysicsEngine.ts` 中的代码，减少不必要的函数调用和对象创建
+
+### 变更
+
+- `package.json` 版本号更新至 `1.2.17`
+- `src/resources/World.ts` → `src/core/World.ts`
+- `src/resources/cameraUtils.ts` → `src/core/CameraControl.ts`
+- `src/core/input.ts` → `src/core/InputManager.ts`
+- `src/utils/physics.ts` 删除，`addRigidPhysics` 移至 `PhysicsEngine.ts`
+- `src/config/index.ts` 移除 `CAMERA_CONFIG` 和 `CameraConfig` 类型
+- 更新所有相关文件的导入路径
+
 ## [1.2.16] - 2025-12-06
 
 ### 重构

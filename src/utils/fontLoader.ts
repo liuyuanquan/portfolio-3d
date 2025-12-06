@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { manager } from "../resources/world";
+import { manager } from "../core/World";
 
 /**
  * BASE URL（开发环境为 /，生产环境为 /portfolio-3d/）

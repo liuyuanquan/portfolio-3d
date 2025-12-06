@@ -84,7 +84,10 @@ portfolio-3d/
 │   │   └── index.ts      # 统一导出
 │   ├── core/        # 核心模块（TypeScript）
 │   │   ├── PhysicsEngine.ts  # 物理引擎管理类
-│   │   └── GameLoop.ts       # 游戏主循环管理类
+│   │   ├── GameLoop.ts       # 游戏主循环管理类
+│   │   ├── World.ts          # Three.js 核心对象管理（场景、相机、渲染器）
+│   │   ├── CameraControl.ts  # 相机控制和交互
+│   │   └── InputManager.ts   # 输入管理（键盘、摇杆）
 │   ├── objects/     # 对象创建模块
 │   │   ├── Balls.ts          # 球体对象 (TypeScript)
 │   │   ├── Boxes.ts          # 盒子对象 (TypeScript)
@@ -97,10 +100,8 @@ portfolio-3d/
 │   │   ├── PhysicsHelpers.ts # 物理辅助函数 (TypeScript)
 │   │   └── index.js          # 统一导出
 │   ├── resources/   # 资源管理模块（TypeScript）
-│   │   ├── world.ts         # 场景、相机、渲染器初始化
-│   │   ├── surfaces.ts      # 表面和文本创建
-│   │   ├── cameraUtils.ts   # 相机控制和交互工具（包含交互对象管理）
-│   │   └── eventHandlers.ts # 事件处理
+│   │   ├── Particles.ts     # 粒子系统
+│   │   └── Galaxy.ts        # 星系效果
 │   ├── utils/        # 工具函数模块（TypeScript）
 │   │   ├── textureLoader.ts  # 纹理加载辅助函数
 │   │   ├── math.ts          # 数学工具函数

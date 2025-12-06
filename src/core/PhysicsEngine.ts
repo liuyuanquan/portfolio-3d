@@ -1,37 +1,21 @@
 import * as THREE from "three";
 
 /**
- * 物理引擎管理类（单例模式）
+ * 物理引擎单例类
+ * 封装 Ammo.js 物理引擎，管理物理世界和刚体
  */
 export class PhysicsEngine {
-	// ==================== 静态属性 ====================
-	/** 单例实例 */
 	private static instance: PhysicsEngine | null = null;
 
-	// ==================== 私有属性 ====================
-	/** Ammo.js 实例 */
 	private Ammo: AmmoType;
-
-	/** 物理世界实例 */
 	private physicsWorld: AmmoPhysicsWorld | null;
-
-	/** Three.js 对象数组（与刚体一一对应） */
 	private rigidBodies: THREE.Object3D[];
-
-	/** 临时变换对象（用于性能优化，避免频繁创建） */
 	private tmpTrans: any;
 
-	// ==================== 公共常量 ====================
-	/** 物理状态常量 */
 	public readonly STATE: {
 		DISABLE_DEACTIVATION: number;
 	};
 
-	// ==================== 构造函数 ====================
-	/**
-	 * 构造函数
-	 * @param Ammo - Ammo.js 实例
-	 */
 	private constructor(Ammo: AmmoType) {
 		this.Ammo = Ammo;
 		this.physicsWorld = null;
@@ -42,11 +26,9 @@ export class PhysicsEngine {
 		};
 	}
 
-	// ==================== 静态方法 ====================
 	/**
-	 * 获取单例实例
-	 * @param Ammo - Ammo.js 实例（仅在首次调用时需要，后续调用会被忽略）
-	 * @returns 物理引擎实例
+	 * 获取物理引擎单例实例
+	 * 首次调用需要传入 Ammo 库，后续调用返回同一实例
 	 */
 	public static getInstance(Ammo?: AmmoType): PhysicsEngine {
 		if (PhysicsEngine.instance) {
@@ -61,61 +43,41 @@ export class PhysicsEngine {
 		return PhysicsEngine.instance;
 	}
 
-	// ==================== 公共 Getter 方法 ====================
-	/**
-	 * 获取 Ammo.js 实例
-	 * @returns Ammo.js 实例
-	 */
 	public getAmmo(): AmmoType {
 		return this.Ammo;
 	}
 
-	/**
-	 * 获取物理世界实例
-	 * @returns 物理世界实例
-	 */
 	public getPhysicsWorld(): AmmoPhysicsWorld | null {
 		return this.physicsWorld;
 	}
 
-	/**
-	 * 获取刚体数组
-	 * @returns 刚体数组
-	 */
 	public getRigidBodies(): THREE.Object3D[] {
 		return this.rigidBodies;
 	}
 
-	/**
-	 * 获取临时变换对象
-	 * @returns 临时变换对象
-	 */
 	public getTmpTrans(): any {
 		return this.tmpTrans;
 	}
 
-	// ==================== 公共实例方法 ====================
 	/**
 	 * 创建物理世界
+	 * 初始化碰撞检测、调度器、约束求解器等组件，设置重力
 	 */
 	createWorld(): void {
-		const Ammo = this.getAmmo();
+		const collisionConfiguration = new this.Ammo.btDefaultCollisionConfiguration();
+		const dispatcher = new this.Ammo.btCollisionDispatcher(collisionConfiguration);
+		const overlappingPairCache = new this.Ammo.btDbvtBroadphase();
+		const constraintSolver = new this.Ammo.btSequentialImpulseConstraintSolver();
 
-		const collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
-		const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
-		const overlappingPairCache = new Ammo.btDbvtBroadphase();
-		const constraintSolver = new Ammo.btSequentialImpulseConstraintSolver();
-
-		this.physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
+		this.physicsWorld = new this.Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 		if (this.physicsWorld) {
-			this.physicsWorld.setGravity(new Ammo.btVector3(0, -50, 0));
+			this.physicsWorld.setGravity(new this.Ammo.btVector3(0, -50, 0));
 		}
 	}
 
 	/**
-	 * 添加刚体到物理世界
-	 * @param threeObject - Three.js 对象
-	 * @param rigidBody - Ammo.js 刚体对象
+	 * 将刚体添加到物理世界
+	 * 同时建立 Three.js 对象与物理刚体的关联
 	 */
 	addRigidBody(threeObject: THREE.Object3D, rigidBody: any): void {
 		if (rigidBody && this.physicsWorld) {
@@ -125,10 +87,6 @@ export class PhysicsEngine {
 		}
 	}
 
-	/**
-	 * 移除刚体
-	 * @param threeObject - Three.js 对象
-	 */
 	removeRigidBody(threeObject: THREE.Object3D): void {
 		const index = this.rigidBodies.indexOf(threeObject);
 		if (index !== -1) {
@@ -141,9 +99,8 @@ export class PhysicsEngine {
 	}
 
 	/**
-	 * 更新物理世界
-	 * @param deltaTime - 时间差（秒）
-	 * @param maxSubSteps - 最大子步数，默认 10
+	 * 更新物理模拟
+	 * 执行物理步进，并将物理计算结果同步到 Three.js 对象的位置和旋转
 	 */
 	update(deltaTime: number, maxSubSteps: number = 10): void {
 		if (!this.physicsWorld) return;
@@ -166,18 +123,60 @@ export class PhysicsEngine {
 		}
 	}
 
-	/**
-	 * 清理资源
-	 */
 	dispose(): void {
 		for (let i = this.rigidBodies.length - 1; i >= 0; i--) {
 			this.removeRigidBody(this.rigidBodies[i]);
 		}
 
-		if (this.physicsWorld) {
-			this.physicsWorld = null;
+		this.physicsWorld = null;
+		this.rigidBodies = [];
+	}
+
+	/**
+	 * 为 Three.js 对象创建并添加刚体物理
+	 * 支持球体（radius）和盒子（scale）两种形状
+	 * mass = 0 为静态物体，mass > 0 为动态物体
+	 */
+	addRigidPhysics(item: THREE.Object3D, options: AddRigidPhysicsOptions): void {
+		const { scale, radius, mass = 0, quat = { x: 0, y: 0, z: 0, w: 1 }, rollingFriction, friction, margin = 0.05 } = options;
+		const { x, y, z } = item.position;
+
+		const transform = new this.Ammo.btTransform();
+		transform.setIdentity();
+		transform.setOrigin(new this.Ammo.btVector3(x, y, z));
+		transform.setRotation(new this.Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
+		const motionState = new this.Ammo.btDefaultMotionState(transform);
+
+		let colShape: any;
+		if (radius !== undefined) {
+			colShape = new this.Ammo.btSphereShape(radius);
+		} else if (scale) {
+			colShape = new this.Ammo.btBoxShape(new this.Ammo.btVector3(scale.x * 0.5, scale.y * 0.5, scale.z * 0.5));
+		} else {
+			throw new Error("addRigidPhysics: 必须提供 scale 或 radius");
+		}
+		colShape.setMargin(margin);
+
+		const localInertia = new this.Ammo.btVector3(0, 0, 0);
+		colShape.calculateLocalInertia(mass, localInertia);
+
+		const rbInfo = new this.Ammo.btRigidBodyConstructionInfo(mass, motionState, colShape, localInertia);
+		const body = new this.Ammo.btRigidBody(rbInfo);
+
+		body.setActivationState(this.STATE.DISABLE_DEACTIVATION);
+		if (mass === 0) {
+			body.setCollisionFlags(2);
 		}
 
-		this.rigidBodies = [];
+		if (friction !== undefined) {
+			body.setFriction(friction);
+		}
+
+		if (rollingFriction !== undefined) {
+			body.setRollingFriction(rollingFriction);
+		}
+
+		item.userData.physicsBody = body;
+		this.addRigidBody(item, body);
 	}
 }

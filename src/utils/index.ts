@@ -5,3 +5,4 @@ export { loadTexture } from "./textureLoader";
 export { loadFont } from "./fontLoader";
 export { getRandomArbitrary, getRandomInt, clamp } from "./math";
 export { isTouchscreenDevice } from "./device";
+export { getCanvasRelativePosition, isInArea1, isInArea2, isInArea3 } from "./camera";

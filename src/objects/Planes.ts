@@ -1,61 +1,49 @@
 import * as THREE from "three";
-import { scene } from "../resources/world";
-import { addRigidPhysics } from "./PhysicsHelpers";
+import { scene } from "../core/World";
+import { PhysicsEngine } from "../core/PhysicsEngine";
+import { createFloatingLabel } from "./Shapes";
+import { loadFont } from "../utils/fontLoader";
+import { isTouchscreenDevice } from "../utils/device";
 
-/**
- * 平面配置常量
- */
-export const PLANE_CONFIG = {
+const CONFIG_BASE = {
 	position: { x: 0, y: -0.25, z: 0 },
-	scale: { x: 175, y: 0.5, z: 175 },
+	size: { y: 0.5 }, // Y 方向尺寸（高度/厚度）
 	mass: 0,
 	quaternion: { x: 0, y: 0, z: 0, w: 1 },
-	friction: 10,
-	rollingFriction: 10,
+	friction: 10, // 滑动摩擦：影响物体在表面上滑动时的阻力
+	rollingFriction: 10, // 滚动摩擦：影响球体等圆形物体在表面上滚动时的阻力
 	grid: {
-		cellSize: 10,
+		cellSize: 5, // 每个网格格子的大小
+		cellCount: { x: 35, z: 35 }, // X 和 Z 方向的格子数量
 		positionY: 0.005,
+	},
+} as const;
+
+// 根据格子数量和格子大小计算实际尺寸
+export const CONFIG = {
+	...CONFIG_BASE,
+	size: {
+		x: CONFIG_BASE.grid.cellCount.x * CONFIG_BASE.grid.cellSize,
+		y: CONFIG_BASE.size.y,
+		z: CONFIG_BASE.grid.cellCount.z * CONFIG_BASE.grid.cellSize,
 	},
 } as const;
 
 /**
  * 创建网格平面
- *
- * 该函数用于创建一个带有网格辅助线的物理平面对象。平面由两部分组成：
- * 1. 视觉网格（GridHelper）：用于提供空间参考的网格线
- * 2. 物理平面（Mesh）：实际的碰撞表面，使用半透明材质以便看到下方的网格
- *
- * 视觉属性：
- * - 使用 BoxBufferGeometry 作为基础几何体，通过缩放（scale）来控制实际尺寸
- * - 材质设置为 MeshPhongMaterial，可以很好地响应光照
- * - 平面设置为半透明，可以看到下方的网格线
- * - 平面可以接收阴影，增强场景真实感
- *
- * 物理属性：
- * - 默认质量为 0，表示静态物体（不会因重力或碰撞而移动）
- * - 碰撞形状为盒子（Box），尺寸与视觉尺寸完全一致
- * - 摩擦系数为 10，影响物体在平面上滑动时的阻力
- * - 滚动摩擦系数为 10，影响球体等圆形物体在平面上滚动时的阻力
- * - 旋转四元数用于控制平面的初始朝向
- *
- * @returns THREE.Mesh - 创建的平面网格对象，已添加到场景中并配置了物理属性
+ * 包含视觉网格（GridHelper）和物理平面（Mesh）
  */
 export function createGridPlane(): THREE.Mesh {
-	const { position, scale, quaternion, mass, friction, rollingFriction } = PLANE_CONFIG;
-	const { cellSize, positionY } = PLANE_CONFIG.grid;
-	const gridSize = scale.x;
-	const divisions = Math.round(gridSize / cellSize);
+	const { position, size, quaternion, mass, friction, rollingFriction } = CONFIG;
+	const { cellCount, positionY } = CONFIG.grid;
 
-	// 创建视觉网格
-	const grid = new THREE.GridHelper(gridSize, divisions, 0xffffff, 0xffffff);
+	const grid = new THREE.GridHelper(size.x, cellCount.x, 0xffffff, 0xffffff);
 	const gridMaterial = grid.material as THREE.Material;
-	// 设置网格的透明度和位置
 	gridMaterial.opacity = 0.5;
 	gridMaterial.transparent = true;
 	grid.position.y = positionY;
 	scene.add(grid);
 
-	// 创建物理平面
 	const blockPlane = new THREE.Mesh(
 		new THREE.BoxBufferGeometry(),
 		new THREE.MeshPhongMaterial({
@@ -65,19 +53,35 @@ export function createGridPlane(): THREE.Mesh {
 		})
 	);
 
-	// 设置位置、缩放和阴影属性
 	blockPlane.position.set(position.x, position.y, position.z);
-	blockPlane.scale.set(scale.x, scale.y, scale.z);
+	blockPlane.scale.set(size.x, size.y, size.z);
 	blockPlane.receiveShadow = true;
 	scene.add(blockPlane);
 
-	// 物理配置
-	addRigidPhysics(blockPlane, {
-		scale,
+	PhysicsEngine.getInstance().addRigidPhysics(blockPlane, {
+		scale: size,
 		mass,
 		quat: quaternion,
 		friction,
 		rollingFriction,
+	});
+
+	// 创建操作提示文本
+	const instructionsText = isTouchscreenDevice()
+		? "Use the joystick at the bottom\nof the screen to move the ball."
+		: "Use the arrow keys on your\nkeyboard to move the ball.";
+
+	loadFont({
+		onLoad: (font) => {
+			const label = createFloatingLabel({
+				font,
+				position: { x: 0, y: 0.01, z: 10 },
+				text: instructionsText,
+				size: 1.5,
+				rotateX: true,
+			});
+			scene.add(label);
+		},
 	});
 
 	return blockPlane;

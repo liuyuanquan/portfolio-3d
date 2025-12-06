@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { manager } from "../resources/world";
+import { manager } from "../core/World";
 
 /**
  * 应用纹理选项到纹理对象

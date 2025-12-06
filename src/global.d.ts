@@ -23,40 +23,6 @@ interface AmmoPhysicsWorld {
 // ==================== 对象创建选项 ====================
 
 /**
- * 创建墙壁的选项
- */
-interface CreateWallOptions {
-	/** X 坐标 */
-	x: number;
-	/** Y 坐标 */
-	y: number;
-	/** Z 坐标 */
-	z: number;
-	/** 墙壁缩放 */
-	wallScale: { x: number; y: number; z: number };
-}
-
-/**
- * 创建砖块的选项
- */
-interface CreateBrickOptions {
-	/** X 方向尺寸 */
-	sx: number;
-	/** Y 方向尺寸 */
-	sy: number;
-	/** Z 方向尺寸 */
-	sz: number;
-	/** 质量 */
-	mass: number;
-	/** 位置 */
-	pos: THREE.Vector3;
-	/** 旋转四元数 */
-	quat: THREE.Quaternion;
-	/** 材质 */
-	material: THREE.Material;
-}
-
-/**
  * 创建链接盒子的选项
  */
 interface CreateBoxOptions {
@@ -95,26 +61,6 @@ interface CreateBoxOptions {
 	};
 }
 
-/**
- * 创建 Sanxing 文字盒子的选项
- */
-interface SanxingWordsOptions {
-	/** X 坐标 */
-	x: number;
-	/** Y 坐标 */
-	y: number;
-	/** Z 坐标 */
-	z: number;
-	/** 缩放尺寸，默认 { x: 37, y: 3, z: 2 } */
-	scale?: { x: number; y: number; z: number };
-	/** 颜色，默认 0xff6600 */
-	color?: number;
-	/** 是否显示轮廓线，默认 true */
-	showOutline?: boolean;
-	/** 轮廓线颜色，默认 0xffffff（白色） */
-	outlineColor?: number;
-}
-
 // ==================== 物理相关选项 ====================
 
 /**
@@ -133,7 +79,7 @@ interface AddRigidPhysicsOptions {
 	rollingFriction?: number;
 	/** 摩擦系数 */
 	friction?: number;
-	/** 碰撞边距（默认使用 PHYSICS_CONFIG.collisionMargin） */
+	/** 碰撞边距（默认 0.05） */
 	margin?: number;
 }
 
@@ -161,13 +107,16 @@ interface TextureLoadOptions {
 	repeat?: { x: number; y: number };
 }
 
-// ==================== 返回值类型 ====================
+// ==================== 游戏循环配置 ====================
 
 /**
- * 广告牌返回类型
- * 用于 createBillboard 函数的返回值
+ * 游戏循环配置选项
  */
-interface BillboardResult {
-	pole: THREE.Mesh;
-	sign: THREE.Mesh;
+interface GameLoopOptions {
+	/** 更新回调函数，每帧调用，接收 deltaTime（秒）作为参数 */
+	onUpdate: (deltaTime: number) => void;
+	/** 渲染回调函数，每帧调用，执行渲染操作 */
+	onRender: () => void;
+	/** Stats.js 实例（可选），如果提供则使用，否则内部创建 */
+	stats?: Stats | null;
 }
