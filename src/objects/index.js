@@ -3,7 +3,7 @@
  */
 export { createBall, createBeachBall } from "./Balls";
 export { createBox, floydWords } from "./Boxes";
-export { createBillboard, createBillboardRotated } from "./Billboards";
+export { createBillboard, createBillboards } from "./Billboards";
 export { wallOfBricks, createBoundaryWalls } from "./Walls";
 export { createGridPlane } from "./Planes";
 export { createTriangle } from "./Shapes";

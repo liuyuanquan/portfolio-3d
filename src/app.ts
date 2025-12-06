@@ -11,7 +11,7 @@
  */
 import * as THREE from "three";
 import { WEBGL } from "three/examples/jsm/WebGL.js";
-import { billboardTextures, boxTexture, inputText, URL } from "./config/resources";
+import { boxTexture, inputText, URL } from "./config/resources";
 
 import { setupEventHandlers, moveDirection, createJoystick } from "./resources/eventHandlers";
 import { isTouchscreenDevice } from "./utils/device";
@@ -46,8 +46,7 @@ import {
 	createBeachBall,
 	createBox,
 	floydWords,
-	createBillboard,
-	createBillboardRotated,
+	createBillboards,
 	createBoundaryWalls,
 	createGridPlane,
 	createTriangle,
@@ -194,51 +193,24 @@ async function main(): Promise<void> {
 	 * 7. 启动游戏主循环
 	 */
 	function start(): void {
-		// 1. 创建 Three.js 世界场景
+		// 创建 Three.js 世界场景
 		createWorld();
 
-		// 2. 创建 Ammo.js 物理世界
+		// 创建 Ammo.js 物理世界
 		physicsEngine.createWorld();
 
-		// 3. 创建基础物理对象
+		// 创建基础物理对象
 		createGridPlane();
 
 		ballObject = createBallObj();
 
-		// 4. 创建边界墙（根据平面尺寸动态计算）
+		// 创建边界墙
 		createBoundaryWalls();
 
-		// 5. 创建广告牌和链接盒子
-		const billboard1 = createBillboard(AmmoLib, physicsEngine, {
-			x: -80,
-			y: 2.5,
-			z: -70,
-			textureImage: billboardTextures.terpSolutionsTexture,
-			urlLink: URL.terpsolutions,
-			rotation: Math.PI * 0.22,
-		}) as BillboardResult;
-		cursorHoverObjects.push(billboard1.sign);
+		// 创建广告牌
+		createBillboards();
 
-		const billboard2 = createBillboard(AmmoLib, physicsEngine, {
-			x: -45,
-			y: 2.5,
-			z: -78,
-			textureImage: billboardTextures.bagHolderBetsTexture,
-			urlLink: URL.githubBagholder,
-			rotation: Math.PI * 0.17,
-		}) as BillboardResult;
-		cursorHoverObjects.push(billboard2.sign);
-
-		const billboard3 = createBillboardRotated(AmmoLib, physicsEngine, {
-			x: -17,
-			y: 1.25,
-			z: -75,
-			textureImage: billboardTextures.homeSweetHomeTexture,
-			urlLink: URL.githubHomeSweetHome,
-			rotation: Math.PI * 0.15,
-		}) as BillboardResult;
-		cursorHoverObjects.push(billboard3.sign);
-
+		// 创建文本
 		floydWords(AmmoLib, physicsEngine, {
 			x: 16.2,
 			y: 1,

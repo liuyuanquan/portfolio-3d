@@ -142,8 +142,8 @@ export function launchClickPosition(event: MouseEvent | TouchEvent): void {
 	const raycaster = new THREE.Raycaster();
 	raycaster.setFromCamera(new THREE.Vector2(pickPosition.x, pickPosition.y), camera);
 
-	// 检测与场景中所有对象的交点
-	const intersectedObjects = raycaster.intersectObjects(scene.children);
+	// 检测与可交互对象的交点（与 launchHover 保持一致）
+	const intersectedObjects = raycaster.intersectObjects(cursorHoverObjects);
 
 	if (intersectedObjects.length > 0) {
 		// 选择最近的交点对象

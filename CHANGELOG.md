@@ -7,6 +7,29 @@
 
 ## [未发布]
 
+## [1.2.15] - 2025-12-06
+
+### 修复
+
+- **广告牌点击交互修复**
+  - 修复广告牌点击无法跳转的问题
+  - `launchClickPosition` 函数改为使用 `cursorHoverObjects` 而不是 `scene.children` 进行光线投射检测
+  - 与 `launchHover` 函数保持一致，只检测可交互对象，避免被其他对象遮挡
+
+### 重构
+
+- **广告牌模块优化**
+  - 将 `loadedTexture` 重命名为 `signMaterial`，更准确地反映其作为广告牌面板材质的用途
+  - 添加项目截图占位图配置，使用 `PLACEHOLDER_IMAGE` 常量统一管理
+  - 创建精美的占位图 `project-placeholder.png`，包含渐变背景、相机图标和装饰元素
+
+### 变更
+
+- `package.json` 版本号更新至 `1.2.15`
+- `src/resources/cameraUtils.ts` 修复点击检测逻辑，使用 `cursorHoverObjects` 替代 `scene.children`
+- `src/objects/Billboards.ts` 重命名变量，添加占位图配置
+- `public/img/project-placeholder.png` 新增项目截图占位图
+
 ## [1.2.14] - 2025-12-05
 
 ### 重构

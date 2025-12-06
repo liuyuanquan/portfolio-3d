@@ -11,7 +11,7 @@ const BALL_CONFIG = {
 	ball: {
 		position: { x: 8.75, y: 0, z: 0 },
 		radius: 2,
-		mass: 20,
+		mass: 3,
 		quaternion: { x: 0, y: 0, z: 0, w: 1 },
 		texture: `${(import.meta.env as any).BASE_URL}img/earth.jpg`,
 		rollingFriction: 10,

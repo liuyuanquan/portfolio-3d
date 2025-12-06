@@ -3,21 +3,6 @@
  * 使用 as const 确保类型安全，并通过 typeof 导出类型
  */
 export const OBJECTS_CONFIG = {
-	// 广告牌配置
-	billboard: {
-		horizontal: {
-			poleScale: { x: 1, y: 5, z: 1 },
-			signScale: { x: 30, y: 15, z: 1 },
-			signOffsetY: 10,
-		},
-		vertical: {
-			poleScale: { x: 1, y: 2.5, z: 1 },
-			signScale: { x: 15, y: 20, z: 1 },
-			signOffsetY: 11.25,
-		},
-		borderColor: 0x000000,
-	},
-
 	// 盒子配置
 	box: {
 		defaultScale: { x: 4, y: 4, z: 1 },

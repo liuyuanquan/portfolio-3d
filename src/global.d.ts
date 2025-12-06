@@ -106,7 +106,7 @@ interface TextureLoadOptions {
 
 /**
  * 广告牌返回类型
- * 用于 createBillboard 和 createBillboardRotated 函数的返回值
+ * 用于 createBillboard 函数的返回值
  */
 interface BillboardResult {
 	pole: THREE.Mesh;
