@@ -130,7 +130,7 @@ export class BrickWalls {
 		// 定义三角形的顶点坐标
 		geom.setAttribute("position", new THREE.Float32BufferAttribute([4, 0, 0, 5, 0, 0, 4.5, 1, 0], 3));
 
-		const mesh = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({ color: 0xffffff }));
+		const mesh = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
 		mesh.rotation.x = -Math.PI * 0.5;
 		mesh.position.set(x, y, z);
 

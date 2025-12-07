@@ -82,8 +82,8 @@ export const GRID_PLANE_CONFIG = {
 		positionY: 0.005, // 网格线在Y轴上的位置
 	},
 	instructions: {
-		touchscreen: "Use the joystick at the bottom\nof the screen to move the ball.",
-		keyboard: "Use the arrow keys on your\nkeyboard to move the ball.",
+		touchscreen: "使用虚拟摇杆来移动球",
+		keyboard: "使用方向键来移动球",
 	},
 } as const;
 
@@ -193,7 +193,7 @@ export const LINK_BOXES_CONFIG = {
 			borderColor: 0x1f80ff,
 			label: {
 				position: { x: 19.625, y: 4.5, z: -70 },
-				text: "Juejin",
+				text: "稀土掘金",
 			},
 		},
 		{
@@ -204,16 +204,16 @@ export const LINK_BOXES_CONFIG = {
 			borderColor: 0xf8be32,
 			label: {
 				position: { x: 26.875, y: 4.5, z: -70 },
-				text: "QQmail",
+				text: "QQ邮箱",
 			},
 		},
 	],
 	instructions: {
-		lineHeight: 4.5, // 指示文字行高
+		lineHeight: 3.5, // 指示文字行高
 		positionOffset: { y: 0.01, z: 10 }, // 指示文字位置偏移
 		size: 1.5, // 指示文字大小
-		touchscreen: ["Touch boxes with your finger", "to open links"],
-		keyboard: ["Click on boxes with", "the mouse to open links"],
+		touchscreen: ["用手指点击盒子", "打开链接"],
+		keyboard: ["用鼠标点击盒子", "打开链接"],
 	},
 } as const;
 
@@ -227,13 +227,13 @@ export const PROJECTS_SECTION_CONFIG = {
 		y: 1,
 		z: -20,
 	},
-	size: { x: 37, y: 3, z: 2 },
+	size: { x: 25, y: 3, z: 2 },
 	color: 0xff6600,
 	showOutline: false,
 	outlineColor: 0xffffff,
 	text: {
 		name: {
-			text: "Yuanquan",
+			text: "刘源泉",
 			color: 0xfffc00,
 			size: 3,
 			height: 0.5,
@@ -249,7 +249,7 @@ export const PROJECTS_SECTION_CONFIG = {
 			translateX: -0.5,
 		},
 		role: {
-			text: "Frontend Expert",
+			text: "前端专家",
 			color: 0x00ff08,
 			size: 1.5,
 			height: 0.5,
@@ -277,7 +277,7 @@ export const SKILLS_SECTION_CONFIG = {
 	receiveShadow: true, // 是否接收阴影
 	label: {
 		position: { x: 61, y: 0.01, z: -15 }, // 标签位置
-		text: "TIMELINE", // 标签文本
+		text: "工作经历", // 标签文本
 		size: 3, // 标签文字大小
 	},
 } as const;
@@ -330,7 +330,7 @@ export const BILLBOARDS_CONFIG = {
 		},
 	],
 	projectsLabel: {
-		text: "PROJECTS", // 项目标签文本
+		text: "项目", // 项目标签文本
 		size: 3, // 标签文字大小
 		positionOffset: { x: 0, y: 0.01, z: 23 }, // 标签位置偏移
 		rotateX: true, // 是否绕X轴旋转
@@ -480,7 +480,7 @@ export const CAMERA_CONFIG = {
  */
 export const RESOURCE_CONFIG = {
 	baseUrl: (import.meta.env as any).BASE_URL as string, // 基础URL路径
-	defaultFontPath: `${(import.meta.env as any).BASE_URL}json/Roboto_Regular.json`, // 默认字体路径
+	defaultFontPath: `${(import.meta.env as any).BASE_URL}json/SourceHanSerifSCVF_Regular.json`, // 默认字体路径
 	preloadTextures: [
 		`${(import.meta.env as any).BASE_URL}img/earth.jpg`, // 玩家球体纹理
 		`${(import.meta.env as any).BASE_URL}img/BeachBallColor.jpg`, // 沙滩球纹理

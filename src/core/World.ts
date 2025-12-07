@@ -19,8 +19,8 @@ export class World {
 		this.scene = new THREE.Scene();
 		this.scene.background = new THREE.Color(0x000000);
 
-		const axesHelper = new THREE.AxesHelper(200);
-		this.scene.add(axesHelper);
+		// const axesHelper = new THREE.AxesHelper(200);
+		// this.scene.add(axesHelper);
 
 		const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.1);
 		hemiLight.color.setHSL(0.6, 0.6, 0.6);

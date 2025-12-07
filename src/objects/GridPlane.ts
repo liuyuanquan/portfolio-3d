@@ -102,11 +102,12 @@ export class GridPlane {
 
 		const font = resourceManager.getFont()!;
 		return createFloatingLabel({
-					font,
-					position: { x: 0, y: 0.01, z: 10 },
-					text: instructionsText,
-					size: 1.5,
-					rotateX: true,
+			font,
+			position: { x: 0, y: 0.01, z: 10 },
+			text: instructionsText,
+			size: 1.5,
+			rotateX: true,
+			color: 0xff0000,
 		});
 	}
 }

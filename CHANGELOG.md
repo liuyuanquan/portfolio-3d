@@ -7,6 +7,38 @@
 
 ## [未发布]
 
+## [1.3.1] - 2025-12-08
+
+### 重构
+
+- **代码架构优化**
+  - 将 `ResourceManager` 从静态方法改为实例方法，导出 `resourceManager` 实例
+  - 移除单例模式，简化代码结构
+  - 所有对象类统一通过 `world` 实例访问 `physicsEngine` 和 `interactionManager`
+  - 提取工具函数到 `utils/texture.ts`：`applyTextureOptions`、`createTextureOptions`、`getTexturePath`
+  - 提取配置到 `config/index.ts`：`DEFAULT_TEXTURE_OPTIONS`、`BRICK_WALLS_CONFIG`、`KEY_MAP`
+  - 提取类型定义到 `global.d.ts`：`TextureOptions`、`TextureLoadOptions`、`BrickData`、`BillboardItem`、`BillboardConfigItem`、`ParticleAttributes`
+
+- **配置管理优化**
+  - 重新组织 `config/index.ts`，按功能模块分类（核心游戏对象、场景环境、用户交互、视觉效果、相机、资源管理）
+  - 统一配置注释风格，提高可读性
+  - 将 `DEFAULT_TEXTURE_OPTIONS` 从 `utils/texture.ts` 移动到 `config/index.ts`
+
+- **代码清理**
+  - 移除 `ResourceManager` 中未使用的方法和属性
+  - 优化 `InteractionManager` 代码结构，提取事件处理方法
+  - 统一代码格式和缩进
+
+### 变更
+
+- `package.json` 版本号更新至 `1.3.1`
+- `ResourceManager` 改为实例方法，导出 `resourceManager` 实例
+- `World` 类添加 `physicsEngine` 和 `interactionManager` 属性
+- `PhysicsEngine` 和 `InteractionManager` 构造函数自动注册到 `World` 实例
+- 所有对象类构造函数简化，只需接收 `world` 参数
+- `utils/texture.ts` 新增纹理相关工具函数
+- `config/index.ts` 重新组织，添加详细分类和注释
+
 ## [1.3.0] - 2025-12-06
 
 ### 优化

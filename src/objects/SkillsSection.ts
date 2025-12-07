@@ -36,10 +36,10 @@ export class SkillsSection {
 		this.timelineLabel = this.createTimelineLabel();
 	}
 
-/**
+	/**
 	 * 创建技能展示平面
 	 * @returns 技能展示平面网格对象
- */
+	 */
 	private createSkillsPlane(): THREE.Mesh {
 		const { position, size, texture, receiveShadow } = SKILLS_SECTION_CONFIG;
 
@@ -67,11 +67,12 @@ export class SkillsSection {
 		const font = resourceManager.getFont()!;
 
 		return createFloatingLabel({
-				font,
-				position: label.position,
-				text: label.text,
-				size: label.size,
-				rotateX: true,
-			});
+			font,
+			position: label.position,
+			text: label.text,
+			size: label.size,
+			rotateX: true,
+			color: 0xff0000,
+		});
 	}
 }
