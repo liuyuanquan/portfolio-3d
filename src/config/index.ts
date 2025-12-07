@@ -148,6 +148,8 @@ export const AREA_BOUNDS = {
 	area2: { x: [-3, 22], z: [31, 58] },
 	// 区域 3：后方区域
 	area3: { z: [50, Infinity] },
+	// 区域 4：工作经历区域
+	area4: { x: [45, 77], z: [-40, 10] },
 } as const;
 
 // ============================================================================
@@ -177,9 +179,9 @@ export const LINK_BOXES_CONFIG = {
 		{
 			position: { x: 12, y: 2, z: -70 }, // 盒子位置
 			size: { x: 4, y: 4, z: 1 }, // 盒子尺寸
-			texture: "GitHub.png", // 盒子表面纹理
+			texture: "2935ca52f752c50d2729f61f9e2afba7.jpeg", // 盒子表面纹理
 			url: "https://github.com/liuyuanquan", // 点击后跳转的链接
-			borderColor: 0xffffff, // 边框颜色
+			borderColor: 0x000000, // 边框颜色
 			label: {
 				position: { x: 11.875, y: 4.5, z: -70 }, // 标签位置
 				text: "Github", // 标签文本
@@ -188,9 +190,9 @@ export const LINK_BOXES_CONFIG = {
 		{
 			position: { x: 19.5, y: 2, z: -70 },
 			size: { x: 4, y: 4, z: 1 },
-			texture: "juejin.png",
+			texture: "def6cb23b86a0746d175d26946882a55.png",
 			url: "https://juejin.cn/user/4089838986602078",
-			borderColor: 0x1f80ff,
+			borderColor: 0xffffff,
 			label: {
 				position: { x: 19.625, y: 4.5, z: -70 },
 				text: "稀土掘金",
@@ -199,9 +201,9 @@ export const LINK_BOXES_CONFIG = {
 		{
 			position: { x: 27, y: 2, z: -70 },
 			size: { x: 4, y: 4, z: 1 },
-			texture: "QQ邮箱.png",
+			texture: "QQ邮箱.jpg",
 			url: "mailto:522703297@qq.com",
-			borderColor: 0xf8be32,
+			borderColor: 0xc9df00,
 			label: {
 				position: { x: 26.875, y: 4.5, z: -70 },
 				text: "QQ邮箱",
@@ -268,18 +270,56 @@ export const PROJECTS_SECTION_CONFIG = {
 
 /**
  * 技能展示区域配置
- * 定义了技能展示区域的背景板和标签设置
+ * 定义了技能展示区域的标签和工作经历文字设置
  */
+const startZ = -6 * GRID_PLANE_CONFIG_COMPUTED.grid.cellSize;
 export const SKILLS_SECTION_CONFIG = {
-	position: { x: 61, y: 0.025, z: 13 }, // 区域位置
-	size: { x: 30, y: 60 }, // 区域尺寸
-	texture: "activities_text.png", // 背景纹理
-	receiveShadow: true, // 是否接收阴影
 	label: {
-		position: { x: 61, y: 0.01, z: -15 }, // 标签位置
+		position: { x: 61, y: 1, z: startZ }, // 标签位置（居中，与第一个 experience 相距 4，向上移动 5）
 		text: "工作经历", // 标签文本
 		size: 3, // 标签文字大小
+		height: 0.5, // 立体文字高度
+		color: 0xff0000, // 标签颜色
+		geometry: {
+			curveSegments: 12,
+			bevelEnabled: true,
+			bevelThickness: 0.1,
+			bevelSize: 0.11,
+			bevelOffset: 0,
+			bevelSegments: 1,
+		},
+		translateX: -0.5, // 文字居中对齐
+		boxSize: { x: 15, y: 2, z: 1 }, // 可点击盒子尺寸
+		boxColor: 0xff0000, // 盒子颜色（透明）
+		url: "https://github.com/liuyuanquan", // 点击链接（可选）
 	},
+	experiences: [
+		{
+			position: { x: 61, y: 0.01, z: startZ + 6 }, // 第一行位置（label z: 7 + 4 = 11，向上移动 5）
+			text: "二四.十一 - 至今，昆仑万维，前端专家", // 工作经历文本
+			size: 1.5, // 文字大小
+		},
+		{
+			position: { x: 61, y: 0.01, z: startZ + 12 }, // 第二行位置（间距 4，向上移动 5）
+			text: "二一.九 - 二四.九，小红书，  前端专家", // 工作经历文本
+			size: 1.5, // 文字大小
+		},
+		{
+			position: { x: 61, y: 0.01, z: startZ + 18 }, // 第三行位置（间距 4，向上移动 5）
+			text: "一九.五 - 二一.八，好未来，  前端专家", // 工作经历文本
+			size: 1.5, // 文字大小
+		},
+		{
+			position: { x: 61, y: 0.01, z: startZ + 24 }, // 第四行位置（label z: 7 - 4 = 3，在 label 上方，向上移动 5）
+			text: "一八.十 - 一九.三，滴滴，     资深前端", // 工作经历文本
+			size: 1.5, // 文字大小
+		},
+		{
+			position: { x: 61, y: 0.01, z: startZ + 30 }, // 第五行位置（间距 4，在 label 上方，向上移动 5）
+			text: "一六.五 - 一八.三，看看，     初级前端", // 工作经历文本（逗号后添加空格）
+			size: 1.5, // 文字大小
+		},
+	],
 } as const;
 
 // ============================================================================
@@ -462,6 +502,10 @@ export const CAMERA_CONFIG = {
 	area3: {
 		offsetY: 10, // 区域3 Y轴偏移
 		offsetZ: 40, // 区域3 Z轴偏移
+	},
+	area4: {
+		offsetY: 50, // 区域4 Y轴偏移
+		offsetZ: 40, // 区域4 Z轴偏移
 	},
 	default: {
 		offsetY: 30, // 默认 Y轴偏移

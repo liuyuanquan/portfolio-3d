@@ -24,3 +24,11 @@ export function isInArea2(position: THREE.Vector3): boolean {
 export function isInArea3(position: THREE.Vector3): boolean {
 	return position.z > AREA_BOUNDS.area3.z[0];
 }
+
+/**
+ * 检查点是否在区域4内（工作经历区域）
+ */
+export function isInArea4(position: THREE.Vector3): boolean {
+	const bounds = AREA_BOUNDS.area4;
+	return position.x >= bounds.x[0] && position.x <= bounds.x[1] && position.z >= bounds.z[0] && position.z <= bounds.z[1];
+}

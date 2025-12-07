@@ -10,10 +10,12 @@ import { createFloatingLabel } from "./Shapes";
 export class SkillsSection {
 	/** World 实例 */
 	private world: World;
-	/** 技能展示平面对象 */
-	public skillsSection!: THREE.Mesh;
-	/** TIMELINE 标签 */
+	/** 工作经历标签（立体文字） */
 	private timelineLabel!: THREE.Mesh;
+	/** 可点击的标签盒子 */
+	private labelBox!: THREE.Mesh;
+	/** 工作经历文字数组 */
+	private experienceLabels: THREE.Mesh[] = [];
 
 	constructor(world: World) {
 		this.world = world;
@@ -24,55 +26,113 @@ export class SkillsSection {
 	 * 将创建的对象添加到 World 场景中
 	 */
 	public addWorld(): void {
-		this.world.scene.add(this.skillsSection);
+		const { label } = SKILLS_SECTION_CONFIG;
+
 		this.world.scene.add(this.timelineLabel);
+		this.world.scene.add(this.labelBox);
+
+		// 为标签盒子添加物理属性（静态物体，质量为 0）
+		this.world.physicsEngine.addRigidPhysics(this.labelBox, {
+			scale: label.boxSize,
+			mass: 0, // 静态物体
+		});
+
+		// 将标签盒子添加到可交互对象列表
+		if (label.url) {
+			this.labelBox.userData.URL = label.url;
+			this.world.cursorHoverObjects.push(this.labelBox);
+		}
+
+		for (const experienceLabel of this.experienceLabels) {
+			this.world.scene.add(experienceLabel);
+		}
 	}
 
 	/**
 	 * 初始化技能展示区域
 	 */
 	private init(): void {
-		this.skillsSection = this.createSkillsPlane();
 		this.timelineLabel = this.createTimelineLabel();
+		this.labelBox = this.createLabelBox();
+		this.experienceLabels = this.createExperienceLabels();
 	}
 
 	/**
-	 * 创建技能展示平面
-	 * @returns 技能展示平面网格对象
-	 */
-	private createSkillsPlane(): THREE.Mesh {
-		const { position, size, texture, receiveShadow } = SKILLS_SECTION_CONFIG;
-
-		const material = new THREE.MeshBasicMaterial({
-			map: resourceManager.loadTexture(texture),
-			transparent: true,
-			opacity: 1,
-		});
-
-		const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(size.x, size.y), material);
-		mesh.position.set(position.x, position.y, position.z);
-		mesh.rotation.x = -Math.PI * 0.5;
-		mesh.renderOrder = 1;
-		mesh.receiveShadow = receiveShadow;
-
-		return mesh;
-	}
-
-	/**
-	 * 创建 TIMELINE 标签
-	 * @returns TIMELINE 标签网格对象
+	 * 创建工作经历标签（立体文字）
+	 * @returns 工作经历标签网格对象
 	 */
 	private createTimelineLabel(): THREE.Mesh {
 		const { label } = SKILLS_SECTION_CONFIG;
 		const font = resourceManager.getFont()!;
 
-		return createFloatingLabel({
+		const geometry = new THREE.TextGeometry(label.text, {
 			font,
-			position: label.position,
-			text: label.text,
 			size: label.size,
-			rotateX: true,
-			color: 0xff0000,
+			height: label.height,
+			curveSegments: label.geometry.curveSegments,
+			bevelEnabled: label.geometry.bevelEnabled,
+			bevelThickness: label.geometry.bevelThickness,
+			bevelSize: label.geometry.bevelSize,
+			bevelOffset: label.geometry.bevelOffset ?? 0,
+			bevelSegments: label.geometry.bevelSegments ?? 1,
 		});
+		geometry.computeBoundingBox();
+		geometry.computeVertexNormals();
+		if (geometry.boundingBox) {
+			const xMid = label.translateX * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+			geometry.translate(xMid, 0, 0);
+		}
+
+		const mesh = new THREE.Mesh(new THREE.BufferGeometry().fromGeometry(geometry), [
+			new THREE.MeshBasicMaterial({ color: label.color }),
+			new THREE.MeshPhongMaterial({ color: label.color }),
+		]);
+		mesh.position.set(label.position.x, label.position.y, label.position.z);
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
+		mesh.renderOrder = 1;
+
+		return mesh;
+	}
+
+	/**
+	 * 创建可点击的标签盒子
+	 * @returns 标签盒子网格对象
+	 */
+	private createLabelBox(): THREE.Mesh {
+		const { label } = SKILLS_SECTION_CONFIG;
+		const { boxSize, boxColor, position } = label;
+
+		const geometry = new THREE.BoxBufferGeometry(boxSize.x, boxSize.y, boxSize.z);
+		const material = new THREE.MeshPhongMaterial({
+			color: boxColor,
+			transparent: true,
+			opacity: 0,
+			depthWrite: false,
+		});
+		const mesh = new THREE.Mesh(geometry, material);
+		mesh.position.set(position.x, position.y, position.z);
+
+		return mesh;
+	}
+
+	/**
+	 * 创建工作经历文字标签
+	 * @returns 工作经历文字标签数组
+	 */
+	private createExperienceLabels(): THREE.Mesh[] {
+		const { experiences } = SKILLS_SECTION_CONFIG;
+		const font = resourceManager.getFont()!;
+
+		return experiences.map((experience) =>
+			createFloatingLabel({
+				font,
+				position: experience.position,
+				text: experience.text,
+				size: experience.size,
+				rotateX: true,
+				color: 0x00ff00,
+			})
+		);
 	}
 }

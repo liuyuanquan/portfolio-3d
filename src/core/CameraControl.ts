@@ -3,7 +3,7 @@
  */
 import * as THREE from "three";
 import { World } from "./World";
-import { isInArea1, isInArea2, isInArea3 } from "../utils";
+import { isInArea1, isInArea2, isInArea3, isInArea4 } from "../utils";
 import { CAMERA_CONFIG } from "../config";
 
 /**
@@ -33,49 +33,51 @@ export class CameraControl {
 		return camera;
 	}
 
-/**
- * 相机跟随球体位置
- */
+	/**
+	 * 相机跟随球体位置
+	 */
 	public rotateCamera(ballPosition: THREE.Object3D | { position: THREE.Vector3 }): void {
 		const camPos = new THREE.Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z);
-	let targetPos: THREE.Vector3;
-	const pos = ballPosition.position;
+		let targetPos: THREE.Vector3;
+		const pos = ballPosition.position;
 
-	if (isInArea1(pos)) {
-		targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.area1.offsetY, pos.z + CAMERA_CONFIG.area1.offsetZ);
-	} else if (isInArea2(pos)) {
-		targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.area2.offsetY, pos.z + CAMERA_CONFIG.area2.offsetZ);
-	} else if (isInArea3(pos)) {
-		targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.area3.offsetY, pos.z + CAMERA_CONFIG.area3.offsetZ);
-	} else {
-		targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.default.offsetY, pos.z + CAMERA_CONFIG.default.offsetZ);
-	}
+		if (isInArea1(pos)) {
+			targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.area1.offsetY, pos.z + CAMERA_CONFIG.area1.offsetZ);
+		} else if (isInArea2(pos)) {
+			targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.area2.offsetY, pos.z + CAMERA_CONFIG.area2.offsetZ);
+		} else if (isInArea3(pos)) {
+			targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.area3.offsetY, pos.z + CAMERA_CONFIG.area3.offsetZ);
+		} else if (isInArea4(pos)) {
+			targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.area4.offsetY, pos.z + CAMERA_CONFIG.area4.offsetZ);
+		} else {
+			targetPos = new THREE.Vector3(pos.x, pos.y + CAMERA_CONFIG.default.offsetY, pos.z + CAMERA_CONFIG.default.offsetZ);
+		}
 
-	camPos.lerp(targetPos, CAMERA_CONFIG.lerpSpeed);
+		camPos.lerp(targetPos, CAMERA_CONFIG.lerpSpeed);
 		this.camera.position.copy(camPos);
 		this.camera.lookAt(pos);
-}
+	}
 
-/**
- * 处理点击交互
- */
+	/**
+	 * 处理点击交互
+	 */
 	public launchClickPosition(event: MouseEvent | TouchEvent): void {
 		const pos = this.getCanvasRelativePosition(event);
 
 		this.pickPosition.x = (pos.x / this.world.renderer.domElement.width) * 2 - 1;
 		this.pickPosition.y = (pos.y / this.world.renderer.domElement.height) * -2 + 1;
 
-	const raycaster = new THREE.Raycaster();
+		const raycaster = new THREE.Raycaster();
 		raycaster.setFromCamera(new THREE.Vector2(this.pickPosition.x, this.pickPosition.y), this.camera);
 		const intersectedObjects = raycaster.intersectObjects(this.world.cursorHoverObjects);
 
-	if (intersectedObjects.length > 0) {
-		const pickedObject = intersectedObjects[0].object;
-		if (pickedObject.userData.URL) {
-			window.open(pickedObject.userData.URL, "_blank");
+		if (intersectedObjects.length > 0) {
+			const pickedObject = intersectedObjects[0].object;
+			if (pickedObject.userData.URL) {
+				window.open(pickedObject.userData.URL, "_blank");
+			}
 		}
 	}
-}
 
 	/**
 	 * 获取画布相对位置
@@ -110,17 +112,17 @@ export class CameraControl {
 		};
 	}
 
-/**
- * 处理鼠标悬停效果
- */
+	/**
+	 * 处理鼠标悬停效果
+	 */
 	public launchHover(event: MouseEvent): void {
-	event.preventDefault();
+		event.preventDefault();
 
-	const mouse = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1);
-	const raycaster = new THREE.Raycaster();
+		const mouse = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1);
+		const raycaster = new THREE.Raycaster();
 		raycaster.setFromCamera(mouse, this.camera);
 		const intersects = raycaster.intersectObjects(this.world.cursorHoverObjects);
 
-	document.body.style.cursor = intersects.length > 0 ? "pointer" : "default";
+		document.body.style.cursor = intersects.length > 0 ? "pointer" : "default";
 	}
 }
