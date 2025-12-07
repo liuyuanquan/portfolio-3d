@@ -1,81 +1,92 @@
-import { scene } from "../core/World";
-import { loadFont } from "../utils/fontLoader";
-import { createTextMesh, createBoxWithOutline } from "./Shapes";
+import * as THREE from "three";
+import { World, resourceManager } from "../core";
+import { PROJECTS_SECTION_CONFIG } from "../config";
 
-export const CONFIG = {
-	position: {
-		x: 16.2,
-		y: 1,
-		z: -20,
-	},
-	size: { x: 37, y: 3, z: 2 },
-	color: 0xff6600,
-	showOutline: false,
-	outlineColor: 0xffffff,
-} as const;
+/**
+ * 项目展示区域对象类
+ * 负责创建和管理项目展示区域
+ */
+export class ProjectsSection {
+	/** World 实例 */
+	private world: World;
+	/** 项目盒子对象 */
+	public projectBox!: THREE.Mesh;
+	/** 轮廓线对象 */
+	private outline: THREE.LineSegments | null = null;
+	/** 文本网格数组 */
+	private textMeshes: THREE.Mesh[] = [];
 
-const TEXT_CONFIG = {
-	name: {
-		text: "Yuanquan",
-		color: 0xfffc00,
-		size: 3,
-		height: 0.5,
-		position: { x: 16.2, y: 0, z: -20 }, // 与盒子中心对齐
-		geometry: {
-			curveSegments: 12,
-			bevelEnabled: true,
-			bevelThickness: 0.1,
-			bevelSize: 0.11,
-			bevelOffset: 0,
-			bevelSegments: 1,
-		},
-		translateX: -0.5, // 文本自身居中
-	},
-	role: {
-		text: "Frontend Expert",
-		color: 0x00ff08,
-		size: 1.5,
-		height: 0.5,
-		position: { x: 16.2, y: 0, z: -20 }, // 与盒子中心对齐
-		geometry: {
-			curveSegments: 20,
-			bevelEnabled: true,
-			bevelThickness: 0.25,
-			bevelSize: 0.1,
-		},
-		translateX: -0.5, // 文本自身居中
-	},
-} as const;
-
-export function createProjectsSection(): void {
-	const { position, size, color, showOutline, outlineColor } = CONFIG;
-
-	const projectBox = createBoxWithOutline({
-		position,
-		size,
-		color,
-		showOutline,
-		outlineColor,
-	});
-	scene.add(projectBox);
-
-	if (showOutline && projectBox.userData.outline) {
-		scene.add(projectBox.userData.outline);
+	constructor(world: World) {
+		this.world = world;
+		this.init();
 	}
 
-	createTexts();
+	/**
+	 * 将创建的对象添加到 World 场景中
+	 */
+	public addWorld(): void {
+		const { size } = PROJECTS_SECTION_CONFIG;
+
+		this.world.scene.add(this.projectBox);
+
+		if (this.outline) {
+			this.world.scene.add(this.outline);
+		}
+
+		this.world.physicsEngine.addRigidPhysics(this.projectBox, { scale: size });
+
+		for (const textMesh of this.textMeshes) {
+			this.world.scene.add(textMesh);
+		}
+	}
+
+	/**
+	 * 初始化项目展示区域
+	 */
+	private init(): void {
+		this.projectBox = this.createProjectBox();
+		this.textMeshes = this.createTexts();
+	}
+
+	/**
+	 * 创建项目盒子对象
+	 * @returns 项目盒子网格对象
+	 */
+	private createProjectBox(): THREE.Mesh {
+		const { position, size, color, showOutline, outlineColor } = PROJECTS_SECTION_CONFIG;
+		const { x, y, z } = position;
+
+		const geometry = new THREE.BoxBufferGeometry(size.x, size.y, size.z);
+		const material = new THREE.MeshPhongMaterial({
+		color,
+			transparent: true,
+			opacity: 0,
+			depthWrite: false,
+	});
+		const mesh = new THREE.Mesh(geometry, material);
+		mesh.position.set(x, y, z);
+
+		if (showOutline) {
+			this.outline = new THREE.LineSegments(new THREE.EdgesGeometry(geometry), new THREE.LineBasicMaterial({ color: outlineColor, linewidth: 2 }));
+			this.outline.position.set(x, y, z);
+	}
+
+		return mesh;
 }
 
-function createTexts(): void {
-	const configs = [TEXT_CONFIG.name, TEXT_CONFIG.role];
-	const boxCenterX = CONFIG.position.x;
-	const spacing = 0.5;
+	/**
+	 * 创建文本网格
+	 * @returns 文本网格数组
+	 */
+	private createTexts(): THREE.Mesh[] {
+		const { text, spacing, position } = PROJECTS_SECTION_CONFIG;
+		const configs = [text.name, text.role];
+		const boxCenterX = position.x;
+		const font = resourceManager.getFont()!;
 
-	loadFont({
-		onLoad: (font) => {
 			// 创建文本网格并计算宽度
 			const items = configs.map((config) => {
-				const mesh = createTextMesh({
+			const mesh = this.createTextMesh({
 					font,
 					text: config.text,
 					size: config.size,
@@ -100,8 +111,59 @@ function createTexts(): void {
 				mesh.position.set(currentX, config.position.y, config.position.z);
 				currentX += width / 2 + spacing;
 				mesh.renderOrder = 1;
-				scene.add(mesh);
-			});
-		},
-	});
+		});
+
+		return items.map((item) => item.mesh);
+	}
+
+	/**
+	 * 创建文本网格
+	 * @param option 文本创建选项
+	 * @returns 文本网格对象
+	 */
+	private createTextMesh(option: {
+		font: THREE.Font;
+		text: string;
+		size: number;
+		height: number;
+		color: number;
+		geometry: {
+			curveSegments: number;
+			bevelEnabled: boolean;
+			bevelThickness: number;
+			bevelSize: number;
+			bevelOffset?: number;
+			bevelSegments?: number;
+		};
+		translateX: number;
+	}): THREE.Mesh {
+		const { font, text, size, height, color, geometry: geometryConfig, translateX } = option;
+
+		const geometry = new THREE.TextGeometry(text, {
+			font,
+			size,
+			height,
+			curveSegments: geometryConfig.curveSegments,
+			bevelEnabled: geometryConfig.bevelEnabled,
+			bevelThickness: geometryConfig.bevelThickness,
+			bevelSize: geometryConfig.bevelSize,
+			bevelOffset: geometryConfig.bevelOffset ?? 0,
+			bevelSegments: geometryConfig.bevelSegments ?? 1,
+		});
+		geometry.computeBoundingBox();
+		geometry.computeVertexNormals();
+		if (geometry.boundingBox) {
+			const xMid = translateX * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+			geometry.translate(xMid, 0, 0);
+		}
+
+		const mesh = new THREE.Mesh(new THREE.BufferGeometry().fromGeometry(geometry), [
+			new THREE.MeshBasicMaterial({ color }),
+			new THREE.MeshPhongMaterial({ color }),
+		]);
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
+
+		return mesh;
+	}
 }

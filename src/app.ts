@@ -1,42 +1,24 @@
 /**
  * 主应用入口文件
  */
-import * as THREE from "three";
 import { WEBGL } from "three/examples/jsm/WebGL.js";
-
-import { initInput, moveDirection, initJoystick } from "./core/InputManager";
-import { isTouchscreenDevice } from "./utils/device";
-
-import { scene, camera, renderer, manager, createWorld } from "./core/World";
-import { createGlowingParticles, createBackgroundParticles, moveParticles } from "./resources/Particles";
-import { createGalaxy, updateGalaxy } from "./resources/Galaxy";
-import { lensFlareObject } from "./objects/LensFlare";
-
-import { launchClickPosition, rotateCamera, launchHover } from "./core/CameraControl";
-
-import { PhysicsEngine } from "./core/PhysicsEngine";
-
-import { GameLoop } from "./core/GameLoop";
-
+import { World, GameLoop, PhysicsEngine, InteractionManager, resourceManager } from "./core";
 import {
-	createBall as createBallObj,
-	createBeachBall,
-	createBoxes,
-	createProjectsSection,
-	createBillboards,
-	createBoundaryWalls,
-	createGridPlane,
-	createBrickWalls,
-	createSkillsSection,
+	GridPlane,
+	Ball,
+	BeachBall,
+	Galaxy,
+	Glowing,
+	Background,
+	LensFlare,
+	SkillsSection,
+	LinkBoxes,
+	ProjectsSection,
+	Billboards,
+	BrickWalls,
+	BoundaryWalls,
 } from "./objects";
-import { createLensFlare } from "./objects/LensFlare";
 
-import { GAMEPLAY_CONFIG } from "./config";
-
-/**
- * 主函数
- * 初始化应用并启动游戏循环
- */
 async function main(): Promise<void> {
 	// 检查 WebGL 可用性
 	if (!WEBGL.isWebGLAvailable()) {
@@ -45,111 +27,112 @@ async function main(): Promise<void> {
 		return;
 	}
 
-	// 如果是触摸设备，创建虚拟摇杆
-	if (isTouchscreenDevice()) {
-		const joystickWrapper = document.getElementById("joystick-wrapper");
-		if (joystickWrapper) {
-			initJoystick(joystickWrapper);
-		}
-	}
+	// 初始化资源管理器并加载所有资源
+	await resourceManager.loadAll();
 
-	// 等待 Ammo.js 加载完成
-	const AmmoLib = await Ammo();
-
-	const physicsEngine = PhysicsEngine.getInstance(AmmoLib);
-
-	let ballObject: THREE.Mesh | null = null;
-	let gameLoop: GameLoop | null = null;
-	let clock: THREE.Clock;
-	manager.onLoad = function () {
-		document.querySelectorAll(".preload").forEach((element) => {
-			const el = element as HTMLElement;
-			el.style.visibility = "hidden";
+	// 隐藏预加载元素并添加淡出动画
+	document.querySelectorAll(".preload, .fadeOutDiv").forEach((element) => {
+		const el = element as HTMLElement;
+		if (el.classList.contains("preload")) {
+			// 直接设置 display: none 即可隐藏元素，visibility: hidden 是冗余的
 			el.style.display = "none";
-		});
-		document.querySelectorAll(".fadeOutDiv").forEach((element) => {
-			element.classList.add("fade-out");
-		});
-
-		document.addEventListener("click", launchClickPosition);
-		document.addEventListener("mousemove", launchHover);
-	};
-
-	function moveBall(): void {
-		if (!ballObject) return;
-
-		const movementConfig = GAMEPLAY_CONFIG.ballMovement;
-		const moveX = moveDirection.right - moveDirection.left;
-		const moveZ = moveDirection.back - moveDirection.forward;
-		const moveY = ballObject.position.y < movementConfig.groundThreshold ? 0 : movementConfig.airMovementY;
-
-		if (moveX === 0 && moveY === 0 && moveZ === 0) return;
-
-		const resultantImpulse = new AmmoLib.btVector3(moveX, moveY, moveZ);
-		resultantImpulse.op_mul(movementConfig.scalingFactor);
-
-		const physicsBody = ballObject.userData.physicsBody;
-		if (physicsBody) {
-			physicsBody.setLinearVelocity(resultantImpulse);
+		} else if (el.classList.contains("fadeOutDiv")) {
+			el.classList.add("fade-out");
 		}
-	}
+	});
 
-	function onUpdate(deltaTime: number): void {
-		moveBall();
-		physicsEngine.update(deltaTime);
+	// 初始化 World 实例
+	const world = new World();
 
-		if (ballObject) {
-			rotateCamera(ballObject);
-		}
+	// 初始化交互管理器
+	const interactionManager = new InteractionManager(world);
+	interactionManager.init();
 
-		moveParticles(clock, lensFlareObject);
-		updateGalaxy();
-	}
+	// 初始化物理引擎
+	const physicsEngine = new PhysicsEngine(world);
+	physicsEngine.init();
 
-	function start(): void {
-		// 创建 Three.js 世界场景
-		createWorld();
-		// 创建 Ammo.js 物理世界
-		physicsEngine.createWorld();
-		// 创建地面
-		createGridPlane();
-		// 创建玩家球体
-		ballObject = createBallObj();
-		// 创建边界墙
-		createBoundaryWalls();
-		// 创建砖墙
-		createBrickWalls();
-		// 创建广告牌
-		createBillboards();
-		// 创建项目展示区域
-		createProjectsSection();
-		// 创建所有链接盒子
-		createBoxes();
-		// 创建技能展示区域
-		createSkillsSection();
-		// 创建镜头光晕
-		createLensFlare();
-		// 创建背景粒子
-		createBackgroundParticles();
-		// 创建发光粒子
-		createGlowingParticles();
-		// 创建星系
-		createGalaxy();
-		// 创建沙滩球
-		createBeachBall();
+	// 创建网格平面
+	const gridPlane = new GridPlane(world);
+	gridPlane.addWorld();
 
-		// 初始化输入事件
-		initInput();
+	// 创建星系
+	const galaxy = new Galaxy(world);
+	galaxy.addWorld();
 
-		gameLoop = new GameLoop({
-			onUpdate,
-			onRender: () => renderer.render(scene, camera),
-		});
-		clock = gameLoop.getClock();
-		gameLoop.start();
-	}
+	// 创建发光粒子
+	const glowing = new Glowing(world);
+	glowing.addWorld();
 
-	start();
+	// 创建背景粒子
+	const background = new Background(world);
+	background.addWorld();
+
+	// 创建镜头光晕
+	const lensFlare = new LensFlare(world);
+	lensFlare.addWorld();
+
+	// 创建玩家球体
+	const ball = new Ball(world);
+	ball.addWorld();
+
+	// 创建沙滩球
+	const beachBall = new BeachBall(world);
+	beachBall.addWorld();
+
+	// 创建技能展示区域
+	const skillsSection = new SkillsSection(world);
+	skillsSection.addWorld();
+
+	// 创建所有链接盒子
+	const linkBoxes = new LinkBoxes(world);
+	linkBoxes.addWorld();
+
+	// 创建项目展示区域
+	const projectsSection = new ProjectsSection(world);
+	projectsSection.addWorld();
+
+	// 创建广告牌
+	const billboards = new Billboards(world);
+	billboards.addWorld();
+
+	// 创建砖墙
+	const brickWalls = new BrickWalls(world);
+	brickWalls.addWorld();
+
+	// 创建边界墙
+	const boundaryWalls = new BoundaryWalls(world);
+	boundaryWalls.addWorld();
+
+	// 启动渲染循环
+	const gameLoop = new GameLoop({
+		onUpdate: (deltaTime: number, clock: THREE.Clock) => {
+			// 更新球体移动
+			ball.update();
+
+			// 更新物理引擎
+			physicsEngine.update(deltaTime);
+
+			// 更新星系动画
+			galaxy.update(clock);
+
+			// 更新发光粒子动画
+			glowing.update(clock);
+
+			// 更新背景粒子动画
+			background.update();
+
+			// 更新镜头光晕动画
+			lensFlare.update();
+
+			// 相机跟随球体
+			world.cameraControl.rotateCamera(ball.ballObject);
+		},
+		onRender: () => {
+			world.render();
+		},
+	});
+	gameLoop.start();
 }
 
 // 启动主函数

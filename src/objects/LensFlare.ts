@@ -1,33 +1,72 @@
-import { scene } from "../core/World";
-import { createTexturedPlane } from "./Shapes";
-
-const BASE_URL: string = (import.meta.env as any).BASE_URL;
-
-const CONFIG = {
-	position: { x: 50, y: -50, z: -800 },
-	size: { x: 200, y: 200 },
-	texture: `${BASE_URL}img/lensflare0.png`,
-	opacity: 0.9,
-	rotateX: false,
-	receiveShadow: true,
-} as const;
-
-export let lensFlareObject: THREE.Mesh | null = null;
+import * as THREE from "three";
+import { World, resourceManager } from "../core";
+import { LENS_FLARE_CONFIG } from "../config";
 
 /**
- * 创建镜头光晕
+ * 镜头光晕对象类
+ * 负责创建和管理镜头光晕效果
  */
-export function createLensFlare(): void {
-	const { position, size, texture, opacity, rotateX, receiveShadow } = CONFIG;
+export class LensFlare {
+	/** World 实例 */
+	private world: World;
+	/** 镜头光晕对象 */
+	public lensFlareObject!: THREE.Mesh;
 
-	const lensFlare = createTexturedPlane({
-		position,
-		size,
-		texture,
+	constructor(world: World) {
+		this.world = world;
+		this.init();
+	}
+
+	/**
+	 * 将创建的对象添加到 World 场景中
+	 */
+	public addWorld(): void {
+		this.world.scene.add(this.lensFlareObject);
+	}
+
+	/**
+	 * 更新镜头光晕动画
+	 */
+	public update(): void {
+		const { animation } = LENS_FLARE_CONFIG;
+
+		this.lensFlareObject.rotation.z += animation.rotationSpeed;
+
+		if (this.lensFlareObject.position.x < animation.bounds.x.max) {
+			this.lensFlareObject.position.x += animation.moveSpeed.x;
+			this.lensFlareObject.position.y += animation.moveSpeed.y;
+		} else {
+			this.lensFlareObject.position.x = animation.bounds.x.min;
+			this.lensFlareObject.position.y = animation.bounds.y.default;
+		}
+	}
+
+/**
+	 * 初始化镜头光晕
+ */
+	private init(): void {
+		this.lensFlareObject = this.createLensFlare();
+	}
+
+	/**
+	 * 创建镜头光晕对象
+	 * @returns 镜头光晕网格对象
+	 */
+	private createLensFlare(): THREE.Mesh {
+		const { position, size, texture, opacity, rotateX, receiveShadow } = LENS_FLARE_CONFIG;
+
+		const material = new THREE.MeshBasicMaterial({
+			map: resourceManager.loadTexture(texture),
+			transparent: true,
 		opacity,
-		rotateX,
-		receiveShadow,
-	});
-	scene.add(lensFlare);
-	lensFlareObject = lensFlare;
+		});
+
+		const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(size.x, size.y), material);
+		mesh.position.set(position.x, position.y, position.z);
+		mesh.rotation.x = rotateX ? -Math.PI * 0.5 : 0;
+		mesh.renderOrder = 1;
+		mesh.receiveShadow = receiveShadow;
+
+		return mesh;
+	}
 }

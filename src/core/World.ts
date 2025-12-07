@@ -1,26 +1,26 @@
 import * as THREE from "three";
+import { CameraControl } from "./CameraControl";
+import { PhysicsEngine } from "./PhysicsEngine";
+import { InteractionManager } from "./InteractionManager";
 
 export class World {
-	private static instance: World | null = null;
-
 	public readonly scene: THREE.Scene;
-	public readonly camera: THREE.PerspectiveCamera;
 	public readonly renderer: THREE.WebGLRenderer;
+	public readonly cameraControl: CameraControl;
+	public readonly cursorHoverObjects: THREE.Object3D[] = [];
 	public readonly cameraHelper: THREE.CameraHelper;
 	public readonly directionalLightHelper: THREE.DirectionalLightHelper;
-	public readonly manager: THREE.LoadingManager;
+	/** 物理引擎实例 */
+	public physicsEngine!: PhysicsEngine;
+	/** 交互管理器实例 */
+	public interactionManager!: InteractionManager;
 
-	private constructor() {
-		this.manager = new THREE.LoadingManager();
-
+	constructor() {
 		this.scene = new THREE.Scene();
 		this.scene.background = new THREE.Color(0x000000);
 
 		const axesHelper = new THREE.AxesHelper(200);
 		this.scene.add(axesHelper);
-
-		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
-		this.camera.position.set(0, 30, 70);
 
 		const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.1);
 		hemiLight.color.setHSL(0.6, 0.6, 0.6);
@@ -50,35 +50,16 @@ export class World {
 		this.renderer.shadowMap.enabled = true;
 		document.body.appendChild(this.renderer.domElement);
 
-		window.addEventListener("resize", this.onWindowResize.bind(this));
+		this.cameraControl = new CameraControl(this);
 
 		this.cameraHelper = null as any;
 		this.directionalLightHelper = null as any;
 	}
 
-	public static getInstance(): World {
-		if (World.instance === null) {
-			World.instance = new World();
-		}
-		return World.instance;
+	/**
+	 * 渲染场景
+	 */
+	public render(): void {
+		this.renderer.render(this.scene, this.cameraControl.camera);
 	}
-
-	private onWindowResize(): void {
-		this.camera.aspect = window.innerWidth / window.innerHeight;
-		this.camera.updateProjectionMatrix();
-		this.renderer.setSize(window.innerWidth, window.innerHeight);
-	}
-}
-
-const world = World.getInstance();
-
-export const scene = world.scene;
-export const camera = world.camera;
-export const renderer = world.renderer;
-export const cameraHelper = world.cameraHelper;
-export const directionalLightHelper = world.directionalLightHelper;
-export const manager = world.manager;
-
-export function createWorld(): void {
-	World.getInstance();
 }

@@ -1,22 +1,14 @@
-export { createBall, createBeachBall } from "./Balls";
-export { createBoxes } from "./Boxes";
-export { createProjectsSection } from "./ProjectsSection";
-export { createBillboard, createBillboards } from "./Billboards";
-export { createBrickWalls } from "./BrickWalls";
-export { createBoundaryWalls } from "./BoundaryWalls";
-export { createGridPlane } from "./Planes";
-export { createSkillsSection } from "./SkillsSection";
-export { createLensFlare } from "./LensFlare";
-export {
-	createTriangle,
-	createBoxWithOutline,
-	createLinkBox,
-	createWall,
-	createBillboardPole,
-	createBillboardSign,
-	createTexturedPlane,
-	createFloatingLabel,
-	createTextMesh,
-} from "./Shapes";
-export { loadFont } from "../utils/fontLoader";
-export { PhysicsEngine } from "../core/PhysicsEngine";
+export { Ball } from "./Ball";
+export { BeachBall } from "./BeachBall";
+export { LinkBoxes } from "./LinkBoxes";
+export { ProjectsSection } from "./ProjectsSection";
+export { Billboards } from "./Billboards";
+export { BrickWalls } from "./BrickWalls";
+export { BoundaryWalls } from "./BoundaryWalls";
+export { GridPlane } from "./GridPlane";
+export { SkillsSection } from "./SkillsSection";
+export { LensFlare } from "./LensFlare";
+export { Galaxy } from "./Galaxy";
+export { Glowing } from "./Glowing";
+export { Background } from "./Background";
+export { createFloatingLabel } from "./Shapes";

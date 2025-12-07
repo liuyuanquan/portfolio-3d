@@ -5,7 +5,7 @@ import * as THREE from "three";
 import Stats from "stats.js";
 
 export class GameLoop {
-	private readonly onUpdate: (deltaTime: number) => void;
+	private readonly onUpdate: (deltaTime: number, clock: THREE.Clock) => void;
 	private readonly onRender: () => void;
 	private readonly stats: Stats | null;
 	private readonly clock: THREE.Clock;
@@ -57,7 +57,7 @@ export class GameLoop {
 
 		const deltaTime = this.clock.getDelta();
 
-		this.onUpdate(deltaTime);
+		this.onUpdate(deltaTime, this.clock);
 		this.onRender();
 
 		this.stats?.end();

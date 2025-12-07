@@ -1,12 +1,12 @@
 // ==================== Ammo.js 类型声明 ====================
 
 /**
- * Ammo.js 全局函数
+ * Ammo.js 全局函数声明
  */
 declare function Ammo(): Promise<AmmoType>;
 
 /**
- * Ammo.js 类型定义
+ * Ammo.js 主类型定义
  */
 type AmmoType = any;
 
@@ -20,48 +20,40 @@ interface AmmoPhysicsWorld {
 	stepSimulation(deltaTime: number, maxSubSteps: number): void;
 }
 
-// ==================== 对象创建选项 ====================
+// ==================== 物理相关选项 ====================
 
 /**
- * 创建链接盒子的选项
+ * 砖块数据接口
  */
-interface CreateBoxOptions {
-	/** X 坐标 */
-	x: number;
-	/** Y 坐标 */
-	y: number;
-	/** Z 坐标 */
-	z: number;
-	/** X 轴缩放 */
-	scaleX: number;
-	/** Y 轴缩放 */
-	scaleY: number;
-	/** Z 轴缩放 */
-	scaleZ: number;
-	/** 盒子纹理路径 */
-	boxTexture: string;
-	/** 点击跳转的链接 */
-	URLLink: string;
-	/** 边框颜色，默认 0x000000 */
-	color?: number;
-	/** 是否透明，默认 true */
-	transparent?: boolean;
-	/** 图片背景色（当 transparent 为 false 时使用），默认使用 color */
-	backgroundColor?: number;
-	/** 浮动标签配置（可选） */
-	label?: {
-		/** X 坐标 */
-		x: number;
-		/** Y 坐标 */
-		y: number;
-		/** Z 坐标 */
-		z: number;
-		/** 要显示的文本内容 */
-		inputMessage: string;
-	};
+interface BrickData {
+	/** 砖块网格对象 */
+	brick: THREE.Mesh;
+	/** 砖块质量 */
+	mass: number;
+	/** 砖块缩放 */
+	scale: { x: number; y: number; z: number };
+	/** 砖块旋转四元数 */
+	quat: THREE.Quaternion;
 }
 
-// ==================== 物理相关选项 ====================
+/**
+ * 广告牌配置项类型（从 BILLBOARDS_CONFIG 派生）
+ */
+type BillboardConfigItem = (typeof BILLBOARDS_CONFIG.billboards)[number];
+
+/**
+ * 广告牌项接口
+ */
+interface BillboardItem {
+	/** 广告牌杆 */
+	pole: THREE.Mesh;
+	/** 广告牌面板 */
+	sign: THREE.Mesh;
+	/** 文本平面 */
+	textPlane: THREE.Mesh;
+	/** 配置信息 */
+	itemConfig: BillboardConfigItem;
+}
 
 /**
  * 添加刚体物理的选项
@@ -86,7 +78,7 @@ interface AddRigidPhysicsOptions {
 // ==================== 资源加载选项 ====================
 
 /**
- * 纹理加载选项
+ * 纹理加载选项（可选参数）
  */
 interface TextureLoadOptions {
 	/** 是否生成 mipmaps，默认 false */
@@ -107,16 +99,54 @@ interface TextureLoadOptions {
 	repeat?: { x: number; y: number };
 }
 
+/**
+ * 纹理选项接口（完整参数）
+ */
+interface TextureOptions {
+	/** 是否生成 mipmaps */
+	generateMipmaps: boolean;
+	/** 最小过滤模式 */
+	minFilter: THREE.TextureFilter;
+	/** 最大过滤模式 */
+	magFilter: THREE.TextureFilter;
+	/** 各向异性过滤 */
+	anisotropy: number;
+	/** S 轴纹理包裹模式 */
+	wrapS: THREE.Wrapping;
+	/** T 轴纹理包裹模式 */
+	wrapT: THREE.Wrapping;
+	/** 颜色编码 */
+	encoding: THREE.TextureEncoding;
+	/** 纹理重复次数 */
+	repeat: { x: number; y: number };
+}
+
 // ==================== 游戏循环配置 ====================
 
 /**
  * 游戏循环配置选项
  */
 interface GameLoopOptions {
-	/** 更新回调函数，每帧调用，接收 deltaTime（秒）作为参数 */
-	onUpdate: (deltaTime: number) => void;
+	/** 更新回调函数，每帧调用，接收 deltaTime（秒）和 clock 作为参数 */
+	onUpdate: (deltaTime: number, clock: THREE.Clock) => void;
 	/** 渲染回调函数，每帧调用，执行渲染操作 */
 	onRender: () => void;
 	/** Stats.js 实例（可选），如果提供则使用，否则内部创建 */
 	stats?: Stats | null;
+}
+
+// ==================== 输入控制 ====================
+
+/**
+ * 移动方向接口（存储键盘/触摸输入状态）
+ */
+interface MoveDirection {
+	/** 左方向（0 或 1） */
+	left: number;
+	/** 右方向（0 或 1） */
+	right: number;
+	/** 前进方向（0 或 1） */
+	forward: number;
+	/** 后退方向（0 或 1） */
+	back: number;
 }

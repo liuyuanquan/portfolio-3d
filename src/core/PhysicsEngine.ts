@@ -1,12 +1,12 @@
 import * as THREE from "three";
+import { resourceManager } from "./ResourceManager";
+import { World } from "./World";
 
 /**
- * 物理引擎单例类
+ * 物理引擎类
  * 封装 Ammo.js 物理引擎，管理物理世界和刚体
  */
 export class PhysicsEngine {
-	private static instance: PhysicsEngine | null = null;
-
 	private Ammo: AmmoType;
 	private physicsWorld: AmmoPhysicsWorld | null;
 	private rigidBodies: THREE.Object3D[];
@@ -16,31 +16,15 @@ export class PhysicsEngine {
 		DISABLE_DEACTIVATION: number;
 	};
 
-	private constructor(Ammo: AmmoType) {
-		this.Ammo = Ammo;
+	constructor(world: World) {
+		this.Ammo = resourceManager.getAmmo();
 		this.physicsWorld = null;
 		this.rigidBodies = [];
-		this.tmpTrans = new Ammo.btTransform();
+		this.tmpTrans = new this.Ammo.btTransform();
 		this.STATE = {
 			DISABLE_DEACTIVATION: 4,
 		};
-	}
-
-	/**
-	 * 获取物理引擎单例实例
-	 * 首次调用需要传入 Ammo 库，后续调用返回同一实例
-	 */
-	public static getInstance(Ammo?: AmmoType): PhysicsEngine {
-		if (PhysicsEngine.instance) {
-			return PhysicsEngine.instance;
-		}
-
-		if (!Ammo) {
-			throw new Error("PhysicsEngine.getInstance() requires Ammo parameter on first call");
-		}
-
-		PhysicsEngine.instance = new PhysicsEngine(Ammo);
-		return PhysicsEngine.instance;
+		world.physicsEngine = this;
 	}
 
 	public getAmmo(): AmmoType {
@@ -60,10 +44,10 @@ export class PhysicsEngine {
 	}
 
 	/**
-	 * 创建物理世界
+	 * 初始化物理世界
 	 * 初始化碰撞检测、调度器、约束求解器等组件，设置重力
 	 */
-	createWorld(): void {
+	public init(): void {
 		const collisionConfiguration = new this.Ammo.btDefaultCollisionConfiguration();
 		const dispatcher = new this.Ammo.btCollisionDispatcher(collisionConfiguration);
 		const overlappingPairCache = new this.Ammo.btDbvtBroadphase();

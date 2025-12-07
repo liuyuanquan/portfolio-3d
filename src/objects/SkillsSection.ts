@@ -1,46 +1,77 @@
-import { scene } from "../core/World";
-import { createTexturedPlane, createFloatingLabel } from "./Shapes";
-import { loadFont } from "../utils/fontLoader";
-
-const BASE_URL: string = (import.meta.env as any).BASE_URL;
-
-const CONFIG = {
-	position: { x: 61, y: 0.025, z: 13 },
-	size: { x: 30, y: 60 },
-	texture: `${BASE_URL}img/activities_text.png`,
-	receiveShadow: true,
-	label: {
-		position: { x: 61, y: 0.01, z: -15 },
-		text: "TIMELINE",
-		size: 3,
-	},
-} as const;
+import * as THREE from "three";
+import { World, resourceManager } from "../core";
+import { SKILLS_SECTION_CONFIG } from "../config";
+import { createFloatingLabel } from "./Shapes";
 
 /**
- * 创建技能展示区域
+ * 技能展示区域对象类
+ * 负责创建和管理技能展示区域
  */
-export function createSkillsSection(): void {
-	const { position, size, texture, receiveShadow, label } = CONFIG;
+export class SkillsSection {
+	/** World 实例 */
+	private world: World;
+	/** 技能展示平面对象 */
+	public skillsSection!: THREE.Mesh;
+	/** TIMELINE 标签 */
+	private timelineLabel!: THREE.Mesh;
 
-	const skillsSection = createTexturedPlane({
-		position,
-		size,
-		texture,
-		receiveShadow,
-	});
-	scene.add(skillsSection);
+	constructor(world: World) {
+		this.world = world;
+		this.init();
+	}
 
-	// 创建 "TIMELINE" 标签
-	loadFont({
-		onLoad: (font) => {
-			const timelineLabel = createFloatingLabel({
+	/**
+	 * 将创建的对象添加到 World 场景中
+	 */
+	public addWorld(): void {
+		this.world.scene.add(this.skillsSection);
+		this.world.scene.add(this.timelineLabel);
+	}
+
+	/**
+	 * 初始化技能展示区域
+	 */
+	private init(): void {
+		this.skillsSection = this.createSkillsPlane();
+		this.timelineLabel = this.createTimelineLabel();
+	}
+
+/**
+	 * 创建技能展示平面
+	 * @returns 技能展示平面网格对象
+ */
+	private createSkillsPlane(): THREE.Mesh {
+		const { position, size, texture, receiveShadow } = SKILLS_SECTION_CONFIG;
+
+		const material = new THREE.MeshBasicMaterial({
+			map: resourceManager.loadTexture(texture),
+			transparent: true,
+			opacity: 1,
+		});
+
+		const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(size.x, size.y), material);
+		mesh.position.set(position.x, position.y, position.z);
+		mesh.rotation.x = -Math.PI * 0.5;
+		mesh.renderOrder = 1;
+		mesh.receiveShadow = receiveShadow;
+
+		return mesh;
+	}
+
+	/**
+	 * 创建 TIMELINE 标签
+	 * @returns TIMELINE 标签网格对象
+	 */
+	private createTimelineLabel(): THREE.Mesh {
+		const { label } = SKILLS_SECTION_CONFIG;
+		const font = resourceManager.getFont()!;
+
+		return createFloatingLabel({
 				font,
 				position: label.position,
 				text: label.text,
 				size: label.size,
 				rotateX: true,
 			});
-			scene.add(timelineLabel);
-		},
-	});
+	}
 }
