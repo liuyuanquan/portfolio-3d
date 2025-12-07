@@ -1,6 +1,6 @@
 # 应用工作流程文档
 
-本文档详细说明了 `src/app.js` 的完整工作流程，包括初始化、资源加载、场景创建、事件处理和游戏循环等各个阶段。
+本文档详细说明了 `src/app.ts` 的完整工作流程，包括初始化、资源加载、场景创建、事件处理和游戏循环等各个阶段。
 
 ## 目录
 
@@ -11,19 +11,20 @@
 - [事件处理流程](#事件处理流程)
 - [游戏循环流程](#游戏循环流程)
 - [模块依赖关系](#模块依赖关系)
-- [关键函数说明](#关键函数说明)
+- [关键类和方法说明](#关键类和方法说明)
 
 ## 概述
 
-`app.js` 是整个应用的入口文件，负责协调各个模块的工作。应用使用 Ammo.js 物理引擎和 Three.js 3D 渲染库，创建一个交互式的 3D 作品集网站。
+`app.ts` 是整个应用的入口文件，负责协调各个模块的工作。应用使用 Ammo.js 物理引擎和 Three.js 3D 渲染库，创建一个交互式的 3D 作品集网站。
 
 ### 核心特性
 
 - **物理引擎**：使用 Ammo.js 实现真实的物理模拟
 - **3D 渲染**：使用 Three.js 渲染 3D 场景
 - **交互控制**：支持键盘和触摸屏控制
-- **资源管理**：统一管理纹理、模型等资源
+- **资源管理**：统一管理纹理、字体和 Ammo.js 资源
 - **游戏循环**：使用 `GameLoop` 类管理更新和渲染循环
+- **面向对象架构**：所有组件都采用类封装，通过依赖注入实现模块化
 
 ## 初始化流程
 
@@ -31,171 +32,182 @@
 
 应用首先导入所有必要的模块：
 
-```javascript
+```typescript
 // 核心库
-import * as THREE from "three";
 import { WEBGL } from "three/examples/jsm/WebGL.js";
 
-// 配置模块
-import { ... } from "./config/resources";      // 资源路径配置
-import { ... } from "./config";                // 游戏配置
+// 核心模块（统一导出）
+import { World, GameLoop, PhysicsEngine, InteractionManager, resourceManager } from "./core";
 
-// 资源管理模块
-import { ... } from "./resources/world";        // 场景、相机、渲染器
-import { ... } from "./resources/surfaces";     // 表面和文本创建
-import { ... } from "./resources/cameraUtils";  // 相机控制工具
-import { ... } from "./resources/eventHandlers"; // 事件处理
-import { ... } from "./resources/preload";      // 预加载管理
-
-// 核心模块
-import { PhysicsEngine } from "./core/PhysicsEngine";
-import { GameLoop } from "./core/GameLoop";
-
-// 对象创建模块
-import { ... } from "./objects";                // 3D 对象创建函数
+// 对象模块（统一导出）
+import {
+	GridPlane,
+	Ball,
+	BeachBall,
+	Galaxy,
+	Glowing,
+	Background,
+	LensFlare,
+	SkillsSection,
+	LinkBoxes,
+	ProjectsSection,
+	Billboards,
+	BrickWalls,
+	BoundaryWalls,
+} from "./objects";
 ```
 
 ### 2. WebGL 可用性检查
 
 在开始之前，应用检查浏览器是否支持 WebGL：
 
-```javascript
-if (WEBGL.isWebGLAvailable()) {
-	start();
-} else {
-	alert("Your browser does not support WebGL...");
+```typescript
+if (!WEBGL.isWebGLAvailable()) {
+	alert("Your browser does not support WebGL. Please update your browser to the latest version.");
 	location.href = "https://github.com/liuyuanquan/portfolio-3d";
+	return;
 }
 ```
 
-### 3. Ammo.js 初始化
+### 3. 资源加载
 
-应用通过全局 `Ammo()` 函数初始化物理引擎：
+使用 `ResourceManager` 实例加载所有资源：
 
-```javascript
-Ammo().then((Ammo) => {
-	// 所有应用逻辑都在这个回调中执行
-	// Ammo 是物理引擎的命名空间对象
+```typescript
+await resourceManager.loadAll();
+```
+
+这会并行加载：
+
+- 字体文件（Roboto_Regular.json）
+- 预加载的纹理资源
+- Ammo.js 物理引擎库
+
+### 4. 预加载界面处理
+
+资源加载完成后，隐藏预加载元素：
+
+```typescript
+document.querySelectorAll(".preload, .fadeOutDiv").forEach((element) => {
+	const el = element as HTMLElement;
+	if (el.classList.contains("preload")) {
+		el.style.display = "none";
+	} else if (el.classList.contains("fadeOutDiv")) {
+		el.classList.add("fade-out");
+	}
 });
 ```
 
-## 资源加载流程
-
-### 1. LoadingManager 配置
-
-使用 Three.js 的 `LoadingManager` 跟踪资源加载进度：
-
-```javascript
-manager.onStart = function (item, loaded, total) {
-	// 资源开始加载时触发
-};
-
-manager.onLoad = function () {
-	// 所有资源加载完成时触发
-	// 隐藏预加载界面，显示开始按钮
-	// 自动点击开始按钮（延迟 0ms）
-};
-
-manager.onError = function (url) {
-	// 资源加载错误时触发
-};
-```
-
-### 2. 预加载界面管理
-
-- **preloadDivs**：显示加载动画和 "Loading..." 文本
-- **postloadDivs**：显示开始按钮和标题文本
-- **fadeOutDivs**：用于淡出动画的元素
-
-### 3. 开始按钮事件
-
-用户点击开始按钮后：
-
-1. 淡出预加载界面（添加 `fade-out` class）
-2. 750ms 后隐藏预加载遮罩层
-3. 注册点击事件监听器（`launchClickPosition`）
-4. 创建海滩球对象
-5. 1 秒后注册鼠标移动事件监听器（`launchHover`）
-
 ## 场景创建流程
 
-### 1. 创建世界场景
+### 1. 创建 World 实例
 
-调用 `createWorld()` 函数：
+`World` 类负责管理 Three.js 的核心对象：
+
+```typescript
+const world = new World();
+```
+
+`World` 构造函数会：
 
 - 创建 Three.js 场景（`scene`）
-- 创建透视相机（`camera`）
 - 创建 WebGL 渲染器（`renderer`）
+- 创建 `CameraControl` 实例（包含透视相机）
 - 配置光照系统（半球光、方向光）
-- 创建性能统计对象（`stats`）
+- 设置阴影和渲染参数
 
-### 2. 创建物理世界
+### 2. 创建 InteractionManager 实例
 
-调用 `createPhysicsWorld()` 函数：
+`InteractionManager` 负责处理所有用户输入：
 
-- 使用 `PhysicsEngine` 创建物理世界
-- 设置重力参数（从 `PHYSICS_CONFIG` 读取）
+```typescript
+const interactionManager = new InteractionManager(world);
+interactionManager.init();
+```
 
-### 3. 创建 3D 对象
+构造函数会自动将实例注册到 `world.interactionManager`。
 
-按顺序创建各种 3D 对象：
+`init()` 方法会：
+
+- 注册键盘事件监听器（WASD、方向键）
+- 初始化虚拟摇杆（触摸设备）
+- 设置鼠标/触摸事件监听器
+- 设置窗口大小变化监听器
+
+### 3. 创建 PhysicsEngine 实例
+
+`PhysicsEngine` 负责管理物理世界：
+
+```typescript
+const physicsEngine = new PhysicsEngine(world);
+physicsEngine.init();
+```
+
+构造函数会自动将实例注册到 `world.physicsEngine`，并从 `ResourceManager` 获取 Ammo.js 实例。
+
+`init()` 方法会：
+
+- 创建碰撞配置
+- 创建碰撞调度器
+- 创建物理世界
+- 设置重力参数
+
+### 4. 创建 3D 对象
+
+所有对象类都采用统一的模式：
+
+- 构造函数接收 `world` 参数
+- 在构造函数中调用 `init()` 创建对象
+- 通过 `addWorld()` 方法添加到场景并注册物理属性
 
 #### 基础对象
 
-- **网格平面**：`createGridPlane()` - 地面
-- **球体**：`createBallObj()` - 玩家控制的球
-- **墙壁**：`createWallX()` / `createWallZ()` - 场景边界
+- **GridPlane**：网格平面和地面
+- **Ball**：玩家控制的球体
+- **BeachBall**：装饰性沙滩球
+- **BoundaryWalls**：场景边界墙
 
 #### 交互对象
 
-- **广告牌**：`createBillboard()` / `createBillboardRotated()` - 项目展示
-- **盒子**：`createBox()` - 社交链接（GitHub、Twitter、Email、Writing）
-- **文字**：`floydWords()` - 3D 文字对象
+- **LinkBoxes**：社交链接盒子（GitHub、掘金、QQ 邮箱）
+- **Billboards**：项目展示广告牌
+- **ProjectsSection**：项目展示区域（3D 文字）
 
 #### 视觉效果
 
-- **文本平面**：`createTextOnPlane()` - 项目说明文本
-- **浮动标签**：`floatingLabel()` - 标签文本
-- **技能区域**：`allSkillsSection()` - 技能展示区域
-- **镜头光晕**：`createLensFlare()` - 光晕效果
-- **粒子系统**：`addParticles()` - 背景粒子
-- **发光粒子**：`glowingParticles()` - 前景发光粒子
-- **星系**：`generateGalaxy()` - 星系效果
-- **砖墙**：`wallOfBricks()` - 装饰性砖墙
-- **三角形**：`createTriangle()` - 装饰性三角形
+- **Galaxy**：背景星系粒子效果
+- **Glowing**：前景发光粒子
+- **Background**：背景粒子系统
+- **LensFlare**：镜头光晕效果
+- **SkillsSection**：技能展示区域
+- **BrickWalls**：装饰性砖墙
 
-### 4. 注册交互对象
-
-将所有可点击的对象添加到 `cursorHoverObjects` 数组：
-
-```javascript
-cursorHoverObjects.push(billboard1.sign);
-cursorHoverObjects.push(githubBox);
-// ...
-```
+所有对象通过 `world.physicsEngine` 和 `world.interactionManager` 访问物理引擎和交互管理器。
 
 ## 事件处理流程
 
 ### 1. 键盘事件
 
-通过 `setupEventHandlers()` 注册键盘事件：
+`InteractionManager` 处理键盘输入：
 
 - **W / 上箭头**：前进
 - **S / 下箭头**：后退
 - **A / 左箭头**：左移
 - **D / 右箭头**：右移
 
-事件处理更新 `moveDirection` 对象的状态。
+事件处理更新 `interactionManager.moveDirection` 对象的状态。
 
 ### 2. 触摸设备支持
 
 如果检测到触摸设备：
 
-- 显示虚拟摇杆（`createJoystick()`）
-- 更新提示文本
-- 摇杆控制更新 `moveDirection` 对象
+- 自动显示虚拟摇杆（通过 CSS 媒体查询）
+- 摇杆控制更新 `interactionManager.moveDirection` 对象
+- 窗口失去焦点时自动重置移动方向
 
-### 3. 鼠标交互
+### 3. 鼠标/触摸交互
+
+`InteractionManager` 设置事件监听器，调用 `CameraControl` 的方法：
 
 - **点击事件**（`launchClickPosition`）：
 
@@ -206,20 +218,28 @@ cursorHoverObjects.push(githubBox);
   - 使用光线投射检测鼠标悬停
   - 更新鼠标样式（pointer / default）
 
+### 4. 窗口大小变化
+
+`InteractionManager` 处理窗口大小变化：
+
+- 更新相机宽高比
+- 更新投影矩阵
+- 更新渲染器尺寸
+
 ## 游戏循环流程
 
 ### 1. GameLoop 初始化
 
 创建 `GameLoop` 实例：
 
-```javascript
-gameLoop = new GameLoop({
-	onUpdate, // 更新函数
-	onRender, // 渲染函数
-	stats, // 性能统计
-	clock, // 主时钟
-	galaxyClock, // 星系时钟
-	galaxyMaterial, // 星系材质
+```typescript
+const gameLoop = new GameLoop({
+	onUpdate: (deltaTime: number, clock: THREE.Clock) => {
+		// 更新逻辑
+	},
+	onRender: () => {
+		// 渲染逻辑
+	},
 });
 ```
 
@@ -229,53 +249,69 @@ gameLoop = new GameLoop({
 
 #### 球体移动控制
 
-```javascript
-if (!isTouchscreenDevice()) {
-	if (document.hasFocus()) {
-		moveBall(); // 键盘控制
-	} else {
-		// 窗口失去焦点时重置移动方向
-	}
-} else {
-	moveBall(); // 触摸控制
-}
+```typescript
+ball.update();
 ```
+
+`Ball.update()` 方法：
+
+- 从 `world.interactionManager.moveDirection` 读取移动方向
+- 根据球体是否在地面上决定 Y 轴移动
+- 创建物理冲量向量
+- 应用冲量到球体的物理刚体
 
 #### 物理引擎更新
 
-```javascript
-updatePhysics(deltaTime);
+```typescript
+physicsEngine.update(deltaTime);
 ```
 
 包括：
 
-- 更新物理世界（`physicsEngine.update()`）
-- 检查球体是否掉落（低于阈值时重新创建）
-- 更新相机位置（`rotateCamera()`）
+- 更新物理世界（`stepSimulation`）
+- 同步物理计算结果到 Three.js 对象的位置和旋转
 
-#### 粒子系统更新
+#### 动画更新
 
-```javascript
-moveParticles();
+```typescript
+galaxy.update(clock);
+glowing.update(clock);
+background.update();
+lensFlare.update();
 ```
 
-包括：
+更新各种粒子系统和视觉效果。
 
-- 旋转背景粒子系统
-- 移动镜头光晕
-- 更新发光粒子动画
+#### 相机跟随
+
+```typescript
+world.cameraControl.rotateCamera(ball.ballObject);
+```
+
+根据球体位置调整相机：
+
+- 检测球体所在的区域（使用 `AREA_BOUNDS` 配置）
+- 根据区域计算目标相机位置
+- 使用线性插值（lerp）平滑移动相机
+- 相机始终看向球体位置
 
 ### 3. 渲染循环（onRender）
 
 每帧调用，渲染场景：
 
-```javascript
-renderer.render(scene, camera);
+```typescript
+world.render();
+```
+
+`World.render()` 方法内部调用：
+
+```typescript
+this.renderer.render(this.scene, this.cameraControl.camera);
 ```
 
 ### 4. 游戏循环启动
 
-```javascript
+```typescript
 gameLoop.start();
 ```
 
@@ -284,66 +320,115 @@ gameLoop.start();
 ## 模块依赖关系
 
 ```
-app.js
-├── config/
-│   ├── resources.ts      # 资源路径配置
-│   ├── camera.ts         # 相机配置
-│   └── index.ts          # 统一导出
+app.ts
 ├── core/
-│   ├── PhysicsEngine.ts  # 物理引擎管理
-│   └── GameLoop.ts       # 游戏循环管理
-├── resources/
-│   ├── world.ts          # 场景、相机、渲染器
-│   ├── surfaces.ts       # 表面和文本创建
-│   ├── cameraUtils.ts    # 相机控制工具
-│   ├── eventHandlers.ts  # 事件处理
-│   └── preload.ts        # 预加载管理
-└── objects/
-    ├── Balls.js          # 球体对象
-    ├── Boxes.js          # 盒子对象
-    ├── Billboards.js     # 广告牌对象
-    ├── Walls.js          # 墙壁对象
-    └── ...               # 其他对象
+│   ├── World.ts              # 场景、渲染器、相机管理
+│   │   └── CameraControl.ts  # 相机控制和交互
+│   ├── PhysicsEngine.ts      # 物理引擎管理
+│   ├── InteractionManager.ts # 输入和交互管理
+│   ├── ResourceManager.ts    # 资源加载管理
+│   └── GameLoop.ts          # 游戏循环管理
+├── objects/
+│   ├── Ball.ts              # 玩家球体
+│   ├── BeachBall.ts         # 沙滩球
+│   ├── GridPlane.ts         # 网格平面
+│   ├── BoundaryWalls.ts     # 边界墙
+│   ├── LinkBoxes.ts         # 链接盒子
+│   ├── Billboards.ts        # 广告牌
+│   ├── ProjectsSection.ts   # 项目展示区域
+│   ├── SkillsSection.ts     # 技能展示区域
+│   ├── BrickWalls.ts        # 砖墙
+│   ├── Galaxy.ts            # 星系效果
+│   ├── Glowing.ts           # 发光粒子
+│   ├── Background.ts        # 背景粒子
+│   └── LensFlare.ts         # 镜头光晕
+├── config/
+│   └── index.ts             # 统一配置管理
+├── utils/
+│   ├── texture.ts           # 纹理工具函数
+│   ├── math.ts              # 数学工具函数
+│   ├── device.ts            # 设备检测
+│   └── camera.ts            # 相机工具函数
+└── global.d.ts              # 全局类型定义
 ```
 
-## 关键函数说明
+## 关键类和方法说明
 
-### moveBall()
+### World 类
 
-控制球体的移动：
+管理 Three.js 核心对象：
 
-1. 获取移动方向（从 `moveDirection` 读取）
-2. 根据球体是否在地面上决定 Y 轴移动
-3. 创建物理冲量向量
-4. 应用冲量到球体的物理刚体
+- **属性**：
 
-### updatePhysics(deltaTime)
+  - `scene: THREE.Scene` - Three.js 场景
+  - `renderer: THREE.WebGLRenderer` - WebGL 渲染器
+  - `cameraControl: CameraControl` - 相机控制实例
+  - `physicsEngine: PhysicsEngine` - 物理引擎实例（自动注册）
+  - `interactionManager: InteractionManager` - 交互管理器实例（自动注册）
+  - `cursorHoverObjects: THREE.Object3D[]` - 可交互对象数组
 
-更新物理引擎逻辑：
+- **方法**：
+  - `render()` - 渲染场景
 
-1. 调用 `physicsEngine.update()` 更新物理世界
-2. 检查球体是否掉落（低于 `ballFallThreshold`）
-3. 如果掉落，移除旧球体并创建新球体
-4. 更新相机位置（跟随球体）
+### InteractionManager 类
 
-### rotateCamera(ballObject)
+处理所有用户输入：
 
-根据球体位置调整相机：
+- **属性**：
 
-1. 检测球体所在的区域（使用 `AREA_BOUNDS` 配置）
-2. 根据区域计算目标相机位置
-3. 使用线性插值（lerp）平滑移动相机
-4. 相机始终看向球体位置
+  - `moveDirection: MoveDirection` - 当前移动方向状态
 
-### start()
+- **方法**：
+  - `init()` - 初始化所有事件监听器
+  - `setupKeyboardListeners()` - 设置键盘事件
+  - `setupJoystick()` - 初始化虚拟摇杆
+  - `setupEventListeners()` - 设置鼠标/触摸/窗口事件
 
-初始化并启动应用：
+### PhysicsEngine 类
 
-1. 创建世界场景
-2. 创建物理世界
-3. 创建所有 3D 对象
-4. 注册事件处理器
-5. 创建并启动游戏循环
+管理物理世界：
+
+- **方法**：
+  - `init()` - 初始化物理世界
+  - `update(deltaTime)` - 更新物理模拟
+  - `addRigidPhysics()` - 添加刚体物理
+  - `getAmmo()` - 获取 Ammo.js 实例
+
+### ResourceManager 类
+
+统一管理资源加载：
+
+- **方法**：
+  - `loadAll()` - 加载所有资源（字体、纹理、Ammo.js）
+  - `loadTexture()` - 加载纹理（带缓存）
+  - `getFont()` - 获取已加载的字体
+  - `getAmmo()` - 获取已加载的 Ammo.js
+
+### Ball 类
+
+玩家控制的球体：
+
+- **属性**：
+
+  - `ballObject: THREE.Mesh` - 球体网格对象
+
+- **方法**：
+  - `addWorld()` - 添加到场景并注册物理属性
+  - `update()` - 更新球体移动（根据输入方向）
+
+### CameraControl 类
+
+相机控制和交互：
+
+- **属性**：
+
+  - `camera: THREE.PerspectiveCamera` - 透视相机
+  - `pickPosition: { x: number; y: number }` - 点击位置
+
+- **方法**：
+  - `rotateCamera()` - 相机跟随球体
+  - `launchClickPosition()` - 处理点击交互
+  - `launchHover()` - 处理鼠标悬停
 
 ## 执行时序图
 
@@ -354,64 +439,134 @@ app.js
     │   ├─→ 不支持 → 显示错误并跳转
     │   └─→ 支持 → 继续
     │
-    ├─→ Ammo.js 初始化
-    │   └─→ 创建 PhysicsEngine 实例
+    ├─→ 资源加载（ResourceManager.loadAll）
+    │   ├─→ 加载字体
+    │   ├─→ 加载纹理
+    │   └─→ 加载 Ammo.js
     │
-    ├─→ 资源加载（LoadingManager）
-    │   ├─→ onStart: 显示加载动画
-    │   ├─→ onLoad: 隐藏加载界面，显示开始按钮
-    │   └─→ 自动点击开始按钮
+    ├─→ 隐藏预加载界面
     │
-    ├─→ 开始按钮点击
-    │   ├─→ 淡出预加载界面
-    │   ├─→ 注册点击事件
-    │   └─→ 创建海滩球
+    ├─→ 创建 World 实例
+    │   ├─→ 创建场景
+    │   ├─→ 创建渲染器
+    │   └─→ 创建 CameraControl（包含相机）
     │
-    ├─→ start() 函数执行
-    │   ├─→ createWorld() - 创建场景
-    │   ├─→ createPhysicsWorld() - 创建物理世界
-    │   ├─→ 创建所有 3D 对象
-    │   ├─→ setupEventHandlers() - 注册事件
-    │   └─→ gameLoop.start() - 启动游戏循环
+    ├─→ 创建 InteractionManager 实例
+    │   └─→ 初始化事件监听器
     │
-    └─→ 游戏循环运行
+    ├─→ 创建 PhysicsEngine 实例
+    │   └─→ 初始化物理世界
+    │
+    ├─→ 创建所有 3D 对象
+    │   ├─→ GridPlane
+    │   ├─→ Galaxy
+    │   ├─→ Glowing
+    │   ├─→ Background
+    │   ├─→ LensFlare
+    │   ├─→ Ball
+    │   ├─→ BeachBall
+    │   ├─→ SkillsSection
+    │   ├─→ LinkBoxes
+    │   ├─→ ProjectsSection
+    │   ├─→ Billboards
+    │   ├─→ BrickWalls
+    │   └─→ BoundaryWalls
+    │
+    ├─→ 创建 GameLoop 实例
+    │
+    └─→ 启动游戏循环
         ├─→ onUpdate() - 每帧更新
-        │   ├─→ moveBall() - 更新球体移动
-        │   ├─→ updatePhysics() - 更新物理引擎
-        │   └─→ moveParticles() - 更新粒子
+        │   ├─→ ball.update() - 更新球体移动
+        │   ├─→ physicsEngine.update() - 更新物理引擎
+        │   ├─→ galaxy.update() - 更新星系动画
+        │   ├─→ glowing.update() - 更新发光粒子
+        │   ├─→ background.update() - 更新背景粒子
+        │   ├─→ lensFlare.update() - 更新光晕
+        │   └─→ cameraControl.rotateCamera() - 相机跟随
         │
         └─→ onRender() - 每帧渲染
-            └─→ renderer.render() - 渲染场景
+            └─→ world.render() - 渲染场景
 ```
 
 ## 配置说明
 
-应用使用多个配置文件来管理参数：
+应用使用统一的配置文件 `src/config/index.ts` 管理所有参数，按功能模块分类：
 
-- **PHYSICS_CONFIG**：物理引擎配置（重力等）
-- **SCENE_CONFIG**：场景配置（背景色、光照等）
-- **OBJECTS_CONFIG**：对象默认配置（大小、材质等）
-- **GAMEPLAY_CONFIG**：游戏玩法配置（移动速度、阈值等）
-- **POSITIONS_CONFIG**：对象位置配置
-- **CAMERA_CONFIG**：相机配置（区域偏移、插值速度等）
-- **resources.ts**：资源路径配置
+### 核心游戏对象配置
+
+- **BALL_CONFIG**：玩家球体配置（位置、半径、质量、移动参数等）
+- **BEACH_BALL_CONFIG**：沙滩球配置
+
+### 场景环境配置
+
+- **GRID_PLANE_CONFIG**：网格平面配置
+- **GRID_PLANE_CONFIG_COMPUTED**：计算后的网格平面配置
+- **BOUNDARY_WALLS_CONFIG**：边界墙配置
+- **BRICK_WALLS_CONFIG**：砖墙配置
+- **AREA_BOUNDS**：区域边界定义
+
+### 用户交互配置
+
+- **INPUT_CONFIG**：输入控制配置（虚拟摇杆参数）
+- **LINK_BOXES_CONFIG**：链接盒子配置
+
+### 视觉效果配置
+
+- **BILLBOARDS_CONFIG**：广告牌配置
+- **LENS_FLARE_CONFIG**：镜头光晕配置
+- **GALAXY_CONFIG**：星系配置
+- **PARTICLES_CONFIG**：粒子系统配置
+- **GAMEPLAY_CONFIG**：游戏玩法配置
+
+### 相机配置
+
+- **CAMERA_CONFIG**：相机配置（视野、位置、区域偏移、插值速度等）
+
+### 资源管理配置
+
+- **RESOURCE_CONFIG**：资源管理器配置（BASE URL、字体路径、预加载纹理列表）
+- **DEFAULT_TEXTURE_OPTIONS**：默认纹理选项
+
+## 类型定义
+
+全局类型定义在 `src/global.d.ts` 中：
+
+- **AmmoType**：Ammo.js 类型
+- **AmmoPhysicsWorld**：物理世界接口
+- **AddRigidPhysicsOptions**：添加刚体物理选项
+- **TextureLoadOptions**：纹理加载选项（可选参数）
+- **TextureOptions**：纹理选项（完整参数）
+- **MoveDirection**：移动方向接口
+- **BrickData**：砖块数据接口
+- **BillboardItem**：广告牌项接口
+- **BillboardConfigItem**：广告牌配置项类型
+- **ParticleAttributes**：粒子属性接口
+- **GameLoopOptions**：游戏循环配置选项
 
 ## 注意事项
 
-1. **异步加载**：Ammo.js 是异步加载的，所有逻辑都在 `Ammo().then()` 回调中执行
+1. **依赖注入**：所有对象类通过构造函数接收 `world` 实例，通过 `world.physicsEngine` 和 `world.interactionManager` 访问依赖
 
-2. **资源加载**：使用 `LoadingManager` 跟踪资源加载，确保所有资源加载完成后再显示开始按钮
+2. **自动注册**：`PhysicsEngine` 和 `InteractionManager` 的构造函数会自动将实例注册到 `world` 实例
 
-3. **焦点管理**：桌面端在窗口失去焦点时会停止球体移动，避免后台运行
+3. **资源管理**：所有资源通过 `ResourceManager` 实例（`resourceManager`）统一管理，支持缓存和同步访问
 
-4. **性能优化**：使用 `GameLoop` 统一管理更新和渲染，避免重复渲染
+4. **统一模式**：所有对象类遵循统一的结构：
 
-5. **内存管理**：球体掉落时会正确移除旧的物理刚体和 3D 对象，避免内存泄漏
+   - 构造函数接收 `world` 参数
+   - `init()` 方法创建对象（在构造函数中调用）
+   - `addWorld()` 方法添加到场景并注册物理属性
+   - `update()` 方法更新动画（如果需要）
+
+5. **配置集中管理**：所有配置集中在 `config/index.ts`，按功能模块分类，便于维护
+
+6. **类型安全**：使用 TypeScript 提供完整的类型支持，全局类型定义在 `global.d.ts`
 
 ## 扩展建议
 
 1. **错误处理**：添加更完善的错误处理和日志记录
-2. **性能监控**：使用 `stats` 对象监控性能，必要时优化渲染
+2. **性能监控**：使用性能统计工具监控性能，必要时优化渲染
 3. **配置热更新**：考虑支持运行时修改配置
 4. **状态管理**：对于更复杂的应用，可以考虑引入状态管理库
 5. **代码分割**：对于大型应用，可以考虑使用动态导入进行代码分割
+6. **测试**：添加单元测试和集成测试，确保代码质量

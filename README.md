@@ -16,14 +16,16 @@
 - **光线投射交互**：通过光线投射技术实现精确的点击和触摸交互
 - **性能监控**：内置 FPS 追踪器，实时监控渲染性能
 - **现代化构建**：使用 Vite 构建工具，支持 HMR（热模块替换）和优化的生产构建
+- **面向对象架构**：采用 TypeScript 和类封装，通过依赖注入实现模块化设计
+- **统一资源管理**：集中管理纹理、字体和物理引擎资源，支持缓存和同步访问
 
 ## 技术栈
 
 - **Three.js** - 3D 图形渲染库
 - **Ammo.js** - 物理引擎（Bullet Physics 的 JavaScript 移植版）
 - **TypeScript** - 类型安全的 JavaScript 超集
-- **JavaScript (ES Modules)** - 现代 JavaScript 模块系统
 - **Vite** - 快速的前端构建工具和开发服务器
+- **nipplejs** - 虚拟摇杆库（移动端控制）
 - **Node.js** - JavaScript 运行时环境
 
 ## 系统要求
@@ -67,52 +69,92 @@ npm run preview
 
 ```
 portfolio-3d/
-├── public/          # 静态资源
-│   ├── ammo/        # Ammo.js 物理引擎文件
-│   ├── css/         # 样式文件
-│   ├── img/         # 图片资源
-│   └── json/        # JSON 文件（字体等）
-├── src/             # 源代码
-│   ├── config/      # 配置管理模块（TypeScript）
-│   │   ├── physics.ts    # 物理引擎配置
-│   │   ├── scene.ts      # 场景配置
-│   │   ├── objects.ts    # 对象默认配置
-│   │   ├── gameplay.ts   # 游戏玩法配置
-│   │   ├── positions.ts  # 场景对象位置配置
-│   │   ├── camera.ts     # 相机配置
-│   │   ├── resources.ts  # 资源路径配置
-│   │   └── index.ts      # 统一导出
-│   ├── core/        # 核心模块（TypeScript）
-│   │   ├── PhysicsEngine.ts  # 物理引擎管理类
-│   │   ├── GameLoop.ts       # 游戏主循环管理类
-│   │   ├── World.ts          # Three.js 核心对象管理（场景、相机、渲染器）
-│   │   ├── CameraControl.ts  # 相机控制和交互
-│   │   └── InputManager.ts   # 输入管理（键盘、摇杆）
-│   ├── objects/     # 对象创建模块
-│   │   ├── Balls.ts          # 球体对象 (TypeScript)
-│   │   ├── Boxes.ts          # 盒子对象 (TypeScript)
-│   │   ├── Billboards.ts     # 广告牌对象 (TypeScript)
-│   │   ├── Walls.ts          # 墙壁对象 (TypeScript)
-│   │   ├── Planes.ts         # 平面对象 (TypeScript)
-│   │   ├── ProjectsSection.ts # 项目展示区域 (TypeScript)
-│   │   ├── Shapes.js         # 形状对象
-│   │   ├── Text.js           # 3D 文字对象
-│   │   ├── PhysicsHelpers.ts # 物理辅助函数 (TypeScript)
-│   │   └── index.js          # 统一导出
-│   ├── resources/   # 资源管理模块（TypeScript）
-│   │   ├── Particles.ts     # 粒子系统
-│   │   └── Galaxy.ts        # 星系效果
-│   ├── utils/        # 工具函数模块（TypeScript）
-│   │   ├── textureLoader.ts  # 纹理加载辅助函数
-│   │   ├── math.ts          # 数学工具函数
-│   │   └── index.ts         # 统一导出
-│   ├── shaders/     # GLSL 着色器文件
-│   ├── app.ts       # 主应用入口（TypeScript）
-│   ├── global.d.ts  # 全局类型声明
-│   └── vite-env.d.ts # Vite 环境类型声明
-├── index.html       # HTML 入口文件
-└── vite.config.js   # Vite 配置文件
+├── public/              # 静态资源
+│   ├── ammo/            # Ammo.js 物理引擎文件
+│   ├── css/             # 样式文件
+│   ├── img/             # 图片资源
+│   └── json/            # JSON 文件（字体等）
+├── src/                 # 源代码
+│   ├── config/          # 配置管理模块（TypeScript）
+│   │   └── index.ts     # 统一配置管理（按功能模块分类）
+│   ├── core/            # 核心模块（TypeScript）
+│   │   ├── World.ts              # Three.js 核心对象管理（场景、相机、渲染器）
+│   │   ├── CameraControl.ts      # 相机控制和交互
+│   │   ├── PhysicsEngine.ts      # 物理引擎管理类
+│   │   ├── InteractionManager.ts # 输入和交互管理（键盘、摇杆、鼠标、触摸）
+│   │   ├── ResourceManager.ts    # 资源加载管理（纹理、字体、Ammo.js）
+│   │   ├── GameLoop.ts           # 游戏主循环管理类
+│   │   └── index.ts              # 统一导出
+│   ├── objects/         # 对象创建模块（TypeScript）
+│   │   ├── Ball.ts              # 玩家球体
+│   │   ├── BeachBall.ts         # 沙滩球
+│   │   ├── GridPlane.ts         # 网格平面
+│   │   ├── BoundaryWalls.ts     # 边界墙
+│   │   ├── BrickWalls.ts        # 砖墙
+│   │   ├── LinkBoxes.ts         # 链接盒子（社交链接）
+│   │   ├── Billboards.ts        # 广告牌（项目展示）
+│   │   ├── ProjectsSection.ts    # 项目展示区域（3D 文字）
+│   │   ├── SkillsSection.ts      # 技能展示区域
+│   │   ├── Galaxy.ts             # 星系效果
+│   │   ├── Glowing.ts            # 发光粒子
+│   │   ├── Background.ts         # 背景粒子
+│   │   ├── LensFlare.ts          # 镜头光晕
+│   │   ├── Shapes.ts              # 形状工具函数
+│   │   └── index.ts              # 统一导出
+│   ├── utils/           # 工具函数模块（TypeScript）
+│   │   ├── texture.ts   # 纹理工具函数
+│   │   ├── math.ts      # 数学工具函数
+│   │   ├── device.ts    # 设备检测
+│   │   ├── camera.ts    # 相机工具函数
+│   │   └── index.ts     # 统一导出
+│   ├── shaders/         # GLSL 着色器文件
+│   │   ├── vertex.glsl   # 顶点着色器
+│   │   └── fragment.glsl # 片段着色器
+│   ├── app.ts           # 主应用入口（TypeScript）
+│   ├── global.d.ts      # 全局类型声明
+│   └── vite-env.d.ts    # Vite 环境类型声明
+├── docs/                # 文档目录
+│   └── APP_WORKFLOW.md  # 应用工作流程文档
+├── index.html           # HTML 入口文件
+└── vite.config.ts       # Vite 配置文件
 ```
+
+## 架构设计
+
+### 核心概念
+
+项目采用面向对象的设计模式，所有组件都通过类封装：
+
+1. **依赖注入**：所有对象类通过构造函数接收 `world` 实例，通过 `world.physicsEngine` 和 `world.interactionManager` 访问依赖
+2. **自动注册**：`PhysicsEngine` 和 `InteractionManager` 的构造函数会自动将实例注册到 `world` 实例
+3. **统一模式**：所有对象类遵循统一的结构：
+   - 构造函数接收 `world` 参数
+   - `init()` 方法创建对象（在构造函数中调用）
+   - `addWorld()` 方法添加到场景并注册物理属性
+   - `update()` 方法更新动画（如果需要）
+
+### 核心模块
+
+- **World**：管理 Three.js 核心对象（场景、渲染器、相机），提供统一的访问接口
+- **PhysicsEngine**：管理 Ammo.js 物理世界，处理物理模拟和刚体注册
+- **InteractionManager**：处理所有用户输入（键盘、鼠标、触摸、摇杆）和窗口事件
+- **ResourceManager**：统一管理资源加载（纹理、字体、Ammo.js），支持缓存和同步访问
+- **GameLoop**：管理游戏主循环，分离更新逻辑和渲染逻辑
+
+### 配置管理
+
+所有配置集中在 `src/config/index.ts`，按功能模块分类：
+
+- **核心游戏对象配置**：BALL_CONFIG、BEACH_BALL_CONFIG
+- **场景环境配置**：GRID_PLANE_CONFIG、BOUNDARY_WALLS_CONFIG、BRICK_WALLS_CONFIG、AREA_BOUNDS
+- **用户交互配置**：INPUT_CONFIG、LINK_BOXES_CONFIG
+- **视觉效果配置**：BILLBOARDS_CONFIG、LENS_FLARE_CONFIG、GALAXY_CONFIG、PARTICLES_CONFIG
+- **相机配置**：CAMERA_CONFIG
+- **资源管理配置**：RESOURCE_CONFIG、DEFAULT_TEXTURE_OPTIONS
+
+## 文档
+
+- [应用工作流程文档](./docs/APP_WORKFLOW.md) - 详细说明应用的工作流程和架构设计
 
 ## 提交规范
 
