@@ -71,6 +71,8 @@ interface AddRigidPhysicsOptions {
 	rollingFriction?: number;
 	/** 摩擦系数 */
 	friction?: number;
+	/** 恢复系数（反弹系数，0-1，0=不反弹，1=完全反弹，默认 0） */
+	restitution?: number;
 	/** 碰撞边距（默认 0.05） */
 	margin?: number;
 }

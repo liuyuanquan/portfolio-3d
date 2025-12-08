@@ -27,17 +27,21 @@ async function main(): Promise<void> {
 	}
 
 	// 初始化资源管理器并加载所有资源
-	// 设置进度回调，实时更新加载百分比
-	const loadingPercentageElement = document.getElementById("loading-percentage");
-	await resourceManager.loadAll((progress: number) => {
-		if (loadingPercentageElement) {
-			loadingPercentageElement.textContent = progress.toString();
+	// 设置进度回调，实时更新加载百分比和资源名称
+	const loadingEl = document.getElementById("loading-percentage");
+	const resourceNameEl = document.getElementById("loading-resource-name");
+	await resourceManager.loadAll((progress: number, resourceName?: string) => {
+		if (loadingEl) {
+			loadingEl.textContent = progress.toString();
+		}
+		if (resourceNameEl) {
+			resourceNameEl.textContent = resourceName || "";
 		}
 	});
 
 	// 隐藏预加载元素并添加淡出动画
 	document.querySelectorAll(".preload, .fadeOutDiv").forEach((element) => {
-		const el = element as HTMLElement;
+			const el = element as HTMLElement;
 		if (el.classList.contains("preload")) {
 			// 直接设置 display: none 即可隐藏元素，visibility: hidden 是冗余的
 			el.style.display = "none";
@@ -112,7 +116,7 @@ async function main(): Promise<void> {
 			ball.update();
 
 			// 更新物理引擎
-			physicsEngine.update(deltaTime);
+		physicsEngine.update(deltaTime);
 
 			// 更新星系动画
 			galaxy.update(clock);
@@ -132,8 +136,8 @@ async function main(): Promise<void> {
 		onRender: () => {
 			world.render();
 		},
-	});
-	gameLoop.start();
+		});
+		gameLoop.start();
 }
 
 // 启动主函数

@@ -27,7 +27,7 @@ export class GridPlane {
 	 * 将创建的对象添加到 World 场景中
 	 */
 	public addWorld(): void {
-		const { size, quaternion, mass, friction, rollingFriction } = GRID_PLANE_CONFIG_COMPUTED;
+		const { size, quaternion, mass, friction, rollingFriction, restitution } = GRID_PLANE_CONFIG_COMPUTED;
 
 		this.world.scene.add(this.grid);
 		this.world.scene.add(this.blockPlane);
@@ -37,6 +37,7 @@ export class GridPlane {
 			quat: quaternion,
 			friction,
 			rollingFriction,
+			restitution,
 		});
 		this.world.scene.add(this.instructionsLabel);
 	}

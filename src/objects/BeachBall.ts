@@ -27,6 +27,7 @@ export class BeachBall {
 			mass: BEACH_BALL_CONFIG.mass,
 			quat: BEACH_BALL_CONFIG.quaternion,
 			rollingFriction: BEACH_BALL_CONFIG.friction,
+			restitution: BEACH_BALL_CONFIG.restitution,
 		});
 	}
 

@@ -85,9 +85,9 @@ export class SkillsSection {
 		}
 	}
 
-	/**
+/**
 	 * 初始化技能展示区域
-	 */
+ */
 	private init(): void {
 		this.textMeshes = this.createTexts();
 		this.createLabelBox();
@@ -165,7 +165,7 @@ export class SkillsSection {
 
 		const geometry = new THREE.TextGeometry(text, {
 			font,
-			size,
+		size,
 			height,
 			curveSegments: geometryConfig.curveSegments,
 			bevelEnabled: geometryConfig.bevelEnabled,
@@ -173,7 +173,7 @@ export class SkillsSection {
 			bevelSize: geometryConfig.bevelSize,
 			bevelOffset: geometryConfig.bevelOffset ?? 0,
 			bevelSegments: geometryConfig.bevelSegments ?? 1,
-		});
+	});
 		geometry.computeBoundingBox();
 		geometry.computeVertexNormals();
 		if (geometry.boundingBox) {

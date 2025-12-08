@@ -71,17 +71,36 @@ if (!WEBGL.isWebGLAvailable()) {
 
 ### 3. 资源加载
 
-使用 `ResourceManager` 实例加载所有资源：
+使用 `ResourceManager` 实例加载所有资源，支持进度回调：
 
 ```typescript
-await resourceManager.loadAll();
+const loadingEl = document.getElementById("loading-percentage");
+const resourceNameEl = document.getElementById("loading-resource-name");
+await resourceManager.loadAll((progress: number, resourceName?: string) => {
+	if (loadingEl) {
+		loadingEl.textContent = progress.toString();
+	}
+	if (resourceNameEl) {
+		resourceNameEl.textContent = resourceName || "";
+	}
+});
 ```
 
 这会并行加载：
 
-- 字体文件（Roboto_Regular.json）
-- 预加载的纹理资源
+- 字体文件（根据 `RESOURCE_CONFIG.fonts` 配置，当前为 LXGW_WenKai_Regular.json）
+- 预加载的纹理资源（根据 `RESOURCE_CONFIG.preloadTextures` 配置）
 - Ammo.js 物理引擎库
+
+**资源大小精确计算**：
+- 使用 Python 脚本 `scripts/calculate_resource_sizes.py` 自动计算所有资源文件的实际大小
+- 资源大小信息保存在 `src/config/resource_sizes.json` 中
+- 进度显示基于实际字节数计算，提供更准确的加载进度
+- 可通过 `npm run calculate-resources` 命令更新资源大小信息
+
+**进度回调参数**：
+- `progress: number` - 加载进度百分比（0-100）
+- `resourceName?: string` - 当前正在加载的资源名称（如 "字体: lxgw"、"纹理: earth.jpg"、"Ammo.js"）
 
 ### 4. 预加载界面处理
 
@@ -150,7 +169,7 @@ physicsEngine.init();
 - 创建碰撞配置
 - 创建碰撞调度器
 - 创建物理世界
-- 设置重力参数
+- 设置重力参数（当前为 -80，可通过修改 `PhysicsEngine.init()` 中的 `setGravity` 调整）
 
 ### 4. 创建 3D 对象
 
@@ -163,8 +182,11 @@ physicsEngine.init();
 #### 基础对象
 
 - **GridPlane**：网格平面和地面
+  - 支持恢复系数（restitution）配置，影响物体与地面的碰撞反弹
 - **Ball**：玩家控制的球体
 - **BeachBall**：装饰性沙滩球
+  - 配置了较高的恢复系数（0.85），实现多次反弹效果
+  - 较低的摩擦系数（0.5），延长反弹时间
 - **BoundaryWalls**：场景边界墙
 
 #### 交互对象
@@ -326,7 +348,7 @@ app.ts
 │   │   └── CameraControl.ts  # 相机控制和交互
 │   ├── PhysicsEngine.ts      # 物理引擎管理
 │   ├── InteractionManager.ts # 输入和交互管理
-│   ├── ResourceManager.ts    # 资源加载管理
+│   ├── ResourceManager.ts    # 资源加载管理（支持进度回调和实际大小计算）
 │   └── GameLoop.ts          # 游戏循环管理
 ├── objects/
 │   ├── Ball.ts              # 玩家球体
@@ -389,20 +411,36 @@ app.ts
 管理物理世界：
 
 - **方法**：
-  - `init()` - 初始化物理世界
-  - `update(deltaTime)` - 更新物理模拟
-  - `addRigidPhysics()` - 添加刚体物理
+  - `init()` - 初始化物理世界（设置重力等参数）
+  - `update(deltaTime, maxSubSteps?)` - 更新物理模拟
+  - `addRigidPhysics(item, options)` - 添加刚体物理
+    - `options` 支持：`scale`、`radius`、`mass`、`quat`、`rollingFriction`、`friction`、`restitution`、`margin`
+    - `restitution`：恢复系数（反弹系数，0-1，0=不反弹，1=完全反弹）
   - `getAmmo()` - 获取 Ammo.js 实例
 
 ### ResourceManager 类
 
 统一管理资源加载：
 
+- **属性**：
+  - `fonts: Map<string, THREE.Font>` - 字体缓存
+  - `textures: Map<string, THREE.Texture>` - 纹理缓存
+  - `ammoLib: AmmoType | null` - Ammo.js 库实例
+
 - **方法**：
-  - `loadAll()` - 加载所有资源（字体、纹理、Ammo.js）
-  - `loadTexture()` - 加载纹理（带缓存）
-  - `getFont()` - 获取已加载的字体
-  - `getAmmo()` - 获取已加载的 Ammo.js
+  - `loadAll(onProgress?)` - 加载所有资源（字体、纹理、Ammo.js），支持进度回调
+    - `onProgress?: (progress: number, resourceName?: string) => void` - 进度回调函数
+  - `loadTexture(url, options?)` - 加载纹理（带缓存）
+  - `getFont(fontName?)` - 获取已加载的字体（默认返回配置的默认字体）
+  - `getAmmo()` - 获取已加载的 Ammo.js 库
+
+- **内部类**：
+  - `ResourceBytesTracker` - 资源字节跟踪器，统一管理资源加载的字节数跟踪
+
+- **资源大小管理**：
+  - 从 `src/config/resource_sizes.json` 读取预计算的实际文件大小
+  - 使用实际大小替代估算值，提供准确的加载进度
+  - 支持通过 Python 脚本自动更新资源大小信息
 
 ### Ball 类
 
@@ -440,9 +478,10 @@ app.ts
     │   └─→ 支持 → 继续
     │
     ├─→ 资源加载（ResourceManager.loadAll）
-    │   ├─→ 加载字体
-    │   ├─→ 加载纹理
-    │   └─→ 加载 Ammo.js
+    │   ├─→ 初始化资源大小跟踪器（从 resource_sizes.json 读取）
+    │   ├─→ 并行加载字体（显示进度和资源名称）
+    │   ├─→ 并行加载纹理（显示进度和资源名称）
+    │   └─→ 加载 Ammo.js（显示进度和资源名称）
     │
     ├─→ 隐藏预加载界面
     │
@@ -526,6 +565,17 @@ app.ts
 
 - **RESOURCE_CONFIG**：资源管理器配置（BASE URL、字体路径、预加载纹理列表）
 - **DEFAULT_TEXTURE_OPTIONS**：默认纹理选项
+- **resource_sizes.json**：资源大小配置文件（通过 Python 脚本自动生成）
+  - 包含字体、纹理、Ammo.js 的实际文件大小
+  - 用于精确计算加载进度
+
+### 物理配置
+
+- **BEACH_BALL_CONFIG**：沙滩球配置
+  - `restitution: 0.85` - 恢复系数，实现多次反弹
+  - `friction: 0.5` - 摩擦系数，延长反弹时间
+- **GRID_PLANE_CONFIG**：网格平面配置
+  - `restitution: 0.7` - 地面恢复系数，影响反弹效果
 
 ## 类型定义
 
@@ -534,6 +584,7 @@ app.ts
 - **AmmoType**：Ammo.js 类型
 - **AmmoPhysicsWorld**：物理世界接口
 - **AddRigidPhysicsOptions**：添加刚体物理选项
+  - `restitution?: number` - 恢复系数（反弹系数，0-1）
 - **TextureLoadOptions**：纹理加载选项（可选参数）
 - **TextureOptions**：纹理选项（完整参数）
 - **MoveDirection**：移动方向接口

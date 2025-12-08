@@ -55,7 +55,7 @@ export class PhysicsEngine {
 
 		this.physicsWorld = new this.Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 		if (this.physicsWorld) {
-			this.physicsWorld.setGravity(new this.Ammo.btVector3(0, -50, 0));
+			this.physicsWorld.setGravity(new this.Ammo.btVector3(0, -80, 0));
 		}
 	}
 
@@ -122,7 +122,7 @@ export class PhysicsEngine {
 	 * mass = 0 为静态物体，mass > 0 为动态物体
 	 */
 	addRigidPhysics(item: THREE.Object3D, options: AddRigidPhysicsOptions): void {
-		const { scale, radius, mass = 0, quat = { x: 0, y: 0, z: 0, w: 1 }, rollingFriction, friction, margin = 0.05 } = options;
+		const { scale, radius, mass = 0, quat = { x: 0, y: 0, z: 0, w: 1 }, rollingFriction, friction, restitution, margin = 0.05 } = options;
 		const { x, y, z } = item.position;
 
 		const transform = new this.Ammo.btTransform();
@@ -158,6 +158,10 @@ export class PhysicsEngine {
 
 		if (rollingFriction !== undefined) {
 			body.setRollingFriction(rollingFriction);
+		}
+
+		if (restitution !== undefined) {
+			body.setRestitution(restitution);
 		}
 
 		item.userData.physicsBody = body;

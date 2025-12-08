@@ -50,7 +50,9 @@ export class Background {
 	private createBackgroundPoints(): THREE.Points {
 		const { background } = PARTICLES_CONFIG;
 		const geometry = this.createBackgroundGeometry(background.count, background.range);
-		const material = this.createBackgroundMaterial(background.size);
+		const material = new THREE.PointsMaterial({
+			size: background.size,
+		});
 
 		return new THREE.Points(geometry, material);
 	}
@@ -84,14 +86,4 @@ export class Background {
 		return geometry;
 	}
 
-	/**
-	 * 创建背景粒子材质
-	 * @param size 粒子大小
-	 * @returns 背景粒子材质
-	 */
-	private createBackgroundMaterial(size: number): THREE.PointsMaterial {
-		return new THREE.PointsMaterial({
-			size,
-		});
-	}
 }

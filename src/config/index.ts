@@ -64,7 +64,8 @@ export const BEACH_BALL_CONFIG = {
 	mass: 3, // 物理质量
 	quaternion: { x: 0, y: 0, z: 0, w: 1 }, // 初始旋转四元数
 	texture: "BeachBallColor.jpg", // 纹理贴图文件名
-	friction: 1, // 表面摩擦系数（较低以增加滑动感）
+	friction: 0.5, // 表面摩擦系数（较低以增加滑动感和反弹次数）
+	restitution: 0.85, // 恢复系数（反弹系数，0.85 表示反弹时会保留 85% 的速度，增加反弹次数）
 	geometrySegments: 32, // 几何体分段数
 } as const;
 
@@ -85,6 +86,7 @@ export const GRID_PLANE_CONFIG = {
 	quaternion: { x: 0, y: 0, z: 0, w: 1 }, // 初始旋转四元数
 	friction: 10, // 滑动摩擦系数
 	rollingFriction: 10, // 滚动摩擦系数
+	restitution: 0.7, // 恢复系数（地面恢复系数提高，让球反弹更多次）
 	grid: {
 		cellSize: 5, // 每个网格单元的大小
 		cellCount: { x: 35, z: 35 }, // X和Z方向的网格单元数量
@@ -438,6 +440,7 @@ export const PARTICLES_CONFIG = {
 		position: { x: -1, y: 7, z: 45 }, // 发光粒子位置
 	},
 	animation: {
+		particleSystemRotationSpeed: 0.0003, // 背景粒子系统旋转速度
 		glowingParticlesTimeMultiplier: 7, // 发光粒子时间倍数
 		glowingParticlesPulse: {
 			randomnessOffset: 0.75, // 脉冲随机偏移
