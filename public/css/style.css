@@ -1,3 +1,11 @@
+/* 全屏尺寸 */
+body,
+#WEBGLcontainer,
+canvas {
+	width: 100vw;
+	height: 100vh;
+}
+
 body {
 	margin: 0;
 	color: #fff;
@@ -5,41 +13,27 @@ body {
 	font-size: 16px;
 	overscroll-behavior: none;
 	position: fixed;
-	width: 100vw;
-	height: 100vh;
 	overflow-y: hidden;
+}
+
+#WEBGLcontainer,
+canvas {
+	pointer-events: auto; /* 确保可以接收触摸事件 */
+	z-index: 1; /* 确保在 overlay 下方，但可以接收事件 */
 }
 
 #WEBGLcontainer {
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 100vw;
-	height: 100vh;
 	overflow: hidden;
 }
 
 canvas {
 	display: block;
 	overscroll-behavior: none;
-	width: 100vw;
-	height: 100vh;
 	overflow-y: hidden;
-}
-
-#info {
-	position: absolute;
-	top: 0px;
-	width: 100%;
-	padding: 10px;
-	box-sizing: border-box;
-	text-align: center;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	pointer-events: none;
-	z-index: 1; /* TODO Solve this in HTML */
+	position: relative;
 }
 
 a,
@@ -47,44 +41,6 @@ button,
 input,
 select {
 	pointer-events: auto;
-}
-
-.dg.ac {
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	z-index: 2 !important; /* TODO Solve this in HTML */
-}
-
-#overlay {
-	position: absolute;
-	z-index: 2;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: rgba(0, 0, 0, 0.7);
-}
-
-#overlay button {
-	background: #ffffff;
-	border: 0;
-	color: #000000;
-	padding: 16px 20px;
-	text-transform: uppercase;
-	cursor: pointer;
-}
-
-#notSupported {
-	width: 50%;
-	margin: auto;
-	background-color: #f00;
-	margin-top: 20px;
-	padding: 10px;
 }
 
 #joystick-wrapper {
@@ -114,115 +70,30 @@ select {
 	}
 }
 
-#joystick {
-	background-color: rgba(0, 0, 0, 0.25);
-	border-radius: 100%;
-	cursor: pointer;
-	height: 45%;
-	user-select: none;
-	width: 45%;
-	margin: 0 auto;
-	visibility: hidden;
-	opacity: 1;
-	border: 1px solid rgba(255, 255, 255, 0.5);
-	-webkit-user-select: none; /* Chrome/Safari */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* IE10+ */
-}
-
 .preload-overlay {
-	height: 100%;
-	width: 100%;
 	position: absolute;
 	top: 0;
 	left: 0;
+	width: 100%;
+	height: 100%;
 	background-color: black;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	z-index: 1000;
 	opacity: 0.9;
+	pointer-events: auto; /* 加载时允许交互 */
 }
 
-.postload {
-	visibility: hidden;
-	display: none;
+.preload-overlay.fade-out {
+	pointer-events: none !important; /* 淡出时禁用交互，让 canvas 接收事件 */
 }
 
-.bottom-webgl-text-div {
-	position: absolute;
-	bottom: 15vh;
-	text-align: center;
-}
-
-.bottom-webgl-text {
-	padding: 0px 0px 0px 0px;
-}
-
-.start-page-text {
-	padding-right: 30px;
-	padding-left: 30px;
-	padding-bottom: 20px;
-	font-size: calc(24px + (20 - 18) * (100vw - 400px) / (800 - 400));
-}
-
-.floyd-text {
-	padding-right: 30px;
-	padding-left: 30px;
-	padding-bottom: 20px;
-	font-size: calc(32px + (24 - 18) * (100vw - 400px) / (800 - 400));
-}
-
-.start-page-content-div {
-	display: inline-block;
-	text-align: center;
-	justify-content: center;
-}
-
-#start-button {
-	margin: 0 auto;
-	margin-bottom: 20vh;
-	font-size: 25px;
-	background-color: grey;
-	border: none;
-	color: #fffc00;
-	border-radius: 12px;
-	padding: 15px 30px 15px 30px;
-	-webkit-appearance: none;
-	-webkit-border-radius: none;
-	outline: none;
-	transition: 0.25s;
-}
-
-#start-button:hover {
-	cursor: pointer;
-	transform: scale(1.15);
-}
-
-/*
-.interactive-site-text {
-  margin: 50px 50px 50px 50px;
-}
-
-.joystick-directions-text {
-  padding: 0px 30px 0px 30px;
-}
-
-.junior-engineer {
-  margin-bottom: 50px;
-}*/
-
-.yellow-text {
-	color: #fffc00;
-}
-
-#static-site-link {
-	text-decoration: underline;
-	color: white;
-}
-
+/* 统一 box-sizing */
 .trinity-rings-spinner,
-.trinity-rings-spinner * {
+.trinity-rings-spinner *,
+.loading-text-div,
+.loading-resource-name {
 	box-sizing: border-box;
 }
 
@@ -236,7 +107,6 @@ select {
 	align-items: center;
 	flex-direction: row;
 	overflow: hidden;
-	box-sizing: border-box;
 }
 .trinity-rings-spinner .circle {
 	position: absolute;
@@ -292,59 +162,32 @@ select {
 	}
 }
 
-.loading-text-div {
-	box-sizing: border-box;
+/* 加载文本通用样式 */
+.loading-text-div,
+.loading-resource-name {
 	position: absolute;
-	font-size: 26px;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
 		Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 	color: #fffc00;
-	bottom: calc(50% - 100px);
 	left: 50%;
 	transform: translateX(-50%);
 	text-align: center;
+}
+
+.loading-text-div {
+	font-size: 26px;
+	bottom: calc(50% - 100px);
 }
 
 .loading-resource-name {
-	box-sizing: border-box;
-	position: absolute;
 	font-size: 18px;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-		Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-	color: #fffc00;
 	opacity: 0.8;
 	bottom: calc(50% - 220px);
-	left: 50%;
-	transform: translateX(-50%);
-	text-align: center;
 	white-space: nowrap;
 }
 
-@keyframes blink {
-	50% {
-		color: transparent;
-	}
-}
-.loader__dot {
-	animation: 1s blink infinite;
-}
-.loader__dot:nth-child(2) {
-	animation-delay: 250ms;
-}
-.loader__dot:nth-child(3) {
-	animation-delay: 500ms;
-}
-
-.hidden {
-	visibility: hidden;
-	opacity: 0;
-	transition: visibility 0s 0.25s, opacity 0.25s linear;
-}
-
 .fade-out {
-	animation: fade-out-animation 0.75s 1;
-	/* animation-duration: 0.25s; */
-	animation-fill-mode: forwards;
+	animation: fade-out-animation 0.75s 1 forwards;
 }
 
 @keyframes fade-out-animation {

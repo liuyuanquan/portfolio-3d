@@ -7,6 +7,34 @@
 
 ## [未发布]
 
+## [1.4.3] - 2025-12-08
+
+### 修复
+
+- **移动端交互问题**
+  - 修复预加载 overlay 遮挡 canvas 导致触摸事件无法传递的问题
+  - 添加 `pointer-events: none` 到 `.preload-overlay.fade-out`，确保淡出时不再拦截事件
+  - 明确设置 `#WEBGLcontainer` 和 `canvas` 的 `pointer-events: auto` 和 `z-index`，确保可以接收触摸事件
+  - 在 JavaScript 中立即禁用 overlay 的 pointer-events，不等待 CSS 动画完成
+
+### 优化
+
+- **CSS 代码优化**
+  - 删除未使用的样式规则（约 30 行），包括 `#info`、`#overlay`、`#notSupported`、`#joystick`、`.postload`、`.bottom-webgl-text-div`、`.start-page-text`、`.floyd-text`、`.start-page-content-div`、`#start-button`、`.yellow-text`、`#static-site-link`、`.loader__dot`、`.hidden` 等
+  - 合并重复的 CSS 规则：
+    - 合并全屏尺寸属性（`body`、`#WEBGLcontainer`、`canvas` 的 `width` 和 `height`）
+    - 合并 `pointer-events` 和 `z-index` 属性（`#WEBGLcontainer` 和 `canvas`）
+    - 统一 `box-sizing: border-box` 声明
+    - 合并加载文本的通用样式（`.loading-text-div` 和 `.loading-resource-name`）
+  - 简化动画属性，将 `animation-fill-mode` 合并到 `animation` 简写属性中
+  - 添加注释分组，提高代码可读性和可维护性
+
+### 变更
+
+- `package.json` 版本号更新至 `1.4.3`
+- `public/css/style.css` 优化，减少约 30 行重复代码
+- `src/app.ts` 在 `finishLoading` 函数中立即禁用 overlay 的 pointer-events
+
 ## [1.4.2] - 2025-12-08
 
 ### 新增
