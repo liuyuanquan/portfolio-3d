@@ -84,9 +84,9 @@ export class SkillsSection {
 		}
 	}
 
-/**
+	/**
 	 * 初始化技能展示区域
- */
+	 */
 	private init(): void {
 		this.textMeshes = this.createTexts();
 		this.createLabelBox();
@@ -164,7 +164,7 @@ export class SkillsSection {
 
 		const geometry = new THREE.TextGeometry(text, {
 			font,
-		size,
+			size,
 			height,
 			curveSegments: geometryConfig.curveSegments,
 			bevelEnabled: geometryConfig.bevelEnabled,
@@ -172,7 +172,7 @@ export class SkillsSection {
 			bevelSize: geometryConfig.bevelSize,
 			bevelOffset: geometryConfig.bevelOffset ?? 0,
 			bevelSegments: geometryConfig.bevelSegments ?? 1,
-	});
+		});
 		geometry.computeBoundingBox();
 		geometry.computeVertexNormals();
 		if (geometry.boundingBox) {
@@ -323,7 +323,7 @@ export class SkillsSection {
 				const mesh = new THREE.Mesh(
 					geometry,
 					new THREE.MeshBasicMaterial({
-						color,
+						color: "color" in textItem ? textItem.color : color,
 						transparent: true,
 						side: THREE.DoubleSide,
 					})
@@ -360,7 +360,7 @@ export class SkillsSection {
 			if (mesh.geometry.boundingBox) {
 				// 获取几何体的局部边界框
 				const localBox = mesh.geometry.boundingBox.clone();
-				
+
 				// 创建8个顶点（边界框的8个角点）
 				const vertices = [
 					new THREE.Vector3(localBox.min.x, localBox.min.y, localBox.min.z),
@@ -372,10 +372,10 @@ export class SkillsSection {
 					new THREE.Vector3(localBox.min.x, localBox.max.y, localBox.max.z),
 					new THREE.Vector3(localBox.max.x, localBox.max.y, localBox.max.z),
 				];
-				
+
 				// 更新 mesh 的矩阵（确保 matrixWorld 是最新的）
 				mesh.updateMatrixWorld(true);
-				
+
 				// 将每个顶点转换到世界坐标（考虑旋转和位置）
 				vertices.forEach((vertex) => {
 					vertex.applyMatrix4(mesh.matrixWorld);
@@ -431,7 +431,7 @@ export class SkillsSection {
 			if (mesh.geometry.boundingBox) {
 				// 获取几何体的局部边界框
 				const localBox = mesh.geometry.boundingBox.clone();
-				
+
 				// 创建8个顶点（边界框的8个角点）
 				const vertices = [
 					new THREE.Vector3(localBox.min.x, localBox.min.y, localBox.min.z),
@@ -443,10 +443,10 @@ export class SkillsSection {
 					new THREE.Vector3(localBox.min.x, localBox.max.y, localBox.max.z),
 					new THREE.Vector3(localBox.max.x, localBox.max.y, localBox.max.z),
 				];
-				
+
 				// 更新 mesh 的矩阵（确保 matrixWorld 是最新的）
 				mesh.updateMatrixWorld(true);
-				
+
 				// 将每个顶点转换到世界坐标（考虑旋转和位置）
 				vertices.forEach((vertex) => {
 					vertex.applyMatrix4(mesh.matrixWorld);

@@ -288,8 +288,8 @@ export const SKILLS_SECTION_CONFIG = {
 			{
 				position: { x: 32.5, y: 0.01, z: startZ + 6 }, // 第一行位置（对齐到格子边界：第24个格子左边界）
 				texts: [
-					{ text: "2024.11 - 至今，", grids: 4.5 }, // 时间，占 4.5 个格子
-					{ text: "昆仑万维，", grids: 2.5 }, // 公司，占 2.5 个格子
+					{ text: "2024.11 - 至今，", grids: 4 }, // 时间，占 4 个格子
+					{ text: "昆仑万维，", grids: 2, color: 0xffff00 }, // 公司，占 2 个格子
 					{ text: "前端专家", grids: 2 }, // 职位，占 2 个格子
 				],
 				size: 1.5, // 文字大小
@@ -298,8 +298,8 @@ export const SKILLS_SECTION_CONFIG = {
 			{
 				position: { x: 32.5, y: 0.01, z: startZ + 12 }, // 第二行位置（对齐到格子边界：第24个格子左边界）
 				texts: [
-					{ text: "2021.09 - 2024.09，", grids: 4.5 }, // 时间，占 4.5 个格子
-					{ text: "小红书，", grids: 2.5 }, // 公司，占 2.5 个格子
+					{ text: "2021.09 - 2024.09，", grids: 4 }, // 时间，占 4 个格子
+					{ text: "小红书，", grids: 2, color: 0xffff00 }, // 公司，占 2 个格子
 					{ text: "前端专家", grids: 2 }, // 职位，占 2 个格子
 				],
 				size: 1.5, // 文字大小
@@ -308,8 +308,8 @@ export const SKILLS_SECTION_CONFIG = {
 			{
 				position: { x: 32.5, y: 0.01, z: startZ + 18 }, // 第三行位置（对齐到格子边界：第24个格子左边界）
 				texts: [
-					{ text: "2019.05 - 2021.08，", grids: 4.5 }, // 时间，占 4.5 个格子
-					{ text: "好未来，", grids: 2.5 }, // 公司，占 2.5 个格子
+					{ text: "2019.05 - 2021.08，", grids: 4 }, // 时间，占 4 个格子
+					{ text: "好未来，", grids: 2, color: 0xffff00 }, // 公司，占 2 个格子
 					{ text: "前端专家", grids: 2 }, // 职位，占 2 个格子
 				],
 				size: 1.5, // 文字大小
@@ -318,8 +318,8 @@ export const SKILLS_SECTION_CONFIG = {
 			{
 				position: { x: 32.5, y: 0.01, z: startZ + 24 }, // 第四行位置（对齐到格子边界：第24个格子左边界）
 				texts: [
-					{ text: "2018.10 - 2019.03，", grids: 4.5 }, // 时间，占 4.5 个格子
-					{ text: "滴滴出行，", grids: 2.5 }, // 公司，占 2.5 个格子
+					{ text: "2018.10 - 2019.03，", grids: 4 }, // 时间，占 4 个格子
+					{ text: "滴滴出行，", grids: 2, color: 0xffff00 }, // 公司，占 2 个格子
 					{ text: "资深前端", grids: 2 }, // 职位，占 2 个格子
 				],
 				size: 1.5, // 文字大小
@@ -328,8 +328,8 @@ export const SKILLS_SECTION_CONFIG = {
 			{
 				position: { x: 32.5, y: 0.01, z: startZ + 30 }, // 第五行位置（对齐到格子边界：第24个格子左边界）
 				texts: [
-					{ text: "2016.05 - 2018.03，", grids: 4.5 }, // 时间，占 4.5 个格子
-					{ text: "响巢看看，", grids: 2.5 }, // 公司，占 2.5 个格子
+					{ text: "2016.05 - 2018.03，", grids: 4 }, // 时间，占 4 个格子
+					{ text: "响巢看看，", grids: 2, color: 0xffff00 }, // 公司，占 2 个格子
 					{ text: "初级前端", grids: 2 }, // 职位，占 2 个格子
 				],
 				size: 1.5, // 文字大小
