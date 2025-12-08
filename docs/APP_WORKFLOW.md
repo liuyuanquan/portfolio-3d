@@ -88,7 +88,7 @@ await resourceManager.loadAll((progress: number, resourceName?: string) => {
 
 这会并行加载：
 
-- 字体文件（根据 `RESOURCE_CONFIG.fonts` 配置，当前为 LXGW_WenKai_Regular.json）
+- 字体文件（根据 `RESOURCE_CONFIG.fonts` 配置，当前为 LXGW WenKai_Regular.json）
 - 预加载的纹理资源（根据 `RESOURCE_CONFIG.preloadTextures` 配置）
 - Ammo.js 物理引擎库
 
@@ -97,6 +97,7 @@ await resourceManager.loadAll((progress: number, resourceName?: string) => {
 - 资源大小信息保存在 `src/config/resource_sizes.json` 中
 - 进度显示基于实际字节数计算，提供更准确的加载进度
 - 可通过 `npm run calculate-resources` 命令更新资源大小信息
+- `calculate-resources` 命令会自动先运行 `extract_used_chars.js` 提取实际使用的字符，然后再计算资源大小
 
 **进度回调参数**：
 - `progress: number` - 加载进度百分比（0-100）

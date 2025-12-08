@@ -511,9 +511,8 @@ export const CAMERA_CONFIG = {
  * 定义了项目所需的各种资源文件路径
  */
 const fontsConfig = {
-	// sourceHan: `${BASE_URL}json/SourceHanSerifSCVF_Regular.json`, // 思源宋体
 	// roboto: `${BASE_URL}json/Roboto_Regular.json`, // Roboto 字体
-	lxgw: `${BASE_URL}json/LXGW_WenKai_Regular.json`, // LXGW_WenKai_Regular
+	lxgw: `${BASE_URL}json/LXGW WenKai_Regular.json`, // LXGW WenKai_Regular
 } as const;
 
 export const RESOURCE_CONFIG = {

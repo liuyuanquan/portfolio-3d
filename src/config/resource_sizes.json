@@ -1,8 +1,8 @@
 {
   "fonts": {
     "lxgw": {
-      "path": "json/LXGW_WenKai_Regular.json",
-      "size": 100556549
+      "path": "json/LXGW WenKai_Regular.json",
+      "size": 191229
     }
   },
   "textures": {
@@ -21,9 +21,9 @@
     "total": 2926396
   },
   "totals": {
-    "fonts": 100556549,
+    "fonts": 191229,
     "textures": 457466,
     "ammo": 2926396,
-    "all": 103940411
+    "all": 3575091
   }
 }

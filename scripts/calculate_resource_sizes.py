@@ -93,7 +93,7 @@ def extract_resource_paths() -> Dict[str, List[str]]:
         
         # 默认字体路径
         resources["fonts"] = [
-            {"name": "lxgw", "path": "json/LXGW_WenKai_Regular.json"}
+            {"name": "lxgw", "path": "json/LXGW WenKai_Regular.json"}
         ]
         
         # 默认纹理路径

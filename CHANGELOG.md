@@ -7,6 +7,34 @@
 
 ## [未发布]
 
+## [1.4.1] - 2025-12-08
+
+### 新增
+
+- **字体子集化功能**
+  - 添加 `scripts/extract_used_chars.js` 脚本，自动从源代码中提取实际使用的字符
+  - 支持字体子集化，减小字体文件大小
+  - `calculate-resources` 命令现在会自动先提取字符，再计算资源大小
+
+### 修复
+
+- **字体字符缺失处理**
+  - 修复 `createFloatingLabel` 函数中字体字符缺失导致的崩溃问题
+  - 添加字符缺失检测和警告信息
+  - 当字体中缺少字符时，自动过滤并继续渲染
+
+### 优化
+
+- **资源管理优化**
+  - 优化 `calculate-resources` 命令，自动提取实际使用的字符
+  - 更新资源大小配置，使用实际文件大小
+
+### 变更
+
+- `package.json` 版本号更新至 `1.4.1`
+- `calculate-resources` 命令现在包含字符提取步骤
+- `Shapes.ts` 添加字体字符缺失的错误处理
+
 ## [1.4.0] - 2025-01-XX
 
 ### 新增
@@ -57,7 +85,7 @@
 ### 新增
 
 - **多字体支持**
-  - ResourceManager 支持加载多个字体（SourceHanSerifSCVF_Regular、Roboto_Regular、LXGW_WenKai_Regular）
+  - ResourceManager 支持加载多个字体（SourceHanSerifSCVF_Regular、Roboto_Regular、LXGW WenKai_Regular）
   - 提供 `getFont(fontName?)` 方法，支持切换使用不同字体
   - 添加 `getAvailableFonts()` 方法获取所有可用字体列表
 
