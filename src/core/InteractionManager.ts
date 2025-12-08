@@ -87,7 +87,8 @@ export class InteractionManager {
 
 		canvas.addEventListener("mousemove", this.handleMouseMove.bind(this));
 		canvas.addEventListener("click", this.handleClick.bind(this));
-		canvas.addEventListener("touchstart", this.handleTouchStart.bind(this));
+		// 使用 passive: true 提高性能，因为我们不需要阻止默认行为
+		canvas.addEventListener("touchstart", this.handleTouchStart.bind(this), { passive: true });
 		window.addEventListener("resize", this.handleResize.bind(this));
 	}
 

@@ -376,6 +376,17 @@ export class ResourceManager {
 					(texture: THREE.Texture) => {
 						if (hasError) return;
 
+						// 检查纹理尺寸是否被调整
+						const image = texture.image;
+						if (image && (image.width !== image.naturalWidth || image.height !== image.naturalHeight)) {
+							console.warn(
+								`纹理尺寸被调整: ${fileName}\n` +
+								`  原始尺寸: ${image.naturalWidth}x${image.naturalHeight}\n` +
+								`  调整后: ${image.width}x${image.height}\n` +
+								`  路径: ${url}`
+							);
+						}
+
 						applyTextureOptions(texture, DEFAULT_TEXTURE_OPTIONS);
 						this.textures.set(url, texture);
 						tracker.completeResource(url);
@@ -512,6 +523,42 @@ export class ResourceManager {
 		const texture = loader.load(
 			fullUrl,
 			(loadedTexture: THREE.Texture) => {
+				// 检查纹理尺寸是否被调整（使用 setTimeout 确保 image 已完全加载）
+				setTimeout(() => {
+					const image = loadedTexture.image;
+					if (image && image instanceof Image) {
+						const naturalWidth = image.naturalWidth || image.width;
+						const naturalHeight = image.naturalHeight || image.height;
+						const actualWidth = image.width;
+						const actualHeight = image.height;
+						
+						// 检查是否是 2 的幂次方
+						const isPowerOfTwo = (value: number) => (value & (value - 1)) === 0;
+						const widthIsPowerOfTwo = isPowerOfTwo(naturalWidth);
+						const heightIsPowerOfTwo = isPowerOfTwo(naturalHeight);
+						
+						const fileName = url.split('/').pop() || url;
+						
+						if (!widthIsPowerOfTwo || !heightIsPowerOfTwo) {
+							console.warn(
+								`⚠️ 纹理尺寸不是 2 的幂次方，可能被调整: ${fileName}\n` +
+								`  原始尺寸: ${naturalWidth}x${naturalHeight}\n` +
+								`  路径: ${fullUrl}`
+							);
+						}
+						
+						// 如果尺寸被调整了，输出详细信息
+						if (actualWidth !== naturalWidth || actualHeight !== naturalHeight) {
+							console.warn(
+								`⚠️ 纹理尺寸被调整: ${fileName}\n` +
+								`  原始尺寸: ${naturalWidth}x${naturalHeight}\n` +
+								`  调整后: ${actualWidth}x${actualHeight}\n` +
+								`  路径: ${fullUrl}`
+							);
+						}
+					}
+				}, 0);
+
 				applyTextureOptions(loadedTexture, textureOptions);
 				loadedTexture.needsUpdate = true;
 			},

@@ -10,6 +10,15 @@ body {
 	overflow-y: hidden;
 }
 
+#WEBGLcontainer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+}
+
 canvas {
 	display: block;
 	overscroll-behavior: none;
@@ -91,13 +100,16 @@ select {
 	justify-content: center;
 	align-items: center;
 	opacity: 1;
-	/* 默认隐藏，触摸设备通过媒体查询显示 */
 	display: none;
+	/* 确保摇杆可以接收触摸事件 */
+	pointer-events: auto !important;
+	touch-action: none !important;
+	z-index: 9999 !important;
 }
 
-/* 触摸设备显示摇杆 */
+/* 触摸设备且资源加载完成后显示摇杆 */
 @media (hover: none) and (pointer: coarse) {
-	#joystick-wrapper {
+	#joystick-wrapper.loaded {
 		display: flex;
 	}
 }

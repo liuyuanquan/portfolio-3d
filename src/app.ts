@@ -3,6 +3,17 @@
  */
 import { WEBGL } from "three/examples/jsm/WebGL.js";
 import { World, GameLoop, PhysicsEngine, InteractionManager, resourceManager } from "./core";
+import { isTouchscreenDevice } from "./utils";
+
+// 开发环境引入 vconsole
+if (import.meta.env.DEV) {
+	import("vconsole").then((VConsole) => {
+		new VConsole.default();
+		console.log("vConsole 已加载");
+	}).catch((error) => {
+		console.error("vConsole 加载失败:", error);
+	});
+}
 import {
 	GridPlane,
 	Ball,
@@ -17,6 +28,30 @@ import {
 	BrickWalls,
 	BoundaryWalls,
 } from "./objects";
+
+/**
+ * 隐藏预加载元素并显示摇杆（如果是触摸设备）
+ */
+function finishLoading(): void {
+	// 隐藏预加载元素并添加淡出动画
+	document.querySelectorAll(".preload, .fadeOutDiv").forEach((element) => {
+		const el = element as HTMLElement;
+		if (el.classList.contains("preload")) {
+			// 直接设置 display: none 即可隐藏元素，visibility: hidden 是冗余的
+			el.style.display = "none";
+		} else if (el.classList.contains("fadeOutDiv")) {
+			el.classList.add("fade-out");
+		}
+	});
+
+	// 资源加载完成后，如果是触摸设备则显示摇杆
+	if (isTouchscreenDevice()) {
+		const joystickWrapper = document.getElementById("joystick-wrapper");
+		if (joystickWrapper) {
+			joystickWrapper.classList.add("loaded");
+		}
+	}
+}
 
 async function main(): Promise<void> {
 	// 检查 WebGL 可用性
@@ -39,16 +74,8 @@ async function main(): Promise<void> {
 		}
 	});
 
-	// 隐藏预加载元素并添加淡出动画
-	document.querySelectorAll(".preload, .fadeOutDiv").forEach((element) => {
-			const el = element as HTMLElement;
-		if (el.classList.contains("preload")) {
-			// 直接设置 display: none 即可隐藏元素，visibility: hidden 是冗余的
-			el.style.display = "none";
-		} else if (el.classList.contains("fadeOutDiv")) {
-			el.classList.add("fade-out");
-		}
-	});
+	// 隐藏预加载元素并显示摇杆（如果是触摸设备）
+	finishLoading();
 
 	// 初始化 World 实例
 	const world = new World();

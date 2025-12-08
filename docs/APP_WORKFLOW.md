@@ -99,6 +99,11 @@ await resourceManager.loadAll((progress: number, resourceName?: string) => {
 - 可通过 `npm run calculate-resources` 命令更新资源大小信息
 - `calculate-resources` 命令会自动先运行 `extract_used_chars.js` 提取实际使用的字符，然后再计算资源大小
 
+**资源加载完成后的处理**：
+- 资源加载完成后，调用 `finishLoading()` 函数
+- 隐藏预加载元素并添加淡出动画
+- 如果是触摸设备，显示虚拟摇杆（通过添加 `loaded` 类）
+
 **进度回调参数**：
 - `progress: number` - 加载进度百分比（0-100）
 - `resourceName?: string` - 当前正在加载的资源名称（如 "字体: lxgw"、"纹理: earth.jpg"、"Ammo.js"）
@@ -125,7 +130,9 @@ document.querySelectorAll(".preload, .fadeOutDiv").forEach((element) => {
 `World` 类负责管理 Three.js 的核心对象：
 
 ```typescript
-const world = new World();
+const world = new World(); // 使用默认容器 #WEBGLcontainer
+// 或指定自定义容器
+const world = new World("#custom-container");
 ```
 
 `World` 构造函数会：

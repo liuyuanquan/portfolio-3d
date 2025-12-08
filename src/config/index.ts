@@ -59,7 +59,7 @@ export const BALL_CONFIG = {
  * 定义了场景中的装饰性沙滩球的物理属性和外观
  */
 export const BEACH_BALL_CONFIG = {
-	position: { x: 20, y: 30, z: 0 }, // 初始位置
+	position: { x: 10, y: 30, z: -10 }, // 初始位置
 	radius: 3, // 球体半径
 	mass: 3, // 物理质量
 	quaternion: { x: 0, y: 0, z: 0, w: 1 }, // 初始旋转四元数
