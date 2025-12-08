@@ -14,76 +14,12 @@ export class ResourceManager {
 	private manager: THREE.LoadingManager;
 
 	/** 资源缓存 */
-	private font: THREE.Font | null = null;
+	private fonts: Map<string, THREE.Font> = new Map();
 	private textures: Map<string, THREE.Texture> = new Map();
 	private ammoLib: any = null;
 
 	constructor() {
 		this.manager = new THREE.LoadingManager();
-	}
-
-	/**
-	 * 加载字体
-	 */
-	private loadFont(): Promise<THREE.Font> {
-		return new Promise((resolve, reject) => {
-			if (this.font) {
-				resolve(this.font);
-				return;
-			}
-
-			const loader = new THREE.FontLoader(this.manager);
-			loader.load(
-				RESOURCE_CONFIG.defaultFontPath,
-				(font: THREE.Font) => {
-					this.font = font;
-					resolve(font);
-				},
-				undefined,
-				(error: ErrorEvent) => {
-					console.error("字体文件加载错误:", error);
-					reject(error);
-				}
-			);
-		});
-	}
-
-	/**
-	 * 加载所有预定义的纹理
-	 */
-	private loadTextures(): Promise<void> {
-		return new Promise((resolve) => {
-			const loader = new THREE.TextureLoader(this.manager);
-			let loadedCount = 0;
-			const totalCount: number = RESOURCE_CONFIG.preloadTextures.length;
-
-			if (totalCount === 0) {
-				resolve();
-				return;
-			}
-
-			RESOURCE_CONFIG.preloadTextures.forEach((url) => {
-				loader.load(
-					url,
-					(texture: THREE.Texture) => {
-						applyTextureOptions(texture, DEFAULT_TEXTURE_OPTIONS);
-						this.textures.set(url, texture);
-						loadedCount++;
-						if (loadedCount === totalCount) {
-							resolve();
-						}
-					},
-					undefined,
-					(error: ErrorEvent) => {
-						console.error(`纹理加载错误 [${url}]:`, error);
-						loadedCount++;
-						if (loadedCount === totalCount) {
-							resolve();
-						}
-					}
-				);
-			});
-		});
 	}
 
 	/**
@@ -112,17 +48,112 @@ export class ResourceManager {
 
 	/**
 	 * 加载所有资源
+	 * @param onProgress 可选的进度回调函数，参数为 0-100 的百分比（基于资源数量）
 	 */
-	public async loadAll(): Promise<void> {
+	public async loadAll(onProgress?: (progress: number) => void): Promise<void> {
+		const totalResources = Object.keys(RESOURCE_CONFIG.fonts).length + RESOURCE_CONFIG.preloadTextures.length + 1; // +1 for Ammo.js
+		let loadedResources = 0;
+
+		const updateProgress = () => {
+			if (onProgress) {
+				const progress = Math.round((loadedResources / totalResources) * 100);
+				onProgress(progress);
+				console.log(`加载进度: ${progress}% | 已加载: ${loadedResources} / ${totalResources} 个资源`);
+			}
+		};
+
+		// 加载字体
+		const fontPromises = Object.entries(RESOURCE_CONFIG.fonts).map(([name, path]) => {
+			return new Promise<THREE.Font>((resolve, reject) => {
+				const loader = new THREE.FontLoader(this.manager);
+				loader.load(
+					path,
+					(font: THREE.Font) => {
+						this.fonts.set(name, font);
+						loadedResources++;
+						updateProgress();
+						resolve(font);
+					},
+					undefined,
+					(error: ErrorEvent) => {
+						console.error(`字体文件加载错误 [${name}]:`, error);
+						loadedResources++;
+						updateProgress();
+						reject(error);
+					}
+				);
+			});
+		});
+
+		// 加载纹理
+		const texturePromise = new Promise<void>((resolve) => {
+			const loader = new THREE.TextureLoader(this.manager);
+			let loadedCount = 0;
+			const totalCount: number = RESOURCE_CONFIG.preloadTextures.length;
+
+			if (totalCount === 0) {
+				resolve();
+				return;
+			}
+
+			RESOURCE_CONFIG.preloadTextures.forEach((url) => {
+				loader.load(
+					url,
+					(texture: THREE.Texture) => {
+						applyTextureOptions(texture, DEFAULT_TEXTURE_OPTIONS);
+						this.textures.set(url, texture);
+						loadedCount++;
+						loadedResources++;
+						updateProgress();
+						if (loadedCount === totalCount) {
+							resolve();
+						}
+					},
+					undefined,
+					(error: ErrorEvent) => {
+						console.error(`纹理加载错误 [${url}]:`, error);
+						loadedCount++;
+						loadedResources++;
+						updateProgress();
+						if (loadedCount === totalCount) {
+							resolve();
+						}
+					}
+				);
+			});
+		});
+
+		// 加载 Ammo.js
+		const ammoPromise = this.loadAmmo().then(() => {
+			loadedResources++;
+			updateProgress();
+		});
+
 		// 并行加载所有资源
-		await Promise.all([this.loadFont(), this.loadTextures(), this.loadAmmo()]);
+		await Promise.all([Promise.all(fontPromises), texturePromise, ammoPromise]);
+
+		// 确保最终进度为 100%
+		if (onProgress) {
+			onProgress(100);
+			console.log(`加载完成: 100% | 总共加载了 ${totalResources} 个资源`);
+		}
 	}
 
 	/**
 	 * 获取已加载的字体
+	 * @param fontName 字体名称，可选。如果不指定，返回默认字体
+	 * @returns THREE.Font 对象，如果字体未加载则返回 null
 	 */
-	public getFont(): THREE.Font | null {
-		return this.font;
+	public getFont(fontName?: string): THREE.Font | null {
+		const name = fontName || RESOURCE_CONFIG.defaultFont;
+		return this.fonts.get(name) || null;
+	}
+
+	/**
+	 * 获取所有已加载的字体名称列表
+	 */
+	public getAvailableFonts(): string[] {
+		return Array.from(this.fonts.keys());
 	}
 
 	/**

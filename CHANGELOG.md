@@ -7,11 +7,61 @@
 
 ## [未发布]
 
+## [1.3.4] - 2025-12-08
+
+### 新增
+
+- **多字体支持**
+  - ResourceManager 支持加载多个字体（SourceHanSerifSCVF_Regular、Roboto_Regular、LXGW_WenKai_Regular）
+  - 提供 `getFont(fontName?)` 方法，支持切换使用不同字体
+  - 添加 `getAvailableFonts()` 方法获取所有可用字体列表
+
+- **加载进度显示**
+  - 添加基于资源数量的加载进度百分比显示
+  - 实时更新加载进度，显示已加载资源数量
+  - 在控制台实时打印加载进度和资源数量
+
+- **工作经历区域交互增强**
+  - experiences 整体区域支持点击跳转到 PDF
+  - 添加 experiences 区域的轮廓线显示（可配置）
+  - 优化 experiences 区域盒子的尺寸计算，基于实际文字边界框
+
+### 重构
+
+- **SkillsSection 重构**
+  - 将 label 结构改为与 PROJECTS_SECTION_CONFIG 一致的结构
+  - 支持显示 name 和 role 两个文本，自动水平居中排列
+  - labelBox 和 labelBoxOutline 基于实际文本边界框动态计算
+  - 移除 experiencesBox 的物理属性，避免阻挡小球移动
+
+- **配置清理**
+  - 删除未使用的 `PROJECTS_SECTION_CONFIG` 配置对象
+  - 删除 `PARTICLES_CONFIG.animation` 中未使用的配置项（lensFlare*、particleSystemRotationSpeed）
+  - 删除 `SKILLS_SECTION_CONFIG.label.text.*.position.x`（x 位置通过 centerX 动态计算）
+  - 将 PDF URL 移到配置文件中统一管理
+
+- **ResourceManager 优化**
+  - 移除未使用的 `loadFonts()` 和 `loadTextures()` 方法
+  - 优化 `loadAll()` 方法，支持进度回调
+  - 统一字体加载逻辑到 `loadAll()` 中
+
+### 变更
+
+- `package.json` 版本号更新至 `1.3.4`
+- `RESOURCE_CONFIG` 添加 `fonts` 对象和 `defaultFont` 配置
+- `SKILLS_SECTION_CONFIG` 重构，label 使用新的结构
+- `SKILLS_SECTION_CONFIG.label` 添加 `url` 配置（PDF 链接）
+- `SKILLS_SECTION_CONFIG.experiences` 改为对象结构，包含 `url`、`showOutline`、`outlineColor`、`items`
+- `SkillsSection.ts` 重构，支持多文本显示和动态边界框计算
+- `index.html` 更新加载文本为百分比显示
+- 删除 `ProjectsSection.ts` 文件和相关配置
+
 ## [1.3.3] - 2025-12-08
 
 ### 新增
 
 - **工作经历展示功能**
+
   - 将技能展示区域改为工作经历展示区域
   - 添加立体文字标签"工作经历"，支持点击交互
   - 添加多个工作经历文字标签，显示详细的工作经历信息
@@ -60,6 +110,7 @@
 ### 重构
 
 - **代码架构优化**
+
   - 将 `ResourceManager` 从静态方法改为实例方法，导出 `resourceManager` 实例
   - 移除单例模式，简化代码结构
   - 所有对象类统一通过 `world` 实例访问 `physicsEngine` 和 `interactionManager`
@@ -68,6 +119,7 @@
   - 提取类型定义到 `global.d.ts`：`TextureOptions`、`TextureLoadOptions`、`BrickData`、`BillboardItem`、`BillboardConfigItem`、`ParticleAttributes`
 
 - **配置管理优化**
+
   - 重新组织 `config/index.ts`，按功能模块分类（核心游戏对象、场景环境、用户交互、视觉效果、相机、资源管理）
   - 统一配置注释风格，提高可读性
   - 将 `DEFAULT_TEXTURE_OPTIONS` 从 `utils/texture.ts` 移动到 `config/index.ts`
@@ -106,17 +158,20 @@
 ### 重构
 
 - **核心模块重组**
+
   - 将 `World.ts` 从 `resources` 目录移动到 `core` 目录，与 `PhysicsEngine.ts` 并列
   - 将 `cameraUtils.ts` 从 `resources` 目录移动到 `core` 目录，重命名为 `CameraControl.ts`
   - 将 `input.ts` 重命名为 `InputManager.ts`，统一核心模块命名规范
   - 所有核心模块现在使用首字母大写的命名规范
 
 - **物理引擎优化**
+
   - 将 `addRigidPhysics` 函数从 `utils/physics.ts` 移动到 `PhysicsEngine.ts` 作为实例方法
   - 简化 `PhysicsEngine.ts` 注释，只保留关键信息
   - 优化 `addRigidPhysics` 实现，直接使用 `this.Ammo` 和 `this.STATE`
 
 - **相机控制优化**
+
   - 将 `CAMERA_CONFIG` 内置到 `CameraControl.ts`，移除对外部配置的依赖
   - 简化 `CameraControl.ts` 注释，只保留关键信息
   - 从 `config/index.ts` 中移除 `CAMERA_CONFIG` 和 `CameraConfig` 类型
@@ -140,12 +195,14 @@
 ### 重构
 
 - **项目展示区域优化**
+
   - 将 `createProjectsSection` 单独抽取到 `ProjectsSection.ts` 文件
   - 将 `loadFloydText` 和 `loadEngineerText` 函数合并为 `loadTexts`，实现并排显示
   - 调整文本位置，使两个文本整体在盒子中水平居中显示
   - 将 `TEXT_CONFIG` 内置到 `ProjectsSection.ts`，移除对 `OBJECTS_CONFIG` 的依赖
 
 - **字体加载器简化**
+
   - 简化 `fontLoader.ts`，只提供 `onLoad` 回调函数，让用户完全自定义文本创建逻辑
   - 移除所有默认的硬编码逻辑和配置选项
   - 重命名接口为 `FontLoaderOptions`，回调函数名为 `onLoad`
@@ -191,6 +248,7 @@
 ### 重构
 
 - **优化配置管理**
+
   - 删除 `OBJECTS_CONFIG` 中已迁移的配置项（`plane`、`wall`、`brick`）
   - 配置已分别迁移到 `Planes.ts`、`Walls.ts` 的本地配置常量中
   - `createBoundaryWalls` 从 `Planes.ts` 导入 `PLANE_CONFIG`，避免间接引用

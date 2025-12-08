@@ -22,6 +22,15 @@ export const DEFAULT_TEXTURE_OPTIONS: TextureOptions = {
  */
 
 // ============================================================================
+// 0. BASE CONFIGURATION 基础配置
+// ============================================================================
+
+/**
+ * 基础URL路径常量
+ */
+export const BASE_URL = (import.meta.env as any).BASE_URL as string;
+
+// ============================================================================
 // 1. CORE GAME OBJECTS 核心游戏对象配置
 // ============================================================================
 
@@ -220,106 +229,92 @@ export const LINK_BOXES_CONFIG = {
 } as const;
 
 /**
- * 项目展示区域配置
- * 定义了项目展示区域的文字标识和外观设置
+ * 技能展示区域配置 - 共享的 z 坐标常量
  */
-export const PROJECTS_SECTION_CONFIG = {
-	position: {
-		x: 16.2,
-		y: 1,
-		z: -20,
-	},
-	size: { x: 25, y: 3, z: 2 },
-	color: 0xff6600,
-	showOutline: false,
-	outlineColor: 0xffffff,
-	text: {
-		name: {
-			text: "刘源泉",
-			color: 0xfffc00,
-			size: 3,
-			height: 0.5,
-			position: { x: 16.2, y: 0, z: -20 },
-			geometry: {
-				curveSegments: 12,
-				bevelEnabled: true,
-				bevelThickness: 0.1,
-				bevelSize: 0.11,
-				bevelOffset: 0,
-				bevelSegments: 1,
-			},
-			translateX: -0.5,
-		},
-		role: {
-			text: "前端专家",
-			color: 0x00ff08,
-			size: 1.5,
-			height: 0.5,
-			position: { x: 16.2, y: 0, z: -20 },
-			geometry: {
-				curveSegments: 20,
-				bevelEnabled: true,
-				bevelThickness: 0.25,
-				bevelSize: 0.1,
-			},
-			translateX: -0.5,
-		},
-	},
-	spacing: 0.5,
-} as const;
+const startZ = -6 * GRID_PLANE_CONFIG_COMPUTED.grid.cellSize;
 
 /**
  * 技能展示区域配置
  * 定义了技能展示区域的标签和工作经历文字设置
  */
-const startZ = -6 * GRID_PLANE_CONFIG_COMPUTED.grid.cellSize;
 export const SKILLS_SECTION_CONFIG = {
 	label: {
-		position: { x: 61, y: 1, z: startZ }, // 标签位置（居中，与第一个 experience 相距 4，向上移动 5）
-		text: "工作经历", // 标签文本
-		size: 3, // 标签文字大小
-		height: 0.5, // 立体文字高度
-		color: 0xff0000, // 标签颜色
-		geometry: {
-			curveSegments: 12,
-			bevelEnabled: true,
-			bevelThickness: 0.1,
-			bevelSize: 0.11,
-			bevelOffset: 0,
-			bevelSegments: 1,
+		centerX: 61, // 文本水平居中的 x 坐标（与 experiences 的 x 坐标一致）
+		color: 0xff6600, // labelBox 材质颜色
+		showOutline: false, // 是否显示轮廓线
+		outlineColor: 0xff0000, // 轮廓线颜色
+		url: `${BASE_URL}pdf/刘源泉_20251119.pdf`, // 点击链接（PDF文件）
+		text: {
+			name: {
+				text: "刘源泉",
+				color: 0xffff00,
+				size: 3,
+				height: 0.5,
+				position: { y: 0, z: startZ },
+				geometry: {
+					curveSegments: 12,
+					bevelEnabled: true,
+					bevelThickness: 0.1,
+					bevelSize: 0.11,
+					bevelOffset: 0,
+					bevelSegments: 1,
+				},
+				translateX: -0.5,
+			},
+			role: {
+				text: "前端专家",
+				color: 0xffffff,
+				size: 1.5,
+				height: 0.5,
+				position: { y: 0, z: startZ },
+				geometry: {
+					curveSegments: 20,
+					bevelEnabled: true,
+					bevelThickness: 0.25,
+					bevelSize: 0.1,
+				},
+				translateX: -0.5,
+			},
 		},
-		translateX: -0.5, // 文字居中对齐
-		boxSize: { x: 15, y: 2, z: 1 }, // 可点击盒子尺寸
-		boxColor: 0xff0000, // 盒子颜色（透明）
-		url: "https://github.com/liuyuanquan", // 点击链接（可选）
+		spacing: 0.5,
 	},
-	experiences: [
-		{
-			position: { x: 61, y: 0.01, z: startZ + 6 }, // 第一行位置（label z: 7 + 4 = 11，向上移动 5）
-			text: "二四.十一 - 至今，昆仑万维，前端专家", // 工作经历文本
-			size: 1.5, // 文字大小
-		},
-		{
-			position: { x: 61, y: 0.01, z: startZ + 12 }, // 第二行位置（间距 4，向上移动 5）
-			text: "二一.九 - 二四.九，小红书，  前端专家", // 工作经历文本
-			size: 1.5, // 文字大小
-		},
-		{
-			position: { x: 61, y: 0.01, z: startZ + 18 }, // 第三行位置（间距 4，向上移动 5）
-			text: "一九.五 - 二一.八，好未来，  前端专家", // 工作经历文本
-			size: 1.5, // 文字大小
-		},
-		{
-			position: { x: 61, y: 0.01, z: startZ + 24 }, // 第四行位置（label z: 7 - 4 = 3，在 label 上方，向上移动 5）
-			text: "一八.十 - 一九.三，滴滴，     资深前端", // 工作经历文本
-			size: 1.5, // 文字大小
-		},
-		{
-			position: { x: 61, y: 0.01, z: startZ + 30 }, // 第五行位置（间距 4，在 label 上方，向上移动 5）
-			text: "一六.五 - 一八.三，看看，     初级前端", // 工作经历文本（逗号后添加空格）
-			size: 1.5, // 文字大小
-		},
-	],
+	experiences: {
+		url: `${BASE_URL}pdf/刘源泉_20251119.pdf`, // 点击链接（PDF文件）
+		showOutline: false, // 是否显示轮廓线
+		outlineColor: 0xffffff, // 轮廓线颜色
+		items: [
+			{
+				position: { x: 61, y: 0.01, z: startZ + 6 }, // 第一行位置（label z: 7 + 4 = 11，向上移动 5）
+				text: "2024.11 - 至今，      昆仑万维，前端专家", // 工作经历文本
+				size: 1.5, // 文字大小
+				color: 0xffffff,
+			},
+			{
+				position: { x: 61, y: 0.01, z: startZ + 12 }, // 第二行位置（间距 4，向上移动 5）
+				text: "2021.09 - 2024.09，小红书，  前端专家", // 工作经历文本
+				size: 1.5, // 文字大小
+				color: 0xffffff,
+			},
+			{
+				position: { x: 61, y: 0.01, z: startZ + 18 }, // 第三行位置（间距 4，向上移动 5）
+				text: "2019.05 - 2021.08，好未来，  前端专家", // 工作经历文本
+				size: 1.5, // 文字大小
+				color: 0xffffff,
+			},
+			{
+				position: { x: 61, y: 0.01, z: startZ + 24 }, // 第四行位置（label z: 7 - 4 = 3，在 label 上方，向上移动 5）
+				text: "2018.10 - 2019.03，滴滴，     资深前端", // 工作经历文本
+				size: 1.5, // 文字大小
+				color: 0xffffff,
+			},
+			{
+				position: { x: 61, y: 0.01, z: startZ + 30 }, // 第五行位置（间距 4，在 label 上方，向上移动 5）
+				text: "2016.05 - 2018.03，看看，     初级前端", // 工作经历文本（逗号后添加空格）
+				size: 1.5, // 文字大小
+				color: 0xffffff,
+			},
+		],
+	},
 } as const;
 
 // ============================================================================
@@ -443,16 +438,6 @@ export const PARTICLES_CONFIG = {
 		position: { x: -1, y: 7, z: 45 }, // 发光粒子位置
 	},
 	animation: {
-		particleSystemRotationSpeed: 0.0003, // 粒子系统旋转速度
-		lensFlareRotationSpeed: 0.0002, // 光晕旋转速度
-		lensFlareMoveSpeed: {
-			x: 0.025, // 光晕X轴移动速度
-			y: -0.001, // 光晕Y轴移动速度
-		},
-		lensFlareBounds: {
-			x: { min: -750, max: 750 }, // 光晕X轴移动边界
-			y: { default: -50 }, // 光晕Y轴默认位置
-		},
 		glowingParticlesTimeMultiplier: 7, // 发光粒子时间倍数
 		glowingParticlesPulse: {
 			randomnessOffset: 0.75, // 脉冲随机偏移
@@ -522,16 +507,22 @@ export const CAMERA_CONFIG = {
  * 资源管理器配置
  * 定义了项目所需的各种资源文件路径
  */
+const fontsConfig = {
+	// sourceHan: `${BASE_URL}json/SourceHanSerifSCVF_Regular.json`, // 思源宋体
+	// roboto: `${BASE_URL}json/Roboto_Regular.json`, // Roboto 字体
+	lxgw: `${BASE_URL}json/LXGW_WenKai_Regular.json`, // LXGW_WenKai_Regular
+} as const;
+
 export const RESOURCE_CONFIG = {
-	baseUrl: (import.meta.env as any).BASE_URL as string, // 基础URL路径
-	defaultFontPath: `${(import.meta.env as any).BASE_URL}json/SourceHanSerifSCVF_Regular.json`, // 默认字体路径
+	fonts: fontsConfig,
+	defaultFont: "lxgw" as keyof typeof fontsConfig, // 默认使用的字体
 	preloadTextures: [
-		`${(import.meta.env as any).BASE_URL}img/earth.jpg`, // 玩家球体纹理
-		`${(import.meta.env as any).BASE_URL}img/BeachBallColor.jpg`, // 沙滩球纹理
-		`${(import.meta.env as any).BASE_URL}img/stone.png`, // 砖墙纹理
-		`${(import.meta.env as any).BASE_URL}img/woodTexture.jpg`, // 广告牌背景纹理
-		`${(import.meta.env as any).BASE_URL}img/project-placeholder.png`, // 项目占位图
-		`${(import.meta.env as any).BASE_URL}img/lensflare0.png`, // 镜头光晕纹理
-		`${(import.meta.env as any).BASE_URL}img/spark.png`, // 粒子火花纹理
+		`${BASE_URL}img/earth.jpg`, // 玩家球体纹理
+		`${BASE_URL}img/BeachBallColor.jpg`, // 沙滩球纹理
+		`${BASE_URL}img/stone.png`, // 砖墙纹理
+		`${BASE_URL}img/woodTexture.jpg`, // 广告牌背景纹理
+		`${BASE_URL}img/project-placeholder.png`, // 项目占位图
+		`${BASE_URL}img/lensflare0.png`, // 镜头光晕纹理
+		`${BASE_URL}img/spark.png`, // 粒子火花纹理
 	],
 } as const;

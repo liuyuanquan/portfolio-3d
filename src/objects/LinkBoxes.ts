@@ -46,7 +46,7 @@ export class LinkBoxes {
 					font,
 					position: boxConfig.label.position,
 					text: boxConfig.label.text,
-					color: 0xff0000,
+					color: 0xffffff,
 				});
 				this.labels.push(label);
 			}
@@ -68,7 +68,7 @@ export class LinkBoxes {
 				text: line,
 				size: instructions.size,
 				rotateX: true,
-				color: 0xff0000,
+				color: 0xffffff,
 			});
 			this.instructionLabels.push(label);
 		});

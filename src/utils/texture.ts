@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { RESOURCE_CONFIG, DEFAULT_TEXTURE_OPTIONS } from "../config";
+import { DEFAULT_TEXTURE_OPTIONS, BASE_URL } from "../config";
 
 /**
  * 应用纹理选项到纹理对象
@@ -41,5 +41,5 @@ export function getTexturePath(path: string): string {
 	if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("/")) {
 		return path;
 	}
-	return `${RESOURCE_CONFIG.baseUrl}img/${path}`;
+	return `${BASE_URL}img/${path}`;
 }

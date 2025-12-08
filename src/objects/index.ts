@@ -1,7 +1,6 @@
 export { Ball } from "./Ball";
 export { BeachBall } from "./BeachBall";
 export { LinkBoxes } from "./LinkBoxes";
-export { ProjectsSection } from "./ProjectsSection";
 export { Billboards } from "./Billboards";
 export { BrickWalls } from "./BrickWalls";
 export { BoundaryWalls } from "./BoundaryWalls";

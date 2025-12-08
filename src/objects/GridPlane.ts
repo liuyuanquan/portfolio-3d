@@ -107,7 +107,7 @@ export class GridPlane {
 			text: instructionsText,
 			size: 1.5,
 			rotateX: true,
-			color: 0xff0000,
+			color: 0xffffff,
 		});
 	}
 }

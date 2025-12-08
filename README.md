@@ -93,8 +93,7 @@ portfolio-3d/
 │   │   ├── BrickWalls.ts        # 砖墙
 │   │   ├── LinkBoxes.ts         # 链接盒子（社交链接）
 │   │   ├── Billboards.ts        # 广告牌（项目展示）
-│   │   ├── ProjectsSection.ts    # 项目展示区域（3D 文字）
-│   │   ├── SkillsSection.ts      # 技能展示区域
+│   │   ├── SkillsSection.ts      # 技能展示区域（工作经历展示）
 │   │   ├── Galaxy.ts             # 星系效果
 │   │   ├── Glowing.ts            # 发光粒子
 │   │   ├── Background.ts         # 背景粒子

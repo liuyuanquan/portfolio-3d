@@ -13,7 +13,6 @@ import {
 	LensFlare,
 	SkillsSection,
 	LinkBoxes,
-	ProjectsSection,
 	Billboards,
 	BrickWalls,
 	BoundaryWalls,
@@ -28,7 +27,13 @@ async function main(): Promise<void> {
 	}
 
 	// 初始化资源管理器并加载所有资源
-	await resourceManager.loadAll();
+	// 设置进度回调，实时更新加载百分比
+	const loadingPercentageElement = document.getElementById("loading-percentage");
+	await resourceManager.loadAll((progress: number) => {
+		if (loadingPercentageElement) {
+			loadingPercentageElement.textContent = progress.toString();
+		}
+	});
 
 	// 隐藏预加载元素并添加淡出动画
 	document.querySelectorAll(".preload, .fadeOutDiv").forEach((element) => {
@@ -87,10 +92,6 @@ async function main(): Promise<void> {
 	// 创建所有链接盒子
 	const linkBoxes = new LinkBoxes(world);
 	linkBoxes.addWorld();
-
-	// 创建项目展示区域
-	const projectsSection = new ProjectsSection(world);
-	projectsSection.addWorld();
 
 	// 创建广告牌
 	const billboards = new Billboards(world);

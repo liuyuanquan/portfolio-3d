@@ -194,7 +194,7 @@ export class Billboards {
 			text,
 			size,
 			rotateX,
-			color: 0xff0000,
+			color: 0xffffff,
 		});
 	}
 
