@@ -241,7 +241,7 @@ const startZ = -6 * GRID_PLANE_CONFIG_COMPUTED.grid.cellSize;
  */
 export const SKILLS_SECTION_CONFIG = {
 	label: {
-		centerX: 61, // 文本水平居中的 x 坐标（与 experiences 的 x 坐标一致）
+		centerX: 52.5, // 文本水平居中的 x 坐标（experiences 的中心位置：32.5 + 40/2 = 52.5）
 		color: 0xff6600, // labelBox 材质颜色
 		showOutline: false, // 是否显示轮廓线
 		outlineColor: 0xff0000, // 轮廓线颜色
@@ -286,32 +286,52 @@ export const SKILLS_SECTION_CONFIG = {
 		outlineColor: 0xffffff, // 轮廓线颜色
 		items: [
 			{
-				position: { x: 61, y: 0.01, z: startZ + 6 }, // 第一行位置（label z: 7 + 4 = 11，向上移动 5）
-				text: "2024.11 - 至今，      昆仑万维，前端专家", // 工作经历文本
+				position: { x: 32.5, y: 0.01, z: startZ + 6 }, // 第一行位置（对齐到格子边界：第24个格子左边界）
+				texts: [
+					{ text: "2024.11 - 至今，", grids: 4.5 }, // 时间，占 4.5 个格子
+					{ text: "昆仑万维，", grids: 2.5 }, // 公司，占 2.5 个格子
+					{ text: "前端专家", grids: 2 }, // 职位，占 2 个格子
+				],
 				size: 1.5, // 文字大小
 				color: 0xffffff,
 			},
 			{
-				position: { x: 61, y: 0.01, z: startZ + 12 }, // 第二行位置（间距 4，向上移动 5）
-				text: "2021.09 - 2024.09，小红书，  前端专家", // 工作经历文本
+				position: { x: 32.5, y: 0.01, z: startZ + 12 }, // 第二行位置（对齐到格子边界：第24个格子左边界）
+				texts: [
+					{ text: "2021.09 - 2024.09，", grids: 4.5 }, // 时间，占 4.5 个格子
+					{ text: "小红书，", grids: 2.5 }, // 公司，占 2.5 个格子
+					{ text: "前端专家", grids: 2 }, // 职位，占 2 个格子
+				],
 				size: 1.5, // 文字大小
 				color: 0xffffff,
 			},
 			{
-				position: { x: 61, y: 0.01, z: startZ + 18 }, // 第三行位置（间距 4，向上移动 5）
-				text: "2019.05 - 2021.08，好未来，  前端专家", // 工作经历文本
+				position: { x: 32.5, y: 0.01, z: startZ + 18 }, // 第三行位置（对齐到格子边界：第24个格子左边界）
+				texts: [
+					{ text: "2019.05 - 2021.08，", grids: 4.5 }, // 时间，占 4.5 个格子
+					{ text: "好未来，", grids: 2.5 }, // 公司，占 2.5 个格子
+					{ text: "前端专家", grids: 2 }, // 职位，占 2 个格子
+				],
 				size: 1.5, // 文字大小
 				color: 0xffffff,
 			},
 			{
-				position: { x: 61, y: 0.01, z: startZ + 24 }, // 第四行位置（label z: 7 - 4 = 3，在 label 上方，向上移动 5）
-				text: "2018.10 - 2019.03，滴滴，     资深前端", // 工作经历文本
+				position: { x: 32.5, y: 0.01, z: startZ + 24 }, // 第四行位置（对齐到格子边界：第24个格子左边界）
+				texts: [
+					{ text: "2018.10 - 2019.03，", grids: 4.5 }, // 时间，占 4.5 个格子
+					{ text: "滴滴出行，", grids: 2.5 }, // 公司，占 2.5 个格子
+					{ text: "资深前端", grids: 2 }, // 职位，占 2 个格子
+				],
 				size: 1.5, // 文字大小
 				color: 0xffffff,
 			},
 			{
-				position: { x: 61, y: 0.01, z: startZ + 30 }, // 第五行位置（间距 4，在 label 上方，向上移动 5）
-				text: "2016.05 - 2018.03，看看，     初级前端", // 工作经历文本（逗号后添加空格）
+				position: { x: 32.5, y: 0.01, z: startZ + 30 }, // 第五行位置（对齐到格子边界：第24个格子左边界）
+				texts: [
+					{ text: "2016.05 - 2018.03，", grids: 4.5 }, // 时间，占 4.5 个格子
+					{ text: "响巢看看，", grids: 2.5 }, // 公司，占 2.5 个格子
+					{ text: "初级前端", grids: 2 }, // 职位，占 2 个格子
+				],
 				size: 1.5, // 文字大小
 				color: 0xffffff,
 			},

@@ -2,15 +2,15 @@
   "fonts": {
     "lxgw": {
       "path": "json/LXGW WenKai_Regular.json",
-      "size": 191229
+      "size": 199825
     }
   },
   "textures": {
-    "img/earth.jpg": 40592,
-    "img/BeachBallColor.jpg": 4682,
-    "img/stone.png": 197404,
-    "img/woodTexture.jpg": 161583,
-    "img/project-placeholder.png": 19121,
+    "img/earth.jpg": 19566,
+    "img/BeachBallColor.jpg": 5807,
+    "img/stone.png": 637625,
+    "img/woodTexture.jpg": 749450,
+    "img/project-placeholder.png": 155270,
     "img/lensflare0.png": 32296,
     "img/spark.png": 1788
   },
@@ -21,9 +21,9 @@
     "total": 2926396
   },
   "totals": {
-    "fonts": 191229,
-    "textures": 457466,
+    "fonts": 199825,
+    "textures": 1601802,
     "ammo": 2926396,
-    "all": 3575091
+    "all": 4728023
   }
 }

@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { World, resourceManager } from "../core";
-import { SKILLS_SECTION_CONFIG } from "../config";
-import { createFloatingLabel } from "./Shapes";
+import { SKILLS_SECTION_CONFIG, GRID_PLANE_CONFIG } from "../config";
 
 /**
  * 技能展示区域对象类
@@ -294,18 +293,55 @@ export class SkillsSection {
 	 */
 	private createExperienceLabels(): THREE.Mesh[] {
 		const { experiences } = SKILLS_SECTION_CONFIG;
+		const { grid } = GRID_PLANE_CONFIG;
 		const font = resourceManager.getFont()!;
+		const cellSize = grid.cellSize; // 每个格子的尺寸（5）
 
-		return experiences.items.map((experience) =>
-			createFloatingLabel({
-				font,
-				position: experience.position,
-				text: experience.text,
-				size: experience.size,
-				rotateX: true,
-				color: experience.color,
-			})
-		);
+		const labels: THREE.Mesh[] = [];
+
+		experiences.items.forEach((experience) => {
+			const { position, texts, size, color } = experience;
+			let currentX = position.x; // 当前 X 位置（左边缘）
+
+			texts.forEach((textItem) => {
+				const { text, grids } = textItem;
+				const segmentWidth = grids * cellSize; // 文本段占据的总宽度
+
+				// 创建文本形状并创建几何体
+				const shapes = font.generateShapes(text, size);
+				const geometry = new THREE.ShapeBufferGeometry(shapes);
+				geometry.computeBoundingBox();
+
+				// 获取文本左边缘位置
+				const minX = geometry.boundingBox ? geometry.boundingBox.min.x : 0;
+
+				// 文本左边缘对齐到格子边界
+				// 方法：将文本左边缘对齐到原点，然后设置 mesh.position.x = currentX
+				// 这样文本的左边缘就会在 currentX（格子边界）
+				geometry.translate(-minX, 0, 0);
+
+				const mesh = new THREE.Mesh(
+					geometry,
+					new THREE.MeshBasicMaterial({
+						color,
+						transparent: true,
+						side: THREE.DoubleSide,
+					})
+				);
+
+				// 设置位置：文本左边缘在 currentX
+				mesh.position.set(currentX, position.y, position.z);
+				mesh.rotation.x = -Math.PI * 0.5; // 水平放置
+
+				labels.push(mesh);
+
+				// 移动到下一个文本段的起始位置
+				// 所有文本段都使用分配的格子宽度，确保后续文本段位置正确
+				currentX += segmentWidth;
+			});
+		});
+
+		return labels;
 	}
 
 	/**
@@ -317,21 +353,42 @@ export class SkillsSection {
 		}
 
 		// 计算所有文字网格的合并边界框
+		// 注意：文本被旋转了 -90 度（rotation.x = -Math.PI * 0.5），需要计算旋转后的世界边界框
 		const boundingBox = new THREE.Box3();
 		this.experienceLabels.forEach((mesh) => {
 			mesh.geometry.computeBoundingBox();
 			if (mesh.geometry.boundingBox) {
-				const meshBox = mesh.geometry.boundingBox.clone();
-				// 使用 mesh.position 来转换到世界坐标
-				meshBox.translate(mesh.position);
-				boundingBox.union(meshBox);
+				// 获取几何体的局部边界框
+				const localBox = mesh.geometry.boundingBox.clone();
+				
+				// 创建8个顶点（边界框的8个角点）
+				const vertices = [
+					new THREE.Vector3(localBox.min.x, localBox.min.y, localBox.min.z),
+					new THREE.Vector3(localBox.max.x, localBox.min.y, localBox.min.z),
+					new THREE.Vector3(localBox.min.x, localBox.max.y, localBox.min.z),
+					new THREE.Vector3(localBox.max.x, localBox.max.y, localBox.min.z),
+					new THREE.Vector3(localBox.min.x, localBox.min.y, localBox.max.z),
+					new THREE.Vector3(localBox.max.x, localBox.min.y, localBox.max.z),
+					new THREE.Vector3(localBox.min.x, localBox.max.y, localBox.max.z),
+					new THREE.Vector3(localBox.max.x, localBox.max.y, localBox.max.z),
+				];
+				
+				// 更新 mesh 的矩阵（确保 matrixWorld 是最新的）
+				mesh.updateMatrixWorld(true);
+				
+				// 将每个顶点转换到世界坐标（考虑旋转和位置）
+				vertices.forEach((vertex) => {
+					vertex.applyMatrix4(mesh.matrixWorld);
+					boundingBox.expandByPoint(vertex);
+				});
 			}
 		});
 
-		// 计算尺寸和位置（长宽完全匹配文字边缘，高度比文字高0.01）
+		// 计算尺寸和位置（长宽完全匹配文字边缘，高度设置为1）
+		const textHeight = boundingBox.max.y - boundingBox.min.y;
 		const size = {
 			x: boundingBox.max.x - boundingBox.min.x, // 完全匹配文字宽度
-			y: boundingBox.max.y - boundingBox.min.y + 0.01, // 高度比文字本身高0.01
+			y: Math.max(textHeight, 1), // 高度至少为1
 			z: boundingBox.max.z - boundingBox.min.z, // 完全匹配文字深度
 		};
 		const center = {
@@ -367,21 +424,42 @@ export class SkillsSection {
 		}
 
 		// 计算所有文字网格的合并边界框（与 createExperiencesBox 使用相同的逻辑）
+		// 注意：文本被旋转了 -90 度（rotation.x = -Math.PI * 0.5），需要计算旋转后的世界边界框
 		const boundingBox = new THREE.Box3();
 		this.experienceLabels.forEach((mesh) => {
 			mesh.geometry.computeBoundingBox();
 			if (mesh.geometry.boundingBox) {
-				const meshBox = mesh.geometry.boundingBox.clone();
-				// 使用 mesh.position 来转换到世界坐标
-				meshBox.translate(mesh.position);
-				boundingBox.union(meshBox);
+				// 获取几何体的局部边界框
+				const localBox = mesh.geometry.boundingBox.clone();
+				
+				// 创建8个顶点（边界框的8个角点）
+				const vertices = [
+					new THREE.Vector3(localBox.min.x, localBox.min.y, localBox.min.z),
+					new THREE.Vector3(localBox.max.x, localBox.min.y, localBox.min.z),
+					new THREE.Vector3(localBox.min.x, localBox.max.y, localBox.min.z),
+					new THREE.Vector3(localBox.max.x, localBox.max.y, localBox.min.z),
+					new THREE.Vector3(localBox.min.x, localBox.min.y, localBox.max.z),
+					new THREE.Vector3(localBox.max.x, localBox.min.y, localBox.max.z),
+					new THREE.Vector3(localBox.min.x, localBox.max.y, localBox.max.z),
+					new THREE.Vector3(localBox.max.x, localBox.max.y, localBox.max.z),
+				];
+				
+				// 更新 mesh 的矩阵（确保 matrixWorld 是最新的）
+				mesh.updateMatrixWorld(true);
+				
+				// 将每个顶点转换到世界坐标（考虑旋转和位置）
+				vertices.forEach((vertex) => {
+					vertex.applyMatrix4(mesh.matrixWorld);
+					boundingBox.expandByPoint(vertex);
+				});
 			}
 		});
 
-		// 计算尺寸和位置（与 experiencesBox 一致，长宽完全匹配文字边缘，高度比文字高0.01）
+		// 计算尺寸和位置（与 experiencesBox 一致，长宽完全匹配文字边缘，高度设置为1）
+		const textHeight = boundingBox.max.y - boundingBox.min.y;
 		const size = {
 			x: boundingBox.max.x - boundingBox.min.x, // 完全匹配文字宽度
-			y: boundingBox.max.y - boundingBox.min.y + 0.01, // 高度比文字本身高0.01
+			y: Math.max(textHeight, 1), // 高度至少为1
 			z: boundingBox.max.z - boundingBox.min.z, // 完全匹配文字深度
 		};
 		const center = {
