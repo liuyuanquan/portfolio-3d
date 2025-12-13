@@ -81,7 +81,13 @@ npm run calculate-resources
 ```bash
 npm run resize-textures
 ```
-批量调整纹理图片尺寸为 2 的幂次方，避免 Three.js 自动调整导致的性能问题。
+批量调整纹理图片尺寸为 2 的幂次方，避免 Three.js 自动调整导致的性能问题。支持 JPG、JPEG、PNG、WebP 格式。
+
+**转换图片为 WebP**：
+```bash
+npm run convert-to-webp
+```
+批量将图片转换为 WebP 格式，显著减小文件大小，提升加载性能。支持 JPG、JPEG、PNG 格式转换。
 
 ## 项目结构
 

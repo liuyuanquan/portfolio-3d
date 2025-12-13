@@ -363,7 +363,7 @@ export class ResourceManager {
 
 			textures.forEach((url) => {
 				// 从完整 URL 中提取相对路径（移除 BASE_URL）
-				// URL 格式: ${BASE_URL}img/earth.jpg，需要提取 img/earth.jpg
+				// URL 格式: ${BASE_URL}img/player-ball.webp，需要提取 img/player-ball.webp
 				const relativePath = url.replace(/^.*\/img\//, "img/").replace(/^.*\/json\//, "json/");
 				const textureSize = (resourceSizes as any).textures?.[relativePath];
 				tracker.initResource(url, textureSize);

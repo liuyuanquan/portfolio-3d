@@ -43,7 +43,7 @@ export const BALL_CONFIG = {
 	radius: 2, // 球体半径
 	mass: 3, // 物理质量
 	quaternion: { x: 0, y: 0, z: 0, w: 1 }, // 初始旋转四元数
-	texture: "earth.jpg", // 纹理贴图文件名
+	texture: "player-ball.webp", // 纹理贴图文件名
 	friction: 10, // 表面摩擦系数
 	margin: 0.05, // 碰撞边界裕度
 	geometrySegments: 32, // 几何体分段数
@@ -63,7 +63,7 @@ export const BEACH_BALL_CONFIG = {
 	radius: 3, // 球体半径
 	mass: 3, // 物理质量
 	quaternion: { x: 0, y: 0, z: 0, w: 1 }, // 初始旋转四元数
-	texture: "BeachBallColor.jpg", // 纹理贴图文件名
+	texture: "beach-ball.webp", // 纹理贴图文件名
 	friction: 0.5, // 表面摩擦系数（较低以增加滑动感和反弹次数）
 	restitution: 0.85, // 恢复系数（反弹系数，0.85 表示反弹时会保留 85% 的速度，增加反弹次数）
 	geometrySegments: 32, // 几何体分段数
@@ -138,7 +138,7 @@ export const BRICK_WALLS_CONFIG = {
 	get center() {
 		return { x: -4 * GRID_PLANE_CONFIG_COMPUTED.grid.cellSize, y: 0, z: 0 };
 	},
-	texture: "stone.png", // 砖块纹理贴图文件名
+	texture: "brick-wall.webp", // 砖块纹理贴图文件名
 } as const;
 
 /**
@@ -190,7 +190,7 @@ export const LINK_BOXES_CONFIG = {
 		{
 			position: { x: 12, y: 2, z: -70 }, // 盒子位置
 			size: { x: 4, y: 4, z: 1 }, // 盒子尺寸
-			texture: "2935ca52f752c50d2729f61f9e2afba7.jpeg", // 盒子表面纹理
+			texture: "link-github.webp", // 盒子表面纹理
 			url: "https://github.com/liuyuanquan", // 点击后跳转的链接
 			borderColor: 0x000000, // 边框颜色
 			label: {
@@ -201,7 +201,7 @@ export const LINK_BOXES_CONFIG = {
 		{
 			position: { x: 19.5, y: 2, z: -70 },
 			size: { x: 4, y: 4, z: 1 },
-			texture: "def6cb23b86a0746d175d26946882a55.png",
+			texture: "link-juejin.webp",
 			url: "https://juejin.cn/user/4089838986602078",
 			borderColor: 0xffffff,
 			label: {
@@ -212,7 +212,7 @@ export const LINK_BOXES_CONFIG = {
 		{
 			position: { x: 27, y: 2, z: -70 },
 			size: { x: 4, y: 4, z: 1 },
-			texture: "QQ邮箱.jpg",
+			texture: "link-qqmail.webp",
 			url: "mailto:522703297@qq.com",
 			borderColor: 0xc9df00,
 			label: {
@@ -351,36 +351,36 @@ export const BILLBOARDS_CONFIG = {
 	billboards: [
 		{
 			position: { x: -80, y: 2.5, z: -70 }, // 广告牌位置
-			texture: "project-placeholder.png", // 广告牌纹理（待替换为实际项目截图）
+			texture: "project-placeholder.webp", // 广告牌纹理（待替换为实际项目截图）
 			url: "https://github.com/liuyuanquan/portfolio-3d", // 点击链接
 			type: "horizontal" as const, // 广告牌类型
 			rotation: Math.PI * 0.22, // 旋转角度
 			textPlane: {
-				texture: "project-placeholder.png", // 文字面板纹理
+				texture: "project-placeholder.webp", // 文字面板纹理
 				position: { x: -70, y: 0.01, z: -48 }, // 文字面板位置
 				size: { x: 15, y: 30 }, // 文字面板尺寸
 			},
 		},
 		{
 			position: { x: -45, y: 2.5, z: -78 },
-			texture: "project-placeholder.png",
+			texture: "project-placeholder.webp",
 			url: "https://github.com/liuyuanquan/portfolio-3d",
 			type: "horizontal" as const,
 			rotation: Math.PI * 0.17,
 			textPlane: {
-				texture: "project-placeholder.png",
+				texture: "project-placeholder.webp",
 				position: { x: -42, y: 0.01, z: -53 },
 				size: { x: 15, y: 30 },
 			},
 		},
 		{
 			position: { x: -17, y: 1.25, z: -75 },
-			texture: "project-placeholder.png",
+			texture: "project-placeholder.webp",
 			url: "https://github.com/liuyuanquan/portfolio-3d",
 			type: "vertical" as const,
 			rotation: Math.PI * 0.15,
 			textPlane: {
-				texture: "project-placeholder.png",
+				texture: "project-placeholder.webp",
 				position: { x: -14, y: 0.01, z: -49 },
 				size: { x: 15, y: 30 },
 			},
@@ -401,7 +401,7 @@ export const BILLBOARDS_CONFIG = {
 export const LENS_FLARE_CONFIG = {
 	position: { x: 50, y: -50, z: -800 }, // 光晕位置
 	size: { x: 200, y: 200 }, // 光晕尺寸
-	texture: "lensflare0.png", // 光晕纹理
+	texture: "lens-flare.webp", // 光晕纹理
 	opacity: 0.9, // 透明度
 	rotateX: false, // 是否绕X轴旋转
 	receiveShadow: true, // 是否接收阴影
@@ -482,7 +482,7 @@ export const GAMEPLAY_CONFIG = {
 		radiusRange: 4, // 粒子半径范围
 		spriteScale: { x: 0.5, y: 0.5, z: 1.0 }, // 精灵缩放
 		materialColor: 0xffffff, // 材质颜色
-		texture: "spark.png", // 纹理文件名
+		texture: "particle-spark.webp", // 纹理文件名
 	},
 } as const;
 
@@ -539,12 +539,15 @@ export const RESOURCE_CONFIG = {
 	fonts: fontsConfig,
 	defaultFont: "lxgw" as keyof typeof fontsConfig, // 默认使用的字体
 	preloadTextures: [
-		`${BASE_URL}img/earth.jpg`, // 玩家球体纹理
-		`${BASE_URL}img/BeachBallColor.jpg`, // 沙滩球纹理
-		`${BASE_URL}img/stone.png`, // 砖墙纹理
-		`${BASE_URL}img/woodTexture.jpg`, // 广告牌背景纹理
-		`${BASE_URL}img/project-placeholder.png`, // 项目占位图
-		`${BASE_URL}img/lensflare0.png`, // 镜头光晕纹理
-		`${BASE_URL}img/spark.png`, // 粒子火花纹理
+		`${BASE_URL}img/player-ball.webp`, // 玩家球体纹理
+		`${BASE_URL}img/beach-ball.webp`, // 沙滩球纹理
+		`${BASE_URL}img/brick-wall.webp`, // 砖墙纹理
+		`${BASE_URL}img/billboard-wood.webp`, // 广告牌背景纹理
+		`${BASE_URL}img/project-placeholder.webp`, // 项目占位图
+		`${BASE_URL}img/lens-flare.webp`, // 镜头光晕纹理
+		`${BASE_URL}img/particle-spark.webp`, // 粒子火花纹理
+		`${BASE_URL}img/link-github.webp`, // GitHub 链接盒子纹理
+		`${BASE_URL}img/link-juejin.webp`, // 掘金链接盒子纹理
+		`${BASE_URL}img/link-qqmail.webp`, // QQ邮箱链接盒子纹理
 	],
 } as const;

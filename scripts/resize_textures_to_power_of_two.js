@@ -1,6 +1,7 @@
 /**
  * 批量调整纹理图片尺寸为 2 的幂次方
  * 使用 sharp 库处理图片
+ * 支持格式: JPG, JPEG, PNG, WebP
  */
 import sharp from 'sharp';
 import fs from 'fs';
@@ -67,10 +68,10 @@ async function processImage(filePath) {
 
 		// 调整尺寸并保存到临时文件
 		// 根据图片格式选择背景色
-		const isPng = format === 'png';
-		const background = isPng 
-			? { r: 0, g: 0, b: 0, alpha: 0 } // PNG 使用透明背景
-			: { r: 0, g: 0, b: 0 }; // JPG 使用黑色背景
+		const supportsTransparency = format === 'png' || format === 'webp';
+		const background = supportsTransparency
+			? { r: 0, g: 0, b: 0, alpha: 0 } // PNG/WebP 使用透明背景
+			: { r: 0, g: 0, b: 0 }; // JPG/JPEG 使用黑色背景
 
 		const tempPath = filePath + '.tmp';
 		await image
@@ -102,6 +103,7 @@ async function processImage(filePath) {
 async function main() {
 	console.log('='.repeat(60));
 	console.log('批量调整纹理图片尺寸为 2 的幂次方');
+	console.log('支持格式: JPG, JPEG, PNG, WebP');
 	console.log('='.repeat(60));
 	console.log(`图片目录: ${IMG_DIR}\n`);
 
@@ -114,7 +116,7 @@ async function main() {
 	// 读取所有图片文件
 	const files = fs.readdirSync(IMG_DIR).filter((file) => {
 		const ext = path.extname(file).toLowerCase();
-		return ['.jpg', '.jpeg', '.png'].includes(ext);
+		return ['.jpg', '.jpeg', '.png', '.webp'].includes(ext);
 	});
 
 	if (files.length === 0) {

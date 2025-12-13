@@ -26,7 +26,7 @@ export class Billboards {
 	private static readonly BORDER_COLOR = 0x000000;
 
 	/** 木材纹理路径 */
-	private static readonly WOOD_TEXTURE = `woodTexture.jpg`;
+	private static readonly WOOD_TEXTURE = `billboard-wood.webp`;
 
 	/** World 实例 */
 	private world: World;

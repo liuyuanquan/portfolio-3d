@@ -7,6 +7,53 @@
 
 ## [未发布]
 
+## [1.4.5] - 2025-12-08
+
+### 新增
+
+- **图片转 WebP 工具**
+  - 添加 `scripts/convert_images_to_webp.py` 脚本，批量将图片转换为 WebP 格式
+  - 新增 `npm run convert-to-webp` 命令，自动处理所有图片文件
+  - 支持 JPG、JPEG、PNG 格式转换，保留透明度（PNG/WebP）
+  - 显示转换进度和压缩统计信息
+
+### 优化
+
+- **图片资源优化**
+  - 将所有功能图片转换为 WebP 格式，显著减小文件大小
+  - 根据功能重命名图片文件，提高可读性：
+    - `earth.webp` → `player-ball.webp`（玩家球体）
+    - `BeachBallColor.webp` → `beach-ball.webp`（沙滩球）
+    - `stone.webp` → `brick-wall.webp`（砖墙）
+    - `woodTexture.webp` → `billboard-wood.webp`（广告牌）
+    - `lensflare0.webp` → `lens-flare.webp`（镜头光晕）
+    - `spark.webp` → `particle-spark.webp`（粒子火花）
+    - `2935ca52f752c50d2729f61f9e2afba7.webp` → `link-github.webp`（GitHub 链接）
+    - `def6cb23b86a0746d175d26946882a55.webp` → `link-juejin.webp`（掘金链接）
+    - `QQ邮箱.webp` → `link-qqmail.webp`（QQ邮箱链接）
+  - 删除所有未使用的旧格式图片文件（11 个 JPG/PNG 文件）
+  - 更新代码中所有图片引用为新的 WebP 文件名
+
+- **纹理调整工具增强**
+  - 更新 `resize_textures_to_power_of_two.js` 脚本，支持 WebP 格式
+  - WebP 文件使用透明背景处理，保持透明度
+  - 更新脚本说明，明确支持格式：JPG, JPEG, PNG, WebP
+
+- **资源预加载优化**
+  - 补充遗漏的链接盒子纹理到 `preloadTextures` 配置
+  - 确保所有代码中使用的纹理都在预加载列表中
+
+### 变更
+
+- `package.json` 版本号更新至 `1.4.5`
+- `src/config/index.ts` 更新所有纹理引用为新的 WebP 文件名
+- `src/objects/Billboards.ts` 更新 `WOOD_TEXTURE` 常量
+- `src/core/ResourceManager.ts` 更新注释示例
+- `src/config/resource_sizes.json` 自动更新文件大小信息
+- `scripts/resize_textures_to_power_of_two.js` 添加 WebP 格式支持
+- `index.html` 更新 meta 标签图片为 WebP 格式
+- 删除 11 个未使用的旧格式图片文件
+
 ## [1.4.4] - 2025-12-08
 
 ### 优化

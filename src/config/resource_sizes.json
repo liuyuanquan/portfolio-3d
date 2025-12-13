@@ -6,13 +6,16 @@
     }
   },
   "textures": {
-    "img/earth.jpg": 19566,
-    "img/BeachBallColor.jpg": 5807,
-    "img/stone.png": 637625,
-    "img/woodTexture.jpg": 749450,
-    "img/project-placeholder.png": 155270,
-    "img/lensflare0.png": 32296,
-    "img/spark.png": 1788
+    "img/player-ball.webp": 15402,
+    "img/beach-ball.webp": 1486,
+    "img/brick-wall.webp": 93348,
+    "img/billboard-wood.webp": 383106,
+    "img/project-placeholder.webp": 14886,
+    "img/lens-flare.webp": 3756,
+    "img/particle-spark.webp": 540,
+    "img/link-github.webp": 9922,
+    "img/link-juejin.webp": 4566,
+    "img/link-qqmail.webp": 13454
   },
   "ammo": {
     "ammo/ammo.js": 1881243,
@@ -22,8 +25,8 @@
   },
   "totals": {
     "fonts": 199825,
-    "textures": 1601802,
+    "textures": 540466,
     "ammo": 2926396,
-    "all": 4728023
+    "all": 3666687
   }
 }

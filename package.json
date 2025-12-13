@@ -1,6 +1,6 @@
 {
 	"name": "portfolio-3d",
-	"version": "1.4.4",
+	"version": "1.4.5",
 	"description": "个人 3D 交互式作品集网站 - 展示 GitHub 开源项目、工作经历和 Three.js 3D 效果",
 	"type": "module",
 	"author": {
@@ -47,7 +47,8 @@
 		"preview": "vite preview",
 		"prepare": "husky install",
 		"calculate-resources": "node scripts/extract_used_chars.js && python3 scripts/calculate_resource_sizes.py",
-		"resize-textures": "node scripts/resize_textures_to_power_of_two.js"
+		"resize-textures": "node scripts/resize_textures_to_power_of_two.js",
+		"convert-to-webp": "python3 scripts/convert_images_to_webp.py"
 	},
 	"dependencies": {
 		"nipplejs": "^0.10.2",
